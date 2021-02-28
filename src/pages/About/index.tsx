@@ -1,5 +1,5 @@
 import styles from './index.less';
-import cloudApp from '../../cloud_function/index';
+import cloudApp from '@/cloud_function/index';
 
 export default function LoginPage() {
   const auth = cloudApp.auth({

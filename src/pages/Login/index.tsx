@@ -1,23 +1,12 @@
-import {
-  AlipayCircleOutlined,
-  LockOutlined,
-  MobileOutlined,
-  TaobaoCircleOutlined,
-  MailOutlined,
-  WeiboCircleOutlined,
-} from '@ant-design/icons';
+import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Alert, Space, message, Tabs } from 'antd';
 import React, { useState } from 'react';
-import ProForm, {
-  ProFormCaptcha,
-  ProFormCheckbox,
-  ProFormText,
-} from '@ant-design/pro-form';
+import ProForm, { ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
 import { Link, history, useModel } from 'umi';
 import Footer from '@/components/Footer';
-import { login, getFakeCaptcha } from '@/services/ant-design-pro/login';
 
 import styles from './index.less';
+import cloudApp from '@/cloud_function';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -44,8 +33,7 @@ const goto = () => {
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
-  const [type, setType] = useState<string>('account');
+  const [loginStatus, setLoginStatus] = useState<'error' | null>(null);
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const fetchUserInfo = async () => {
@@ -60,25 +48,31 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: API.LoginParams) => {
     setSubmitting(true);
-    try {
-      // 登录
-      console.log('登陆啦');
-      const msg = await login({ ...values, type });
-      console.log('登陆啦');
-      if (msg.status === 'ok') {
-        message.success('登录成功！');
-        await fetchUserInfo();
-        goto();
-        return;
-      }
-      // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
-    } catch (error) {
-      message.error('登录失败，请重试！');
+
+    // 登录
+    console.log(values);
+    const userAuth = cloudApp.auth({
+      persistence: values.autoLogin ? 'local' : 'session',
+    });
+    const userInfo = await userAuth
+      .signInWithEmailAndPassword(
+        values.email as string,
+        values.password as string,
+      )
+      .catch((err) => {
+        message.error('登录失败，请重试！');
+        console.log(err);
+        setLoginStatus('error');
+      });
+
+    // 登陆失败的情况包括密码错误与其他报错
+    if (userInfo) {
+      message.success('登录成功！');
+      console.log(userInfo);
+      goto();
     }
     setSubmitting(false);
   };
-  const { status, type: loginType } = userLoginState;
 
   return (
     <div className={styles.container}>
@@ -115,7 +109,9 @@ const Login: React.FC = () => {
               handleSubmit(values as API.LoginParams);
             }}
           >
-            {status === 'error' && <LoginMessage content="账户或密码错误" />}
+            {loginStatus === 'error' && (
+              <LoginMessage content="账户或密码错误" />
+            )}
 
             <ProFormText
               name="email"
