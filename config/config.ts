@@ -13,8 +13,20 @@ export default {
     },
     {
       path: '/',
+      component: '@/pages/index/index',
+      name: '首页',
+      icon: 'AlertOutlined',
+    },
+    {
+      path: '/about',
+      component: '@/pages/About/index',
+      name: '关于',
+      icon: 'AlertOutlined',
+    },
+    {
+      path: '/welcome',
       component: '@/pages/Welcome/index',
-      name: 'Home',
+      name: '欢迎',
       icon: 'AlertOutlined',
     },
   ],

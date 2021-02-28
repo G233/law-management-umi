@@ -30,12 +30,12 @@ export async function getInitialState(): Promise<{
       const currentUser = await queryCurrentUser();
       return currentUser;
     } catch (error) {
-      history.push('/user/login');
+      history.push('/login');
     }
     return undefined;
   };
   // 如果是登录页面，不执行
-  if (history.location.pathname !== '/user/login') {
+  if (history.location.pathname !== '/login') {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -58,37 +58,13 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== '/user/login') {
-        history.push('/user/login');
+      if (!initialState?.currentUser && location.pathname !== '/login') {
+        history.push('/login');
       }
     },
-    links: isDev
-      ? [
-          <>
-            <LinkOutlined />
-            <span
-              onClick={() => {
-                window.open('/umi/plugin/openapi');
-              }}
-            >
-              openAPI 文档
-            </span>
-          </>,
-          <>
-            <BookOutlined />
-            <span
-              onClick={() => {
-                window.open('/~docs');
-              }}
-            >
-              业务组件文档
-            </span>
-          </>,
-        ]
-      : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
-    // unAccessible: <div>unAccessible</div>,
+    unAccessible: <div>unAccessible</div>,
     ...initialState?.settings,
   };
 };
