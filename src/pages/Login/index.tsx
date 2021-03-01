@@ -50,7 +50,6 @@ const Login: React.FC = () => {
     setSubmitting(true);
 
     // 登录
-    console.log(values);
     const userAuth = cloudApp.auth({
       persistence: values.autoLogin ? 'local' : 'session',
     });
@@ -61,15 +60,14 @@ const Login: React.FC = () => {
       )
       .catch((err) => {
         message.error('登录失败，请重试！');
-        console.log(err);
         setLoginStatus('error');
       });
 
     // 登陆失败的情况包括密码错误与其他报错
     if (userInfo) {
       message.success('登录成功！');
-      console.log(userInfo);
-      goto();
+      fetchUserInfo();
+      history.push('/');
     }
     setSubmitting(false);
   };
