@@ -6,7 +6,8 @@ import { Link, history, useModel } from 'umi';
 import Footer from '@/components/Footer';
 
 import styles from './index.less';
-import cloudApp from '@/cloud_function';
+import { auth } from '@/cloud_function/index';
+import { signIn } from '@/services/user';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -21,52 +22,36 @@ const LoginMessage: React.FC<{
   />
 );
 
-/** 此方法会跳转到 redirect 参数所在的位置 */
-const goto = () => {
-  if (!history) return;
-  setTimeout(() => {
-    const { query } = history.location;
-    const { redirect } = query as { redirect: string };
-    history.push(redirect || '/');
-  }, 10);
-};
+enum LoginStatus {
+  'ERROR',
+  'LODING',
+}
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
-  const [loginStatus, setLoginStatus] = useState<'error' | null>(null);
-  const { initialState, setInitialState } = useModel('@@initialState');
-
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
-    if (userInfo) {
-      setInitialState({
-        ...initialState,
-        currentUser: userInfo,
-      });
-    }
-  };
+  const [loginStatus, setLoginStatus] = useState<LoginStatus>(
+    LoginStatus.LODING,
+  );
+  const { initialState, setInitialState, refresh } = useModel('@@initialState');
 
   const handleSubmit = async (values: API.LoginParams) => {
     setSubmitting(true);
 
-    // 登录
-    const userAuth = cloudApp.auth({
-      persistence: values.autoLogin ? 'local' : 'session',
+    const userInfo = await signIn(
+      values.email as string,
+      values.password as string,
+    ).catch((err) => {
+      // 登陆失败的情况包括密码错误与其他报错,因为云开发密码错误也是直接报错
+      message.error('登录失败，请重试！');
+      setLoginStatus(LoginStatus.ERROR);
     });
-    const userInfo = await userAuth
-      .signInWithEmailAndPassword(
-        values.email as string,
-        values.password as string,
-      )
-      .catch((err) => {
-        message.error('登录失败，请重试！');
-        setLoginStatus('error');
-      });
 
-    // 登陆失败的情况包括密码错误与其他报错
-    if (userInfo) {
-      message.success('登录成功！');
-      fetchUserInfo();
+    if (userInfo && initialState) {
+      // !!! 这两行看起来是重复的，但是删去任意一个会导致在 history.push('/') 之后，
+      // onPageChange 函数拿不到新的 initialState，无法判断是否登陆，导致第一次无法进入管理页面
+      setInitialState({ ...initialState, hasLogin: true });
+      await refresh();
+
       history.push('/');
     }
     setSubmitting(false);
@@ -107,8 +92,8 @@ const Login: React.FC = () => {
               handleSubmit(values as API.LoginParams);
             }}
           >
-            {loginStatus === 'error' && (
-              <LoginMessage content="账户或密码错误" />
+            {loginStatus === LoginStatus.ERROR && (
+              <LoginMessage content="邮箱或密码错误" />
             )}
 
             <ProFormText
@@ -121,7 +106,7 @@ const Login: React.FC = () => {
               rules={[
                 {
                   required: true,
-                  message: '请输入邮箱号!',
+                  message: '请输入邮箱!',
                 },
               ]}
             />

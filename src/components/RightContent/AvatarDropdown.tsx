@@ -1,11 +1,15 @@
 import React, { useCallback } from 'react';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  LogoutOutlined,
+  SettingOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import { history, useModel } from 'umi';
 import { stringify } from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
-import { outLogin } from '@/services/ant-design-pro/login';
+import { signOut } from '../../services/user';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -15,22 +19,12 @@ export type GlobalHeaderRightProps = {
  * 退出登录，并且将当前的 url 保存
  */
 const loginOut = async () => {
-  await outLogin();
-  const { query = {}, pathname } = history.location;
-  const { redirect } = query;
-  // Note: There may be security issues, please note
-  if (window.location.pathname !== '/user/login' && !redirect) {
-    history.replace({
-      pathname: '/user/login',
-      search: stringify({
-        redirect: pathname,
-      }),
-    });
-  }
+  await signOut();
+  history.push('/login');
 };
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const { initialState, setInitialState, loading } = useModel('@@initialState');
 
   const onMenuClick = useCallback(
     (event: {
@@ -41,7 +35,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     }) => {
       const { key } = event;
       if (key === 'logout' && initialState) {
-        setInitialState({ ...initialState, currentUser: undefined });
+        setInitialState({ ...initialState, currentUser: null });
         loginOut();
         return;
       }
@@ -50,7 +44,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     [initialState, setInitialState],
   );
 
-  const loading = (
+  const Loading = (
     <span className={`${styles.action} ${styles.account}`}>
       <Spin
         size="small"
@@ -63,14 +57,14 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   );
 
   if (!initialState) {
-    return loading;
+    return Loading;
   }
 
-  const { currentUser } = initialState;
+  // const { avatar, name } = initialState;
 
-  if (!currentUser || !currentUser.name) {
-    return loading;
-  }
+  // if (!currentUser || !currentUser.name) {
+  //   return loading;
+  // }
 
   const menuHeaderDropdown = (
     <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
@@ -97,8 +91,18 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   return (
     <HeaderDropdown overlay={menuHeaderDropdown}>
       <span className={`${styles.action} ${styles.account}`}>
-        <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-        <span className={`${styles.name} anticon`}>{currentUser.name}</span>
+        <Avatar
+          size="small"
+          className={styles.avatar}
+          src={
+            initialState?.currentUser?.avatarUrl ||
+            'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
+          }
+          alt="avatar"
+        />
+        <span className={`${styles.name} anticon`}>
+          {initialState?.currentUser?.username || '你好'}
+        </span>
       </span>
     </HeaderDropdown>
   );

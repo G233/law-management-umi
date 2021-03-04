@@ -2,6 +2,7 @@ export default {
   nodeModulesTransform: {
     type: 'none',
   },
+  esbuild: {},
   routes: [
     {
       path: '/login',

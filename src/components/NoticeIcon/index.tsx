@@ -3,7 +3,7 @@ import { Tag, message } from 'antd';
 import { groupBy } from 'lodash';
 import moment from 'moment';
 import { useModel } from 'umi';
-import { getNotices } from '@/services/ant-design-pro/api';
+import { getNotices } from '@/services/api';
 
 import NoticeIcon from './NoticeIcon';
 import styles from './index.less';
@@ -14,7 +14,9 @@ export type GlobalHeaderRightProps = {
   onNoticeClear?: (tabName?: string) => void;
 };
 
-const getNoticeData = (notices: API.NoticeIconItem[]): Record<string, API.NoticeIconItem[]> => {
+const getNoticeData = (
+  notices: API.NoticeIconItem[],
+): Record<string, API.NoticeIconItem[]> => {
   if (!notices || notices.length === 0 || !Array.isArray(notices)) {
     return {};
   }

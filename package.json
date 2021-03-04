@@ -28,8 +28,10 @@
     "umi": "^3.3.9"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.11",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@umijs/plugin-esbuild": "^1.0.1",
     "@umijs/test": "^3.3.9",
     "lint-staged": "^10.0.7",
     "prettier": "^2.2.0",

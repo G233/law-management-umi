@@ -1,4 +1,3 @@
-import cloudApp from '../../cloud_function/index';
 import { useModel } from 'umi';
 
 export default function IndexPage() {
