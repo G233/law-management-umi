@@ -3,6 +3,7 @@ export default {
     type: 'none',
   },
   esbuild: {},
+  // 图标可以查阅：https://ant.design/components/icon-cn/
   routes: [
     {
       path: '/login',
@@ -29,6 +30,12 @@ export default {
       component: '@/pages/Welcome/index',
       name: '欢迎',
       icon: 'AlertOutlined',
+    },
+    {
+      path: '/user',
+      component: '@/pages/User/index',
+      name: '个人中心',
+      icon: 'UserOutlined',
     },
   ],
 
