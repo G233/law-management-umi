@@ -5,5 +5,6 @@ const cloudApp = cloudbase.init({
 });
 
 const auth = cloudApp.auth({ persistence: 'local' });
+const db = cloudApp.database();
 
-export { cloudApp, auth };
+export { cloudApp, auth, db };

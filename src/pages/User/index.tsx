@@ -1,79 +1,74 @@
-import styles from './index.less';
-import { cloudApp, auth } from '@/cloud_function/index';
+import { Button, message, Space } from 'antd';
 import { useModel } from 'umi';
-
-import React, { useState } from 'react';
-import { Form, Button, Radio, Upload, message, Input, Space } from 'antd';
-import {
-  LoadingOutlined,
-  PlusOutlined,
-  SettingOutlined,
-  EditOutlined,
-  EllipsisOutlined,
-  SaveTwoTone,
-} from '@ant-design/icons';
-import ProForm, {
-  ProFormText,
-  ProFormSelect,
-  ProFormDateRangePicker,
-  ProFormRadio,
-  ProFormUploadButton,
-  ProFormDigit,
-  ProFormTextArea,
-  ProFormUploadDragger,
-} from '@ant-design/pro-form';
+import { auth, db } from '@/cloud_function/index';
+import ProForm, { ProFormText } from '@ant-design/pro-form';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
+import styles from './index.less';
 
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
-
-function beforeUpload(file) {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('You can only upload JPG/PNG file!');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error('Image must smaller than 2MB!');
-  }
-  return isJpgOrPng && isLt2M;
-}
+// 自定义用户模型
 
 export default function IndexPage() {
-  const [imgLoding, setImgLoding] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>();
   const { Divider } = ProCard;
-  const { initialState, setInitialState, refresh } = useModel('@@initialState');
+  const { initialState } = useModel('@@initialState');
+  const userInfo = initialState?.currentUser;
+  const email = userInfo?.email;
+  const collection = db.collection('User');
 
-  // const handleChange = (info) => {
-  //   if (info.file.status === 'uploading') {
-  //     setImgLoding(true);
-  //     return;
-  //   }
-  //   if (info.file.status === 'done') {
-  //     // Get this url from response in real world.
-  //     getBase64(info.file.originFileObj, (imageUrl: string) => {
-  //       setImgLoding(true);
-  //       setImageUrl(imageUrl);
-  //     });
-  //   }
-  // };
-  // const uploadButton = (
-  //   <div>
-  //     {imgLoding ? <LoadingOutlined /> : <PlusOutlined />}
-  //     <div style={{ marginTop: 8 }}>Upload</div>
-  //   </div>
-  // );
+  interface emailProp {
+    newEmail: string;
+  }
 
-  const handleChangePassword = () => {
-    const email = initialState?.currentUser?.email;
-    auth.sendPasswordResetEmail(email as string).then(() => {
+  interface userInfoProp {
+    name: string;
+    phone: string;
+  }
+  // TODO: 逻辑操作统一放到 server 层
+  // 更新用户个人信息
+  // TODO：可以考虑做一个中间曾=层，统一添加操作反馈
+  const setUserInfo = async (data: userInfoProp) => {
+    console.log('111');
+
+    const User = await collection
+      .where({
+        _openid: userInfo?.uid,
+      })
+      .get();
+
+    // 如果用户已经设置过个人信息了，则更新信息
+    if (User.data[0]) {
+      const docId: string = User.data[0]._id;
+      await collection.doc(docId).update(data);
+    } else {
+      await collection.add(data);
+    }
+
+    // collection.doc(User.)
+    // const res = await collection.add(data);
+    message.success('更新个人信息成功！');
+  };
+  // 重置密码
+  const handleChangePassword = async () => {
+    return auth.sendPasswordResetEmail(userInfo?.email as string).then(() => {
       message.success('重置密码邮件发送成功，请注意查收');
     });
+  };
+
+  // 重置邮箱
+  const handleChangeEmail = async ({ newEmail }: emailProp) => {
+    console.log(newEmail, email);
+    if (newEmail === email) {
+      message.warning('请输入新邮箱进行修改');
+      return;
+    }
+    return auth.currentUser
+      ?.updateEmail(newEmail)
+      .then(() => {
+        message.success('确认邮件已发送到新邮箱，请注意查收');
+      })
+      .catch((err) => {
+        message.error('更改邮箱失败，请稍后再试');
+      });
   };
 
   return (
@@ -92,40 +87,37 @@ export default function IndexPage() {
               },
             },
           }}
-          onFinish={async (values) => console.log(values)}
+          onFinish={async (values) => {
+            await setUserInfo(values as userInfoProp);
+          }}
         >
-          {/* TODO: */}
-          {/* <ProForm.Group>
-            <Form.Item label="头像">
-              <Upload
-                name="avatar"
-                listType="picture-card"
-                className="avatar-uploader"
-                showUploadList={false}
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                beforeUpload={beforeUpload}
-                onChange={handleChange}
-              >
-                {imageUrl ? (
-                  <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
-                ) : (
-                  uploadButton
-                )}
-              </Upload>
-            </Form.Item>
-          </ProForm.Group> */}
           <ProForm.Group>
             <ProFormText
               name="name"
               label="姓名"
+              initialValue={userInfo?.name}
+              rules={[
+                {
+                  required: true,
+                  message: '请输入姓名',
+                },
+              ]}
               tooltip="请输入真实姓名，用于展示"
               placeholder="请输入姓名"
             />
+            {/* TODO: 添加手机号类型校验 */}
             <ProFormText
               width="md"
               name="phone"
               label="手机号"
+              initialValue={userInfo?.phone}
               placeholder="请输入手机号"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入手机号',
+                },
+              ]}
             />
           </ProForm.Group>
         </ProForm>
@@ -145,13 +137,26 @@ export default function IndexPage() {
               },
             },
           }}
-          onFinish={async (values) => console.log(values)}
+          onFinish={async (values) => {
+            await handleChangeEmail(values as emailProp);
+          }}
         >
           <ProForm.Group>
             <ProFormText
+              initialValue={email}
               width="md"
-              name="email"
+              name="newEmail"
               label="绑定邮箱"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入邮箱!',
+                },
+                {
+                  type: 'email',
+                  message: '请输入正确格式的邮箱',
+                },
+              ]}
               placeholder="请输入邮箱号"
             />
           </ProForm.Group>

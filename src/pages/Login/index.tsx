@@ -33,7 +33,8 @@ const Login: React.FC = () => {
     LoginStatus.LODING,
   );
   const { initialState, setInitialState, refresh } = useModel('@@initialState');
-
+  // FIXME：是否保持登陆这一块流程还需要完善
+  // 用户登陆函数
   const handleSubmit = async (values: API.LoginParams) => {
     setSubmitting(true);
 
@@ -47,6 +48,7 @@ const Login: React.FC = () => {
     });
 
     if (userInfo && initialState) {
+      // FIXME： 需要优化
       // !!! 这两行看起来是重复的，但是删去任意一个会导致在 history.push('/') 之后，
       // onPageChange 函数拿不到新的 initialState，无法判断是否登陆，导致第一次无法进入管理页面
       setInitialState({ ...initialState, hasLogin: true });
@@ -107,6 +109,10 @@ const Login: React.FC = () => {
                 {
                   required: true,
                   message: '请输入邮箱!',
+                },
+                {
+                  type: 'email',
+                  message: '请输入正确格式的邮箱',
                 },
               ]}
             />
