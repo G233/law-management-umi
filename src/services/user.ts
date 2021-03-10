@@ -1,13 +1,6 @@
 import { auth, db } from '@/cloud_function';
 
-export interface UserInfo {
-  name?: string;
-  phone?: string;
-  uid: string;
-  email: string;
-  avatarUrl?: string;
-}
-
+// 获取用户信息
 export const fetchUserInfo = async () => {
   if (auth.hasLoginState()) {
     const currentUser = await auth.getCurrenUser();
@@ -17,13 +10,14 @@ export const fetchUserInfo = async () => {
         _openid: currentUser?.uid,
       })
       .get();
-    const userInfo: UserInfo = formatUserInfo(currentUser, User.data[0]);
+    const userInfo = formatUserInfo(currentUser, User.data[0]);
     return userInfo;
   }
   return null;
 };
 
-const formatUserInfo = (currentUser: any, data: any) => {
+// 格式化用户信息
+const formatUserInfo = (currentUser: any, data: any): API.UserInfo => {
   return {
     name: data.name ?? null,
     phone: data.phone ?? null,
@@ -33,10 +27,12 @@ const formatUserInfo = (currentUser: any, data: any) => {
   };
 };
 
+// 退出登陆
 export const signOut = async () => {
   return auth.signOut();
 };
 
+// 登陆
 export const signIn = async (email: string, password: string) => {
   return await auth.signInWithEmailAndPassword(email, password);
 };

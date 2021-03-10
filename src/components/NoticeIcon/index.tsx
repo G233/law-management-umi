@@ -55,7 +55,6 @@ const getNoticeData = (
   });
   return groupBy(newNotices, 'type');
 };
-
 const getUnreadData = (noticeData: Record<string, API.NoticeIconItem[]>) => {
   const unreadMsg: Record<string, number> = {};
   Object.keys(noticeData).forEach((key) => {
