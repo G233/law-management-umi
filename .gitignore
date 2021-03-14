@@ -18,3 +18,6 @@
 /src/.umi-production
 /src/.umi-test
 /.env.local
+
+# 云函数
+/functions/*/node_modules

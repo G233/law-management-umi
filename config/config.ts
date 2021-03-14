@@ -2,40 +2,34 @@ export default {
   nodeModulesTransform: {
     type: 'none',
   },
+  // 使用 esbuild 进行构建
   esbuild: {},
   // 图标可以查阅：https://ant.design/components/icon-cn/
   routes: [
     {
-      path: '/login',
-      component: '@/pages/login/index',
-      name: 'Welcome',
-      layout: false,
-      hideInMenu: true,
-      icon: 'YuqueOutlined',
+      path: '/Cases',
+      component: '@/pages/Cases/index',
+      name: '案件列表',
+      icon: 'SnippetsOutlined',
     },
     {
-      path: '/',
-      component: '@/pages/index/index',
-      name: '首页',
-      icon: 'AlertOutlined',
-    },
-    {
-      path: '/about',
-      component: '@/pages/About/index',
-      name: '关于',
-      icon: 'AlertOutlined',
-    },
-    {
-      path: '/welcome',
-      component: '@/pages/Welcome/index',
-      name: '欢迎',
-      icon: 'AlertOutlined',
+      path: '/CreateCases',
+      component: '@/pages/CreateCases/index',
+      name: '新建审批',
+      icon: 'SnippetsOutlined',
     },
     {
       path: '/user',
       component: '@/pages/User/index',
       name: '个人中心',
       icon: 'UserOutlined',
+    },
+    {
+      path: '/login',
+      component: '@/pages/login/index',
+      name: 'Welcome',
+      layout: false,
+      hideInMenu: true,
     },
   ],
 

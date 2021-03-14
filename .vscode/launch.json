@@ -10,6 +10,16 @@
       "name": "Launch Chrome against localhost",
       "url": "http://localhost:8000",
       "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "name": "[get_approve_cases] 云函数云端调试",
+      "port": 9222,
+      "request": "attach",
+      "cloudbaseRemote": true,
+      "remoteRoot": "/var/user",
+      "skipFiles": ["<node_internals>/**"],
+      "localRoot": "${workspaceFolder}/functions/get_approve_cases"
     }
   ]
 }

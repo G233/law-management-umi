@@ -25,7 +25,8 @@ export default function IndexPage() {
   }
   // TODO: 逻辑操作统一放到 server 层
   // 更新用户个人信息
-  // TODO：可以考虑做一个中间曾=层，统一添加操作反馈
+  // TODO：可以考虑做一个中间层，统一添加操作反馈
+  // TODO: 使用 useEffct 避免重复刷新
   const setUserInfo = async (data: userInfoProp) => {
     console.log('111');
 
