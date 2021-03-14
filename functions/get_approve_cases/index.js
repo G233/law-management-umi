@@ -9,14 +9,15 @@ const CaseStatus = {
 const app = cloudbase.init({
   env: 'atom-2gbnzw0gde4242dc',
 });
-// 1. 获取数据库引用
 const db = app.database();
+
 exports.main = async () => {
   const res = await db
     .collection('Cases')
     .where({
       status: CaseStatus.WAITING,
     })
+    .orderBy('createTime', 'asc')
     .get();
   return res;
 };

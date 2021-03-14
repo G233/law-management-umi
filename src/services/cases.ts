@@ -1,4 +1,5 @@
-import { db } from '@/cloud_function/index';
+import { message } from 'antd';
+import { db, cloudApp } from '@/cloud_function/index';
 
 // 原本类型定义都是写在 @/typing.d.ts 里面的，但是 没办法引用 CasesStatus 因为我不知道怎么把 enum 导出
 // 所以就拆出来写在这里了
@@ -14,7 +15,7 @@ export interface Cases {
   // 涉案金额
   amount?: string;
   // 发起时间
-  newTime: Date;
+  createTime: Date;
   // 审批状态
   status: CaseStatus;
   // 收费
@@ -30,6 +31,26 @@ export interface Cases {
   _openid?: string;
 }
 
+// 获取所有待审批案件
+// 默认为 100 条，需要手动去云函数中修改限制
+export const fetchApprovingCases = async () => {
+  const res = await cloudApp
+    .callFunction({
+      name: 'get_approve_cases',
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  if (res) {
+    return {
+      data: res?.result?.data,
+      success: true,
+    };
+  }
+  message.error('审批列表获取失败，请稍后重试');
+  return { data: [], success: true };
+};
+
 export const createCase = async (value: Cases) => {
   for (let i = 0; i < 100; i++) {
     db.collection('Cases').add(await formatCase(value));
@@ -37,7 +58,7 @@ export const createCase = async (value: Cases) => {
 };
 
 const formatCase = async (value: Cases) => {
-  value.newTime = new Date();
+  value.createTime = new Date();
   value.status = CaseStatus.WAITING;
   console.log(value);
   return value;
