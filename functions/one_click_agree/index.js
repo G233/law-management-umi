@@ -1,3 +1,4 @@
+// 一键通过审批
 const cloudbase = require('@cloudbase/node-sdk');
 
 const CaseStatus = {
@@ -18,7 +19,7 @@ const approveAgree = async (id, approverId) => {
 
 exports.main = async ({ approverId, idList }) => {
   await Promise.all(
-    idList.map(async (id) => {
+    idList.forEach(async (id) => {
       await approveAgree(id, approverId);
     }),
   );

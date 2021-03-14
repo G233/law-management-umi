@@ -1,4 +1,3 @@
-// 获取所有审批过的文件
 const cloudbase = require('@cloudbase/node-sdk');
 
 const app = cloudbase.init({
@@ -26,5 +25,18 @@ exports.main = async () => {
     })
     .orderBy('createTime', 'asc')
     .get();
-  return res;
+
+  // TODO: 优化为通过聚合
+  await Promise.all(
+    res.data.map(async (e) => {
+      const res = await db
+        .collection('User')
+        .where({
+          _openid: e.approverId,
+        })
+        .get();
+      e.approverName = res.data[0].name;
+    }),
+  );
+  return res.data;
 };

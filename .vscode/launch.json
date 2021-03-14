@@ -20,6 +20,14 @@
       "remoteRoot": "/var/user",
       "skipFiles": ["<node_internals>/**"],
       "localRoot": "${workspaceFolder}/functions/get_approve_cases"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "name": "[get_approved_cases] 云函数本地调试",
+      "entry": "get_approved_cases",
+      "cloudbaseLocal": true
     }
   ]
 }

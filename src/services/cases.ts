@@ -70,10 +70,9 @@ export const fetchApprovedCases = async () => {
     .catch((error) => {
       console.log(error);
     });
-  console.log(res);
   if (res) {
     return {
-      data: res?.result?.data,
+      data: res?.result,
       success: true,
     };
   }

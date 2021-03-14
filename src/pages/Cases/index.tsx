@@ -153,10 +153,11 @@ export default function CasesPage() {
       dataIndex: 'status',
       align: 'center',
       width: 160,
+      renderText: (e) => (e === 0 ? '同意' : '不同意'),
     },
     {
       title: '审批人',
-      dataIndex: 'approverId',
+      dataIndex: 'approverName',
       align: 'center',
       width: 160,
     },
@@ -172,6 +173,7 @@ export default function CasesPage() {
   // 有些函数需要手动刷新表格，所以建立一个表格的 ref 提供手动操作
   const ref = useRef<ActionType>();
 
+  // TODO: 正确显示审批结果和审批人
   return (
     <div>
       <PageContainer>
