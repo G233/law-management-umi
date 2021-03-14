@@ -1,5 +1,5 @@
 {
-    "name": "get_approve_cases",
+    "name": "get_approving_cases",
     "version": "1.0.0",
     "main": "index.js",
     "dependencies": {

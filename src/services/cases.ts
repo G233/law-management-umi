@@ -36,11 +36,31 @@ export interface Cases {
 export const fetchApprovingCases = async () => {
   const res = await cloudApp
     .callFunction({
-      name: 'get_approve_cases',
+      name: 'get_approving_cases',
     })
     .catch((error) => {
       console.log(error);
     });
+  if (res) {
+    return {
+      data: res?.result?.data,
+      success: true,
+    };
+  }
+  message.error('审批列表获取失败，请稍后重试');
+  return { data: [], success: true };
+};
+
+// 获取 一个月内审批案件
+export const fetchApprovedCases = async () => {
+  const res = await cloudApp
+    .callFunction({
+      name: 'get_approved_cases',
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  console.log(res);
   if (res) {
     return {
       data: res?.result?.data,

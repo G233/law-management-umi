@@ -6,6 +6,7 @@ const CaseStatus = {
   REJECT: 2,
 };
 
+// 获取所有审批中的案件
 const app = cloudbase.init({
   env: 'atom-2gbnzw0gde4242dc',
 });
