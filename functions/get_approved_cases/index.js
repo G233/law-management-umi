@@ -13,7 +13,7 @@ const CaseStatus = {
   REJECT: 2,
 };
 
-// 获取三十天内通过的审批
+// 获取三十天内完成的审批
 const now = new Date();
 let oldDate = new Date(now.setDate(now.getDate() - 30));
 
@@ -22,7 +22,7 @@ exports.main = async () => {
     .collection('Cases')
     .where({
       status: _.or(_.eq(CaseStatus.REJECT), _.eq(CaseStatus.AGREE)),
-      createTime: _.gt(oldDate),
+      approveTime: _.gt(oldDate),
     })
     .orderBy('createTime', 'asc')
     .get();

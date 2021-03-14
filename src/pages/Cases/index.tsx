@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useModel } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Space, Table, Row, Col } from 'antd';
 import ProCard from '@ant-design/pro-card';
 import ProTable from '@ant-design/pro-table';
-import type { ProColumns } from '@ant-design/pro-table';
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import {
   Cases,
   fetchApprovingCases,
   fetchApprovedCases,
+  oneClickAgree,
+  agreeCase,
+  rejectCase,
 } from '@/services/cases';
 
 // 审批列表，有权限的人才能看到。待沟通
@@ -19,6 +23,8 @@ export default function CasesPage() {
   }
 
   const [tab, setTab] = useState<CaseListType>(CaseListType.undone);
+  const { initialState } = useModel('@@initialState');
+  const userInfo = initialState?.currentUser;
 
   const approvingColumns: ProColumns<Cases>[] = [
     {
@@ -144,26 +150,27 @@ export default function CasesPage() {
     },
     {
       title: '审批状态',
-      dataIndex: 'approveState',
-      ellipsis: true,
+      dataIndex: 'status',
       align: 'center',
       width: 160,
     },
     {
       title: '审批人',
-      dataIndex: 'approveMan',
-      ellipsis: true,
+      dataIndex: 'approverId',
       align: 'center',
       width: 160,
     },
     {
       title: '审批时间',
       dataIndex: 'approveTime',
-      ellipsis: true,
       align: 'center',
       width: 160,
+      valueType: 'date',
     },
   ];
+
+  // 有些函数需要手动刷新表格，所以建立一个表格的 ref 提供手动操作
+  const ref = useRef<ActionType>();
 
   return (
     <div>
@@ -180,6 +187,8 @@ export default function CasesPage() {
           <ProCard.TabPane key={CaseListType.undone} tab="待审批案件">
             <ProTable<Cases>
               columns={approvingColumns}
+              // actionRef={(e) => test(e)}
+              actionRef={ref}
               rowSelection={{
                 // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
                 // 注释该行则默认不显示下拉选项
@@ -196,11 +205,22 @@ export default function CasesPage() {
                   </span>
                 </Space>
               )}
-              tableAlertOptionRender={() => {
+              tableAlertOptionRender={({ selectedRowKeys }) => {
                 return (
                   <Space size={16}>
-                    <a>批量同意</a>
-                    <a>批量拒绝</a>
+                    <Button
+                      onClick={() =>
+                        oneClickAgree(
+                          selectedRowKeys as string[],
+                          ref as React.MutableRefObject<ActionType>,
+                          userInfo?.uid as string,
+                        )
+                      }
+                      type="link"
+                    >
+                      都同意
+                    </Button>
+                    <Button type="link">都不同意</Button>
                   </Space>
                 );
               }}
@@ -209,11 +229,6 @@ export default function CasesPage() {
               search={false}
               rowKey={(e) => e._id ?? 'key'}
               headerTitle="待审批案件"
-              toolBarRender={() => [
-                <Button type="primary" key="show">
-                  一键通过审批
-                </Button>,
-              ]}
             />
           </ProCard.TabPane>
           <ProCard.TabPane key={CaseListType.done} tab="已审批案件">

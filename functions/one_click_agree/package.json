@@ -1,0 +1,8 @@
+{
+    "name": "one_click_agree",
+    "version": "1.0.0",
+    "main": "index.js",
+    "dependencies": {
+        "@cloudbase/node-sdk": "^2.5.0"
+    }
+}
