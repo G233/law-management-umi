@@ -4,15 +4,15 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Space, Table, Row, Col } from 'antd';
 import ProCard from '@ant-design/pro-card';
 import ProTable from '@ant-design/pro-table';
+import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import {
   Cases,
   fetchApprovingCases,
   fetchApprovedCases,
-  oneClickAgree,
-  agreeCase,
-  rejectCase,
+  oneClickApprove,
+  CaseStatus,
 } from '@/services/cases';
 
 // 审批列表，有权限的人才能看到。待沟通
@@ -23,6 +23,9 @@ export default function CasesPage() {
   }
 
   const [tab, setTab] = useState<CaseListType>(CaseListType.undone);
+  const [isShowModal, setIsShowModal] = useState(false);
+  const [selectedCasesId, setSelectedCasesId] = useState<(string | number)[]>();
+
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
 
@@ -82,7 +85,7 @@ export default function CasesPage() {
       valueType: 'option',
       fixed: 'right',
       align: 'center',
-      render: () => [
+      render: (e) => [
         //  这个 row 不加 key 会报错
         <Row key="key">
           <Col span={12}>
@@ -149,11 +152,18 @@ export default function CasesPage() {
       width: 160,
     },
     {
-      title: '审批状态',
+      title: '审批结果',
       dataIndex: 'status',
       align: 'center',
       width: 160,
       renderText: (e) => (e === 0 ? '同意' : '不同意'),
+    },
+    {
+      title: '审批意见',
+      dataIndex: 'approveMsg',
+      ellipsis: true,
+      align: 'center',
+      width: 160,
     },
     {
       title: '审批人',
@@ -212,17 +222,26 @@ export default function CasesPage() {
                   <Space size={16}>
                     <Button
                       onClick={() =>
-                        oneClickAgree(
+                        oneClickApprove(
                           selectedRowKeys as string[],
                           ref as React.MutableRefObject<ActionType>,
                           userInfo?.uid as string,
+                          CaseStatus.AGREE,
                         )
                       }
                       type="link"
                     >
                       都同意
                     </Button>
-                    <Button type="link">都不同意</Button>
+                    <Button
+                      type="link"
+                      onClick={() => {
+                        setIsShowModal(true);
+                        setSelectedCasesId(selectedRowKeys);
+                      }}
+                    >
+                      都不同意
+                    </Button>
                   </Space>
                 );
               }}
@@ -246,6 +265,29 @@ export default function CasesPage() {
             />
           </ProCard.TabPane>
         </ProCard>
+
+        <ModalForm<{
+          msg: string;
+        }>
+          title="审批意见"
+          visible={isShowModal}
+          modalProps={{
+            onCancel: () => setIsShowModal(false),
+          }}
+          onFinish={async (values) => {
+            await oneClickApprove(
+              selectedCasesId as string[],
+              ref as React.MutableRefObject<ActionType>,
+              userInfo?.uid as string,
+              CaseStatus.REJECT,
+              values.msg,
+            );
+            setIsShowModal(false);
+            return true;
+          }}
+        >
+          <ProFormTextArea name="msg" />
+        </ModalForm>
       </PageContainer>
     </div>
   );

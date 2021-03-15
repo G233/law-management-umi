@@ -1,5 +1,5 @@
 {
-    "name": "one_click_agree",
+    "name": "one_click_approve",
     "version": "1.0.0",
     "main": "index.js",
     "dependencies": {
