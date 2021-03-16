@@ -63,7 +63,8 @@ export const fetchApprovingCases = async () => {
   return { data: [], success: true };
 };
 
-// 获取 一个月内审批案件
+// 获取 一个月内审批过的案件
+// 同样限制为 100 条
 export const fetchApprovedCases = async () => {
   const res = await cloudApp
     .callFunction({
@@ -82,11 +83,32 @@ export const fetchApprovedCases = async () => {
   return { data: [], success: true };
 };
 
+export const fetchMyCases = async (openId: string) => {
+  console.log(openId);
+  const res = await cloudApp
+    .callFunction({
+      name: 'get_my_cases',
+      data: { openId },
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  if (res) {
+    console.log(res);
+    return {
+      data: res?.result,
+      success: true,
+    };
+  }
+  message.error('审批列表获取失败，请稍后重试');
+  return { data: [], success: true };
+};
+
 // 新建案件
 // export const createCase = async (value: Cases) =>
 //   dbCase.add(await formatCase(value));
 
-// 测试用 mock 数据
+// 新建一百个案件，测试用 mock 数据
 export const createCase = async (value: Cases) => {
   for (let i = 0; i < 100; i++) {
     dbCase.add(await formatCase(value));

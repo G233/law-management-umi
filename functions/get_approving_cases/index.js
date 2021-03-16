@@ -1,3 +1,5 @@
+// TODO： 是否可以把查询条件当作条件查询，构建一个通用的查询函数
+
 const cloudbase = require('@cloudbase/node-sdk');
 
 const CaseStatus = {

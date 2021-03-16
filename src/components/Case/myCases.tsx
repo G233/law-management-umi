@@ -1,9 +1,13 @@
 import ProTable from '@ant-design/pro-table';
+import { useModel } from 'umi';
+
 import type { ProColumns } from '@ant-design/pro-table';
 
-import { Cases, fetchApprovedCases } from '@/services/cases';
+import { Cases, fetchMyCases } from '@/services/cases';
 
 export default function approvedCases() {
+  const { initialState } = useModel('@@initialState');
+  const openId = initialState?.currentUser?.uid;
   const approvedColumns: ProColumns<Cases>[] = [
     {
       title: '案件名称',
@@ -86,7 +90,7 @@ export default function approvedCases() {
   return (
     <ProTable<Cases>
       columns={approvedColumns}
-      request={fetchApprovedCases}
+      request={() => fetchMyCases(openId as string)}
       scroll={{ x: 1300 }}
       options={false}
       search={false}
