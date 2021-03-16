@@ -4,6 +4,8 @@ export default {
   },
   // 使用 esbuild 进行构建
   esbuild: {},
+  // 生产环境下生成静态话站点
+  exportStatic: {},
   // 图标可以查阅：https://ant.design/components/icon-cn/
   routes: [
     {
