@@ -3,11 +3,12 @@ import { useModel } from 'umi';
 
 import type { ProColumns } from '@ant-design/pro-table';
 
-import { Cases, fetchMyCases } from '@/services/cases';
+import { Cases, fetchMyCases, CaseStatusText } from '@/services/cases';
 
 export default function approvedCases() {
   const { initialState } = useModel('@@initialState');
   const openId = initialState?.currentUser?.uid;
+
   const approvedColumns: ProColumns<Cases>[] = [
     {
       title: '案件名称',
@@ -63,7 +64,7 @@ export default function approvedCases() {
       dataIndex: 'status',
       align: 'center',
       width: 160,
-      renderText: (e) => (e === 0 ? '同意' : '不同意'),
+      renderText: (e: 0 | 1 | 2) => CaseStatusText[e],
     },
     {
       title: '审批意见',

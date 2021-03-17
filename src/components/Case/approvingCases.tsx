@@ -68,6 +68,13 @@ export default function approvingCases() {
       width: 160,
     },
     {
+      title: '提交人',
+      dataIndex: 'commiterName',
+      ellipsis: true,
+      align: 'center',
+      width: 160,
+    },
+    {
       title: '操作',
       width: 100,
       valueType: 'option',

@@ -4,7 +4,7 @@ const app = cloudbase.init({
   env: 'atom-2gbnzw0gde4242dc',
 });
 const db = app.database();
-const _ = db.command;
+const { gt, eq, or } = db.command.aggregate;
 
 const CaseStatus = {
   AGREE: 0,
@@ -19,24 +19,32 @@ let oldDate = new Date(now.setDate(now.getDate() - 30));
 exports.main = async () => {
   const res = await db
     .collection('Cases')
-    .where({
-      status: _.or(_.eq(CaseStatus.REJECT), _.eq(CaseStatus.AGREE)),
-      approveTime: _.gt(oldDate),
+    .aggregate()
+    // 不加 limit 默认返回 20 个，需要注意
+    .limit(100)
+    .match({
+      status: eq(CaseStatus.REJECT),
+      approveTime: gt(oldDate),
     })
-    .orderBy('createTime', 'asc')
-    .get();
-
-  // TODO: 优化为通过聚合
-  await Promise.all(
-    res.data.map(async (e) => {
-      const res = await db
-        .collection('User')
-        .where({
-          _openid: e.approverId,
-        })
-        .get();
-      e.approverName = res.data[0].name;
-    }),
-  );
-  return res.data;
+    .sort({
+      createTime: -1,
+    })
+    // 获取案件提交人的名字
+    .lookup({
+      from: 'User',
+      localField: '_openid',
+      foreignField: '_openid',
+      as: 'approver',
+    })
+    .addFields({
+      approverName: '$approver.name',
+    })
+    .project({
+      approver: 0,
+    })
+    .end();
+  return res.data.map((e) => {
+    e.approverName = e.approverName[0];
+    return e;
+  });
 };

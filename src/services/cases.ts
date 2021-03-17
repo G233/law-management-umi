@@ -10,6 +10,13 @@ export enum CaseStatus {
   'WAITING' = 1,
   'REJECT' = 2,
 }
+
+export const CaseStatusText = {
+  0: '审批通过',
+  1: '等待审批中',
+  2: '拒绝审批',
+};
+
 // 案件属性
 export interface Cases {
   // 案件名
@@ -54,8 +61,9 @@ export const fetchApprovingCases = async () => {
       console.log(error);
     });
   if (res) {
+    console.log(res);
     return {
-      data: res?.result?.data,
+      data: res?.result,
       success: true,
     };
   }
