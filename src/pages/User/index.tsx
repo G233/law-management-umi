@@ -1,9 +1,14 @@
-import { Button, message, Space } from 'antd';
+import { Button, Space } from 'antd';
 import { useModel } from 'umi';
-import { auth, db } from '@/cloud_function/index';
 import ProForm, { ProFormText } from '@ant-design/pro-form';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
+import {
+  resetEmail,
+  resetPassword,
+  reSetUserInfo,
+  userInfoProp,
+} from '@/services/user';
 import styles from './index.less';
 
 // 自定义用户模型
@@ -13,64 +18,6 @@ export default function IndexPage() {
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
   const email = userInfo?.email;
-  const collection = db.collection('User');
-
-  interface emailProp {
-    newEmail: string;
-  }
-
-  interface userInfoProp {
-    name: string;
-    phone: string;
-  }
-  // TODO: 逻辑操作统一放到 server 层
-  // 更新用户个人信息
-  // TODO：可以考虑做一个中间层，统一添加操作反馈
-  // TODO: 使用 useEffct 避免重复刷新
-  const setUserInfo = async (data: userInfoProp) => {
-    console.log('111');
-
-    const User = await collection
-      .where({
-        _openid: userInfo?.uid,
-      })
-      .get();
-
-    // 如果用户已经设置过个人信息了，则更新信息
-    if (User.data[0]) {
-      const docId: string = User.data[0]._id;
-      await collection.doc(docId).update(data);
-    } else {
-      await collection.add(data);
-    }
-
-    // collection.doc(User.)
-    // const res = await collection.add(data);
-    message.success('更新个人信息成功！');
-  };
-  // 重置密码
-  const handleChangePassword = async () => {
-    return auth.sendPasswordResetEmail(userInfo?.email as string).then(() => {
-      message.success('重置密码邮件发送成功，请注意查收');
-    });
-  };
-
-  // 重置邮箱
-  const handleChangeEmail = async ({ newEmail }: emailProp) => {
-    console.log(newEmail, email);
-    if (newEmail === email) {
-      message.warning('请输入新邮箱进行修改');
-      return;
-    }
-    return auth.currentUser
-      ?.updateEmail(newEmail)
-      .then(() => {
-        message.success('确认邮件已发送到新邮箱，请注意查收');
-      })
-      .catch((err) => {
-        message.error('更改邮箱失败，请稍后再试');
-      });
-  };
 
   return (
     <PageContainer>
@@ -89,7 +36,10 @@ export default function IndexPage() {
             },
           }}
           onFinish={async (values) => {
-            await setUserInfo(values as userInfoProp);
+            await reSetUserInfo(
+              values as userInfoProp,
+              userInfo?.uid as string,
+            );
           }}
         >
           <ProForm.Group>
@@ -139,7 +89,7 @@ export default function IndexPage() {
             },
           }}
           onFinish={async (values) => {
-            await handleChangeEmail(values as emailProp);
+            await resetEmail(values.newEmail, email as string);
           }}
         >
           <ProForm.Group>
@@ -168,7 +118,9 @@ export default function IndexPage() {
             className={styles.pwBtn}
             type="primary"
             size="large"
-            onClick={handleChangePassword}
+            onClick={() => {
+              resetPassword(userInfo?.email as string);
+            }}
           >
             重置密码
           </Button>

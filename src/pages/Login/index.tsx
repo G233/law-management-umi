@@ -1,12 +1,11 @@
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
-import { Alert, Space, message, Tabs } from 'antd';
+import { Alert, message, Button } from 'antd';
 import React, { useState } from 'react';
 import ProForm, { ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
 import { Link, history, useModel } from 'umi';
 import Footer from '@/components/Footer';
 
 import styles from './index.less';
-import { auth } from '@/cloud_function/index';
 import { signIn } from '@/services/user';
 
 const LoginMessage: React.FC<{
@@ -139,13 +138,7 @@ const Login: React.FC = () => {
               <ProFormCheckbox noStyle name="autoLogin">
                 自动登录
               </ProFormCheckbox>
-              <a
-                style={{
-                  float: 'right',
-                }}
-              >
-                忘记密码
-              </a>
+              <Button type="link">同意</Button>
             </div>
           </ProForm>
         </div>
