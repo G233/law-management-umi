@@ -103,7 +103,7 @@ const Login: React.FC = () => {
                 size: 'large',
                 prefix: <MailOutlined className={styles.prefixIcon} />,
               }}
-              placeholder="邮箱:"
+              placeholder="测试邮箱：liuxgu@qq.com"
               rules={[
                 {
                   required: true,
@@ -121,7 +121,7 @@ const Login: React.FC = () => {
                 size: 'large',
                 prefix: <LockOutlined className={styles.prefixIcon} />,
               }}
-              placeholder="密码:"
+              placeholder="测试密码：123456789liugu"
               rules={[
                 {
                   required: true,
