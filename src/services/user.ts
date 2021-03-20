@@ -13,6 +13,14 @@ export interface userInfoProp {
   phone: string;
 }
 
+export interface UserInfo {
+  name?: string;
+  phone?: string;
+  uid: string;
+  email: string;
+  avatarUrl?: string;
+}
+
 // 退出登陆
 export const signOut = async () => {
   return auth.signOut();
@@ -39,7 +47,7 @@ export const fetchUserInfo = async () => {
 };
 
 // 格式化用户信息
-const formatUserInfo = (currentUser: any, data: any): API.UserInfo => {
+const formatUserInfo = (currentUser: any, data: any): UserInfo => {
   return {
     name: data.name ?? null,
     phone: data.phone ?? null,
@@ -51,8 +59,6 @@ const formatUserInfo = (currentUser: any, data: any): API.UserInfo => {
 
 // 重设个人信息
 export const reSetUserInfo = async (data: userInfoProp, uid: string) => {
-  console.log('111');
-
   const User = await collection
     .where({
       _openid: uid,

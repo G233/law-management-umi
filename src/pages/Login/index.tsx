@@ -27,14 +27,20 @@ enum LoginStatus {
 }
 
 const Login: React.FC = () => {
+  interface LoginParams {
+    email?: string;
+    password?: string;
+    autoLogin?: boolean;
+  }
   const [submitting, setSubmitting] = useState(false);
   const [loginStatus, setLoginStatus] = useState<LoginStatus>(
     LoginStatus.LODING,
   );
   const { initialState, setInitialState, refresh } = useModel('@@initialState');
+
   // FIXME：是否保持登陆这一块流程还需要完善
   // 用户登陆函数
-  const handleSubmit = async (values: API.LoginParams) => {
+  const handleSubmit = async (values: LoginParams) => {
     setSubmitting(true);
 
     const userInfo = await signIn(
@@ -90,7 +96,7 @@ const Login: React.FC = () => {
               },
             }}
             onFinish={async (values) => {
-              handleSubmit(values as API.LoginParams);
+              handleSubmit(values as LoginParams);
             }}
           >
             {loginStatus === LoginStatus.ERROR && (
@@ -104,6 +110,7 @@ const Login: React.FC = () => {
                 prefix: <MailOutlined className={styles.prefixIcon} />,
               }}
               placeholder="测试邮箱：liuxgu@qq.com"
+              initialValue="liuxgu@qq.com"
               rules={[
                 {
                   required: true,
@@ -117,6 +124,7 @@ const Login: React.FC = () => {
             />
             <ProFormText.Password
               name="password"
+              initialValue="123456789liugu"
               fieldProps={{
                 size: 'large',
                 prefix: <LockOutlined className={styles.prefixIcon} />,
@@ -138,7 +146,7 @@ const Login: React.FC = () => {
               <ProFormCheckbox noStyle name="autoLogin">
                 自动登录
               </ProFormCheckbox>
-              <Button type="link">同意</Button>
+              {/* <Button type="link">同意</Button> */}
             </div>
           </ProForm>
         </div>
