@@ -1,14 +1,37 @@
+import React, { useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
-import { message } from 'antd';
-import ProForm, { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
-import { createCase, Cases } from '@/services/cases';
+import { Form, AutoComplete } from 'antd';
+import ProForm, {
+  ProFormText,
+  ProFormTextArea,
+  ProFormRadio,
+  ProFormUploadDragger,
+} from '@ant-design/pro-form';
+import { createCase, Cases, CaseType, CaseTypeText } from '@/services/cases';
 
 export default function CreateCasePage() {
-  const handleSubmit = async (value: Cases) => {
-    await createCase(value);
-    message.success('新建成功，等待审批中');
-  };
+  // TODO:从现有的案由获取案由列表
+  const caseCauseList = [
+    {
+      value: '民间借贷纠纷',
+    },
+    {
+      value: '离婚纠纷',
+    },
+    {
+      value: '阿姐姐啊叫啊叫',
+    },
+    {
+      value: '哇大大',
+    },
+    {
+      value: '阿我的娃大王的',
+    },
+    {
+      value: '哇大大我的',
+    },
+  ];
   const numReg = /^[0-9]*$/;
   return (
     <div>
@@ -16,86 +39,120 @@ export default function CreateCasePage() {
         <ProCard>
           <ProForm
             onFinish={async (values) => {
-              handleSubmit(values as Cases);
+              await createCase(values as Cases);
             }}
           >
-            <ProFormText
-              name="title"
-              label="案件名"
-              rules={[
-                {
-                  required: true,
-                  message: '请输入案件名',
-                },
-              ]}
-              placeholder="请输入案件名"
-              width="md"
-            />
-            {/* TODO: 输入数字的时候显示单位 */}
             <ProForm.Group>
-              <ProFormText
-                name="amount"
-                label="案件涉及金额"
-                placeholder="请输入案件涉及的金额大小"
-                width="md"
+              <Form.Item
                 rules={[
                   {
                     required: true,
-                    message: '请输入涉案金额',
-                  },
-                  {
-                    pattern: numReg,
-                    message: '请输入纯数字的金额',
+                    message: '请输入案由',
                   },
                 ]}
-              />
-              <ProFormText
-                name="toll"
-                label="预收费金额"
+                name="caseCause"
+                label="案由"
+              >
+                <AutoComplete
+                  options={caseCauseList}
+                  style={{ width: 200 }}
+                  filterOption
+                  placeholder="请输入案由"
+                />
+              </Form.Item>
+              <Form.Item
                 rules={[
                   {
                     required: true,
-                    message: '请输入收费金额',
-                  },
-                  {
-                    pattern: numReg,
-                    message: '请输入纯数字的金额',
+                    message: '请输入承办律师',
                   },
                 ]}
-                placeholder="请输入预计收费金额，大约为涉案金额的 3%"
-                width="md"
-              />
+                name="undertaker"
+                label="承办律师"
+              >
+                <AutoComplete
+                  options={caseCauseList}
+                  style={{ width: 200 }}
+                  filterOption
+                  placeholder="请输入承办律师"
+                />
+              </Form.Item>
             </ProForm.Group>
+
             <ProForm.Group>
               <ProFormText
                 name="litigant"
-                label="当事人（公司）"
-                placeholder="请输入当事人或公司名字"
+                label="当事人名称"
                 width="md"
+                placeholder="请输入当事人名字"
                 rules={[
                   {
                     required: true,
-                    message: '请输入当事人',
+                    message: '请输入当事人名称',
                   },
                 ]}
               />
               <ProFormText
-                name="Defendant"
-                label="被告人（公司）"
+                name="litigantPhone"
+                label="当事人联系方式"
+                placeholder="请输入当事人联系方式"
                 rules={[
                   {
                     required: true,
-                    message: '请输入被告人或公司名字',
+                    message: '请输入当事人联系方式',
+                  },
+                  {
+                    pattern: numReg,
+                    message: '请输入正确格式的手机号',
                   },
                 ]}
-                placeholder="请输入被告人或公司名字"
                 width="md"
               />
             </ProForm.Group>
             <ProFormTextArea
-              name="description"
-              label="案件描述"
-              placeholder="可以输入案件描述"
+              name="litigantSituation"
+              label="当事人基本情况"
+              placeholder="请输入当事人基本情况"
+            />
+            <ProFormTextArea
+              name="clientSituation"
+              label="委托人基本要求"
+              placeholder="请输入委托人基本要求"
+            />
+            <ProFormTextArea
+              name="caseSituation"
+              label="案件基本情况"
+              placeholder="请输入案件基本情况"
+            />
+            <ProFormTextArea
+              name="undertakerOpinion"
+              label="承办人基本意见"
+              placeholder="请输入承办人基本意见"
+            />
+            <ProFormRadio.Group
+              name="CaseType"
+              label="案件类别"
+              radioType="button"
+              options={[
+                {
+                  label: CaseTypeText[CaseType.Civil],
+                  value: CaseType.Civil,
+                },
+                {
+                  label: CaseTypeText[CaseType.Criminal],
+                  value: CaseType.Criminal,
+                },
+                {
+                  label: CaseTypeText[CaseType.Administrative],
+                  value: CaseType.Administrative,
+                },
+              ]}
+            />
+            {/* TODO:多文件上传 */}
+            <ProFormUploadDragger
+              label="附件"
+              name="annex"
+              action="upload.do"
             />
           </ProForm>
         </ProCard>

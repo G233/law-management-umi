@@ -6,16 +6,67 @@ import { db, cloudApp } from '@/cloud_function/index';
 // 原本类型定义都是写在 @/typing.d.ts 里面的，但是 没办法引用 CasesStatus 因为我不知道怎么把 enum 导出
 // 所以就拆出来写在这里了
 export enum CaseStatus {
-  'AGREE' = 0,
-  'WAITING' = 1,
-  'REJECT' = 2,
+  AGREE,
+  WAITING,
+  REJECT,
+}
+
+//  民事 / 刑事 / 行政
+export enum CaseType {
+  Civil,
+  Criminal,
+  Administrative,
 }
 
 export const CaseStatusText = {
-  0: '审批通过',
-  1: '等待审批中',
-  2: '拒绝审批',
+  [CaseStatus.AGREE]: '审批通过',
+  [CaseStatus.WAITING]: '等待审批中',
+  [CaseStatus.REJECT]: '拒绝审批',
 };
+
+export const CaseTypeText = {
+  [CaseType.Civil]: '民事案件',
+  [CaseType.Criminal]: '刑事案件',
+  [CaseType.Administrative]: '行政案件',
+};
+
+// 案件属性
+export interface Case {
+  // 案由：
+  //TODO: 是否有一个限定的范围？ 可以考虑从现有的数据库中取选项
+  caseCause: string;
+  // 当事人名称
+  litigant: string;
+  // 当事人联系方式
+  litigantPhone: string;
+  // 当事人基本情况
+  litigantSituation?: string;
+  // 委托人基本要求
+  clientSituation?: string;
+  // 案件基本情况
+  caseSituation?: string;
+  // 承办人基本意见
+  undertakerOpinion?: string;
+  // 立案时间
+  createTime: Date;
+  // 承办律师
+  undertaker: string;
+  // 案号
+  // TODO: 根据类型自动生成案号
+  caseId: string;
+  // 审批状态
+  approvestatus: CaseStatus;
+  // 审批意见
+  approveMsg: string;
+  // 审批人
+  approver: string;
+  // 审批时间
+  approverTime: Date;
+  // 案件类别
+  CaseType: CaseType;
+  // 附件
+  annex: string;
+}
 
 // 案件属性
 export interface Cases {
@@ -47,7 +98,6 @@ export interface Cases {
   _id?: string;
   _openid?: string;
 }
-
 const dbCase = db.collection('Cases');
 
 // 获取所有待审批案件
@@ -112,24 +162,28 @@ export const fetchMyCases = async (openId: string) => {
   return { data: [], success: true };
 };
 
-// 新建案件
-// export const createCase = async (value: Cases) =>
-//   dbCase.add(await formatCase(value));
-
-// 新建一百个案件，测试用 mock 数据
-export const createCase = async (value: Cases) => {
-  for (let i = 0; i < 100; i++) {
-    dbCase.add(await formatCase(value));
-  }
-};
-
 // 格式化案件，添加附加信息
-const formatCase = async (value: Cases) => {
+const formatCase = (value: Cases) => {
   value.createTime = new Date();
   value.status = CaseStatus.WAITING;
   console.log(value);
   return value;
 };
+
+// 新建审批
+export const createCase = async (value: Cases) => {
+  await dbCase.add(formatCase(value));
+  message.success('新建成功，等待审批中');
+};
+
+// 新建一百个案件，测试用 mock 数据
+// export const createCase = async (value: Cases) => {
+//   for (let i = 0; i < 100; i++) {
+//     dbCase.add(await formatCase(value));
+//   }
+//     message.success('新建成功，等待审批中');
+
+// };
 
 // 一键审批，只有拒绝审批需要填写审批意见
 export const oneClickApprove = async (
