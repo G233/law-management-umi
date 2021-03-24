@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import { Form, AutoComplete } from 'antd';
@@ -8,31 +8,27 @@ import ProForm, {
   ProFormRadio,
   ProFormUploadDragger,
 } from '@ant-design/pro-form';
-import { createCase, Cases, CaseType, CaseTypeText } from '@/services/cases';
+import {
+  createCase,
+  Cases,
+  CaseType,
+  CaseTypeText,
+  fetchCaseCauseList,
+} from '@/services/cases';
 
 export default function CreateCasePage() {
-  // TODO:从现有的案由获取案由列表
-  const caseCauseList = [
-    {
-      value: '民间借贷纠纷',
-    },
-    {
-      value: '离婚纠纷',
-    },
-    {
-      value: '阿姐姐啊叫啊叫',
-    },
-    {
-      value: '哇大大',
-    },
-    {
-      value: '阿我的娃大王的',
-    },
-    {
-      value: '哇大大我的',
-    },
-  ];
   const numReg = /^[0-9]*$/;
+
+  const [caseCauseList, setCaseCauseList] = useState([]);
+
+  // 获取案由自动完成的列表
+  const getCaseCauseList = async () =>
+    setCaseCauseList(await fetchCaseCauseList());
+
+  useEffect(() => {
+    getCaseCauseList();
+  }, []);
+
   return (
     <div>
       <PageContainer>

@@ -2,6 +2,7 @@ import { message } from 'antd';
 import { auth, db } from '@/cloud_function';
 
 const collection = db.collection('User');
+import { cloudWhere } from '@/services/until';
 
 export interface emailProp {
   newEmail: string;
@@ -35,12 +36,8 @@ export const signIn = async (email: string, password: string) => {
 export const fetchUserInfo = async () => {
   if (auth.hasLoginState()) {
     const currentUser = await auth.getCurrenUser();
-    const User = await collection
-      .where({
-        _openid: currentUser?.uid,
-      })
-      .get();
-    const userInfo = formatUserInfo(currentUser, User.data[0]);
+    const User = await cloudWhere('User', { _openid: currentUser?.uid });
+    const userInfo = formatUserInfo(currentUser, User[0]);
     return userInfo;
   }
   return null;
@@ -59,22 +56,15 @@ const formatUserInfo = (currentUser: any, data: any): UserInfo => {
 
 // 重设个人信息
 export const reSetUserInfo = async (data: userInfoProp, uid: string) => {
-  const User = await collection
-    .where({
-      _openid: uid,
-    })
-    .get();
+  const User = await cloudWhere('User', { _openid: uid });
 
   // 如果用户已经设置过个人信息了，则更新信息
-  if (User.data[0]) {
-    const docId: string = User.data[0]._id;
+  if (User[0]) {
+    const docId: string = User[0]._id;
     await collection.doc(docId).update(data);
   } else {
     await collection.add(data);
   }
-
-  // collection.doc(User.)
-  // const res = await collection.add(data);
   message.success('更新个人信息成功！');
 };
 

@@ -2,6 +2,8 @@ import { message } from 'antd';
 import type { ActionType } from '@ant-design/pro-table';
 
 import { db, cloudApp } from '@/cloud_function/index';
+import { cloudFunction, cloudWhere, cloudFIndById } from '@/services/until';
+import { CaseCauseId } from '@/services/const';
 
 // 原本类型定义都是写在 @/typing.d.ts 里面的，但是 没办法引用 CasesStatus 因为我不知道怎么把 enum 导出
 // 所以就拆出来写在这里了
@@ -98,27 +100,18 @@ export interface Cases {
   _id?: string;
   _openid?: string;
 }
+
 const dbCase = db.collection('Cases');
+const dbCache = db.collection('Cache');
 
 // 获取所有待审批案件
 // 默认为 100 条，需要手动去云函数中修改限制
 export const fetchApprovingCases = async () => {
-  const res = await cloudApp
-    .callFunction({
-      name: 'get_approving_cases',
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  if (res) {
-    console.log(res);
-    return {
-      data: res?.result,
-      success: true,
-    };
-  }
-  message.error('审批列表获取失败，请稍后重试');
-  return { data: [], success: true };
+  const res = await cloudFunction('get_approving_cases');
+  return {
+    data: res ?? [],
+    success: true,
+  };
 };
 
 // 获取 一个月内审批过的案件
@@ -141,6 +134,7 @@ export const fetchApprovedCases = async () => {
   return { data: [], success: true };
 };
 
+// 获取我的案件
 export const fetchMyCases = async (openId: string) => {
   console.log(openId);
   const res = await cloudApp
@@ -210,4 +204,12 @@ export const oneClickApprove = async (
     fn.current.reloadAndRest();
     message.success('审批成功');
   }
+};
+
+export const fetchCaseCauseList = async () => {
+  const res = await cloudFIndById('Cache', CaseCauseId);
+  debugger;
+  return res.caseCauseList.map((e) => {
+    return { value: e };
+  });
 };
