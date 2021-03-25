@@ -29,7 +29,7 @@ export default {
     },
     {
       path: '/login',
-      component: '@/pages/login/index',
+      component: '@/pages/Login/index',
       name: 'Welcome',
       layout: false,
       hideInMenu: true,
