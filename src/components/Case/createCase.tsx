@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import { Form, AutoComplete } from 'antd';
@@ -7,6 +7,7 @@ import ProForm, {
   ProFormTextArea,
   ProFormRadio,
   ProFormUploadDragger,
+  ProFormSelect,
 } from '@ant-design/pro-form';
 import {
   createCase,
@@ -14,19 +15,27 @@ import {
   CaseType,
   CaseTypeText,
   fetchCaseCauseList,
+  fetchLawList,
 } from '@/services/cases';
 
 export default function CreateCasePage() {
+  interface optionType {
+    value: string;
+    label?: string;
+  }
   const numReg = /^[0-9]*$/;
 
-  const [caseCauseList, setCaseCauseList] = useState([]);
+  const [caseCauseList, setCaseCauseList] = useState<optionType[]>();
+  const [lawList, setLawList] = useState<optionType[]>();
 
   // 获取案由自动完成的列表
-  const getCaseCauseList = async () =>
+  const initAutoData = async () => {
     setCaseCauseList(await fetchCaseCauseList());
+    setLawList(await fetchLawList());
+  };
 
   useEffect(() => {
-    getCaseCauseList();
+    initAutoData();
   }, []);
 
   return (
@@ -56,23 +65,14 @@ export default function CreateCasePage() {
                   placeholder="请输入案由"
                 />
               </Form.Item>
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入承办律师',
-                  },
-                ]}
+              <ProFormSelect
                 name="undertaker"
                 label="承办律师"
-              >
-                <AutoComplete
-                  options={caseCauseList}
-                  style={{ width: 200 }}
-                  filterOption
-                  placeholder="请输入承办律师"
-                />
-              </Form.Item>
+                request={fetchLawList}
+                placeholder="选择承办律师"
+                rules={[{ required: true, message: '请选择承办律师' }]}
+                showSearch={true}
+              />
             </ProForm.Group>
 
             <ProForm.Group>
@@ -109,26 +109,56 @@ export default function CreateCasePage() {
               name="litigantSituation"
               label="当事人基本情况"
               placeholder="请输入当事人基本情况"
+              rules={[
+                {
+                  required: true,
+                  message: '请选择承请输入当事人基本情况',
+                },
+              ]}
             />
             <ProFormTextArea
               name="clientSituation"
               label="委托人基本要求"
               placeholder="请输入委托人基本要求"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入委托人基本要求',
+                },
+              ]}
             />
             <ProFormTextArea
               name="caseSituation"
               label="案件基本情况"
               placeholder="请输入案件基本情况"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入案件基本情况',
+                },
+              ]}
             />
             <ProFormTextArea
               name="undertakerOpinion"
               label="承办人基本意见"
               placeholder="请输入承办人基本意见"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入承办人基本意见',
+                },
+              ]}
             />
             <ProFormRadio.Group
               name="CaseType"
               label="案件类别"
               radioType="button"
+              rules={[
+                {
+                  required: true,
+                  message: '请选择案件类别',
+                },
+              ]}
               options={[
                 {
                   label: CaseTypeText[CaseType.Civil],

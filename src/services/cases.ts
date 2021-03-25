@@ -1,8 +1,8 @@
 import { message } from 'antd';
 import type { ActionType } from '@ant-design/pro-table';
 
-import { db, cloudApp } from '@/cloud_function/index';
-import { cloudFunction, cloudWhere, cloudFIndById } from '@/services/until';
+import { db } from '@/cloud_function/index';
+import { cloudFunction, cloudFIndById } from '@/services/until';
 import { CaseCauseId } from '@/services/const';
 
 export enum CaseStatus {
@@ -100,6 +100,7 @@ export interface Cases {
 }
 
 const dbCase = db.collection('Cases');
+const dbUser = db.collection('User');
 
 /**
  * 获取所有待审批案件，默认为 100 条，需要手动去云函数中修改限制
@@ -141,7 +142,9 @@ const formatCase = (value: Cases) => {
  *  新建审批
  */
 export const createCase = async (value: Cases) => {
-  await dbCase.add(formatCase(value));
+  debugger;
+  console.log(value);
+  // await dbCase.add(formatCase(value));
   message.success('新建成功，等待审批中');
 };
 
@@ -188,4 +191,12 @@ export const fetchCaseCauseList = async () => {
   return res.caseCauseList.map((e: string) => {
     return { value: e };
   });
+};
+
+/**
+ * 获取所有律师，用于承办律师的自动完成
+ */
+export const fetchLawList = async () => {
+  const res = await dbUser.get();
+  return res.data.map((e: any) => ({ value: e._openid, label: e.name }));
 };
