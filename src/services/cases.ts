@@ -1,9 +1,12 @@
 import { message } from 'antd';
 import type { ActionType } from '@ant-design/pro-table';
 
-import { db } from '@/cloud_function/index';
+import { db, cloudApp } from '@/cloud_function/index';
 import { cloudFunction, cloudFIndById } from '@/services/until';
 import { CaseCauseId } from '@/services/const';
+
+// 云储存中储存案件附件的文件夹名
+const CasePath = 'caseAnnex';
 
 export enum CaseStatus {
   AGREE,
@@ -199,4 +202,32 @@ export const fetchCaseCauseList = async () => {
 export const fetchLawList = async () => {
   const res = await dbUser.get();
   return res.data.map((e: any) => ({ value: e._openid, label: e.name }));
+};
+
+/**
+ * 上传附件
+ */
+export const uploadFile = async (data: any) => {
+  const { file, onError, onProgress, onSuccess } = data;
+  console.log(data);
+  const res = await cloudApp
+    .uploadFile({
+      cloudPath: CasePath + file.name,
+      filePath: file,
+      onUploadProgress: (progressEvent: any) => {
+        console.log(progressEvent);
+        var percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total,
+        );
+        onProgress({ percent: percentCompleted }, file);
+      },
+    })
+    .catch(onError);
+  console.log(res);
+  onSuccess(res.fileID, file);
+  return {
+    abort() {
+      console.log('upload progress is aborted.');
+    },
+  };
 };

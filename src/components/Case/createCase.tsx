@@ -16,6 +16,7 @@ import {
   CaseTypeText,
   fetchCaseCauseList,
   fetchLawList,
+  uploadFile,
 } from '@/services/cases';
 
 export default function CreateCasePage() {
@@ -26,12 +27,10 @@ export default function CreateCasePage() {
   const numReg = /^[0-9]*$/;
 
   const [caseCauseList, setCaseCauseList] = useState<optionType[]>();
-  const [lawList, setLawList] = useState<optionType[]>();
 
   // 获取案由自动完成的列表
   const initAutoData = async () => {
     setCaseCauseList(await fetchCaseCauseList());
-    setLawList(await fetchLawList());
   };
 
   useEffect(() => {
@@ -178,7 +177,7 @@ export default function CreateCasePage() {
             <ProFormUploadDragger
               label="附件"
               name="annex"
-              action="upload.do"
+              fieldProps={{ customRequest: uploadFile }}
             />
           </ProForm>
         </ProCard>

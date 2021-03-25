@@ -22,12 +22,6 @@ export interface UserInfo {
   avatarUrl?: string;
 }
 
-avatarUrl: 'https://6174-atom-2gbnzw0gde4242dc-1257163508.tcb.qcloud.la/userAvatarUrl/39009225.jpeg?sign=3c45aa1eeb52ce879574dfe67e85534f&t=1614947208';
-name: '刘尚a';
-phone: '18974963705';
-_id: '79550af26041efc10874be9277d67f00';
-_openid: '3604702ffc8c4d0eb0a5b8ac15444e78';
-
 // 退出登陆
 export const signOut = async () => {
   return auth.signOut();
