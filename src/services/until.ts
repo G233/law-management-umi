@@ -37,11 +37,11 @@ export const cloudWhere = async (dbName: string, data: any) => {
  */
 export const cloudFIndById = async (dbName: string, docId: string) => {
   const res = await db
-    .collection('Cache')
-    .doc('28ee4e3e605adc2e0c514fe90a97ea26')
+    .collection(dbName)
+    .doc(docId)
     .get()
     .catch(() => showError());
   return res?.data[0];
 };
 
-export const showError = () => message.error('请求出错，请稍后重试或联系刘固');
+const showError = () => message.error('请求出错，请稍后重试或联系刘固');
