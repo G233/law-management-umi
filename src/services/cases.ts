@@ -36,7 +36,6 @@ export const CaseTypeText = {
 // 案件属性
 export interface Case {
   // 案由：
-  //TODO: 是否有一个限定的范围？ 可以考虑从现有的数据库中取选项
   caseCause: string;
   // 当事人名称
   litigant: string;
@@ -102,7 +101,6 @@ export interface Cases {
   _openid?: string;
 }
 
-const dbCase = db.collection('Cases');
 const dbUser = db.collection('User');
 
 /**
@@ -131,34 +129,12 @@ export const fetchMyCases = async (openId: string) => ({
 });
 
 /**
- *  格式化案件，添加附加信息
- * @param {Cases} value - 案件.
- */
-const formatCase = (value: Cases) => {
-  value.createTime = new Date();
-  value.status = CaseStatus.WAITING;
-  console.log(value);
-  return value;
-};
-
-/**
  *  新建审批
  */
-export const createCase = async (value: Cases) => {
-  debugger;
-  console.log(value);
-  // await dbCase.add(formatCase(value));
+export const createCase = async (value: Case) => {
+  await cloudFunction('create_case', value);
   message.success('新建成功，等待审批中');
 };
-
-// 新建一百个案件，测试用 mock 数据
-// export const createCase = async (value: Cases) => {
-//   for (let i = 0; i < 100; i++) {
-//     dbCase.add(await formatCase(value));
-//   }
-//     message.success('新建成功，等待审批中');
-
-// };
 
 /**
  *  一键审批
@@ -209,7 +185,6 @@ export const fetchLawList = async () => {
  */
 export const uploadFile = async (data: any) => {
   const { file, onError, onProgress, onSuccess } = data;
-  console.log(data);
   const res = await cloudApp
     .uploadFile({
       cloudPath: CasePath + file.name,
@@ -223,11 +198,19 @@ export const uploadFile = async (data: any) => {
       },
     })
     .catch(onError);
-  console.log(res);
-  onSuccess(res.fileID, file);
+  onSuccess(res?.fileID, file);
   return {
     abort() {
       console.log('upload progress is aborted.');
     },
   };
 };
+
+// 新建一百个案件，测试用 mock 数据
+// export const createCase = async (value: Cases) => {
+//   for (let i = 0; i < 100; i++) {
+//     dbCase.add(await formatCase(value));
+//   }
+//     message.success('新建成功，等待审批中');
+
+// };

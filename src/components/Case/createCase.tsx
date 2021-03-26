@@ -11,7 +11,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import {
   createCase,
-  Cases,
+  Case,
   CaseType,
   CaseTypeText,
   fetchCaseCauseList,
@@ -43,7 +43,7 @@ export default function CreateCasePage() {
         <ProCard>
           <ProForm
             onFinish={async (values) => {
-              await createCase(values as Cases);
+              await createCase(values as Case);
             }}
           >
             <ProForm.Group>
