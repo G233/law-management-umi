@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useModel } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import { Form, AutoComplete } from 'antd';
@@ -17,6 +18,7 @@ import {
   fetchCaseCauseList,
   fetchLawList,
   uploadFile,
+  downloadFile,
 } from '@/services/cases';
 
 export default function CreateCasePage() {
@@ -25,6 +27,8 @@ export default function CreateCasePage() {
     label?: string;
   }
   const numReg = /^[0-9]*$/;
+  const { initialState } = useModel('@@initialState');
+  const userInfo = initialState?.currentUser;
 
   const [caseCauseList, setCaseCauseList] = useState<optionType[]>();
 
@@ -36,6 +40,16 @@ export default function CreateCasePage() {
   useEffect(() => {
     initAutoData();
   }, []);
+
+  const fieldProps = {
+    customRequest: (data: any) => {
+      uploadFile(data, userInfo?.uid as string);
+    },
+    onDownload: downloadFile,
+    showUploadList: {
+      showDownloadIcon: true,
+    },
+  };
 
   return (
     <div>
@@ -177,7 +191,7 @@ export default function CreateCasePage() {
             <ProFormUploadDragger
               label="附件"
               name="annex"
-              fieldProps={{ customRequest: uploadFile }}
+              fieldProps={fieldProps}
             />
           </ProForm>
         </ProCard>

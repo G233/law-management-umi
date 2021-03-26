@@ -183,11 +183,11 @@ export const fetchLawList = async () => {
 /**
  * 上传附件
  */
-export const uploadFile = async (data: any) => {
+export const uploadFile = async (data: any, openId: string) => {
   const { file, onError, onProgress, onSuccess } = data;
   const res = await cloudApp
     .uploadFile({
-      cloudPath: CasePath + file.name,
+      cloudPath: `${CasePath}/${openId}/${file.name}`,
       filePath: file,
       onUploadProgress: (progressEvent: any) => {
         console.log(progressEvent);
@@ -204,6 +204,15 @@ export const uploadFile = async (data: any) => {
       console.log('upload progress is aborted.');
     },
   };
+};
+
+export const downloadFile = async (file: any) => {
+  await cloudApp
+    .downloadFile({
+      fileID: file.response,
+    })
+    .catch((e) => {});
+  message.success('文件开始下载了');
 };
 
 // 新建一百个案件，测试用 mock 数据
