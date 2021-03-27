@@ -2,11 +2,16 @@ import { message } from 'antd';
 import type { ActionType } from '@ant-design/pro-table';
 
 import { db, cloudApp } from '@/cloud_function/index';
-import { cloudFunction, cloudFIndById } from '@/services/until';
-import { CaseCauseId } from '@/services/const';
+import {
+  cloudFunction,
+  cloudFIndById,
+  cloudUpdateById,
+} from '@/services/until';
+import { CaseCauseId, CaseIdCacheId } from '@/services/const';
 
 // 云储存中储存案件附件的文件夹名
 const CasePath = 'caseAnnex';
+const _ = db.command;
 
 export enum CaseStatus {
   AGREE,
@@ -31,6 +36,12 @@ export const CaseTypeText = {
   [CaseType.Civil]: '民事案件',
   [CaseType.Criminal]: '刑事案件',
   [CaseType.Administrative]: '行政案件',
+};
+
+export const caseIdText = {
+  [CaseType.Civil]: '民代',
+  [CaseType.Criminal]: '刑辩',
+  [CaseType.Administrative]: '行代',
 };
 
 // 案件属性
@@ -68,6 +79,9 @@ export interface Case {
   CaseType: CaseType;
   // 附件
   annex: string;
+  // 向数据库插入数据的时候会自动添加
+  _id?: string;
+  _openid?: string;
 }
 
 // 案件属性
@@ -132,7 +146,7 @@ export const fetchMyCases = async (openId: string) => ({
  *  新建审批
  */
 export const createCase = async (value: Case) => {
-  await cloudFunction('create_case', value);
+  await cloudFunction('create_case', await generatedCaseId(value));
   message.success('新建成功，等待审批中');
 };
 
@@ -199,6 +213,7 @@ export const uploadFile = async (data: any, openId: string) => {
     })
     .catch(onError);
   onSuccess(res?.fileID, file);
+  message.success('附件上传成功');
   return {
     abort() {
       console.log('upload progress is aborted.');
@@ -206,13 +221,52 @@ export const uploadFile = async (data: any, openId: string) => {
   };
 };
 
+// 下载附件
 export const downloadFile = async (file: any) => {
   await cloudApp
     .downloadFile({
       fileID: file.response,
     })
     .catch((e) => {});
-  message.success('文件开始下载了');
+  message.success('附件开始下载');
+};
+
+// 自动生成案号
+// (2021）河清民代 1 号
+// (2021）河清行代 1 号
+// (2021）河清刑辩 1 号
+export const generatedCaseId = async (Case: Case) => {
+  // const year = new Date().getFullYear();
+  const year = 2022;
+  const res = await cloudFIndById('Cache', CaseIdCacheId);
+  let caseIdNum: number;
+  const iCaseType = Case.CaseType;
+  // TODO: 优化为事务
+  // 当年还没有案号数据，新建
+  if (!res[year]) {
+    debugger;
+    await cloudUpdateById('Cache', CaseIdCacheId, {
+      [year]: {
+        [CaseType.Civil]: iCaseType === CaseType.Civil ? 1 : 0,
+        [CaseType.Criminal]: iCaseType === CaseType.Criminal ? 1 : 0,
+        [CaseType.Administrative]:
+          iCaseType === CaseType.Administrative ? 1 : 0,
+      },
+    });
+    caseIdNum = 1;
+  } else {
+    debugger;
+    caseIdNum = res[year][Case.CaseType] + 1;
+    await cloudUpdateById('Cache', CaseIdCacheId, {
+      [year]: {
+        [iCaseType]: _.inc(1),
+      },
+    });
+  }
+
+  Case.caseId = `（${year}）河清${caseIdText[Case.CaseType]} ${caseIdNum} 号`;
+  debugger;
+  return Case;
 };
 
 // 新建一百个案件，测试用 mock 数据

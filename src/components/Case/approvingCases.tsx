@@ -6,7 +6,7 @@ import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import {
-  Cases,
+  Case,
   fetchApprovingCases,
   oneClickApprove,
   CaseStatus,
@@ -18,7 +18,7 @@ export default function approvingCases() {
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
 
-  const approvingColumns: ProColumns<Cases>[] = [
+  const approvingColumns: ProColumns<Case>[] = [
     {
       title: '案件名称',
       width: 90,
@@ -100,7 +100,7 @@ export default function approvingCases() {
 
   return (
     <>
-      <ProTable<Cases>
+      <ProTable<Case>
         columns={approvingColumns}
         // actionRef={(e) => test(e)}
         actionRef={ref}
