@@ -204,7 +204,6 @@ export const uploadFile = async (data: any, openId: string) => {
       cloudPath: `${CasePath}/${openId}/${file.name}`,
       filePath: file,
       onUploadProgress: (progressEvent: any) => {
-        console.log(progressEvent);
         var percentCompleted = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total,
         );
@@ -244,7 +243,6 @@ export const generatedCaseId = async (Case: Case) => {
   // TODO: 优化为事务
   // 当年还没有案号数据，新建
   if (!res[year]) {
-    debugger;
     await cloudUpdateById('Cache', CaseIdCacheId, {
       [year]: {
         [CaseType.Civil]: iCaseType === CaseType.Civil ? 1 : 0,
@@ -255,7 +253,6 @@ export const generatedCaseId = async (Case: Case) => {
     });
     caseIdNum = 1;
   } else {
-    debugger;
     caseIdNum = res[year][Case.CaseType] + 1;
     await cloudUpdateById('Cache', CaseIdCacheId, {
       [year]: {
@@ -265,7 +262,7 @@ export const generatedCaseId = async (Case: Case) => {
   }
 
   Case.caseId = `（${year}）河清${caseIdText[Case.CaseType]} ${caseIdNum} 号`;
-  debugger;
+
   return Case;
 };
 

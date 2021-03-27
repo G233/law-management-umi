@@ -70,7 +70,6 @@ export const reSetUserInfo = async (data: userInfoProp, uid: string) => {
 
 // 重置邮箱
 export const resetEmail = async (newEmail: string, oldEmail: string) => {
-  console.log(newEmail, oldEmail);
   if (newEmail === oldEmail) {
     message.warning('请输入新邮箱进行修改');
     return;

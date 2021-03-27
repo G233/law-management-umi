@@ -46,7 +46,7 @@ export const cloudFIndById = async (dbName: string, docId: string) => {
 };
 
 /**
- * 根据文档 id 更新， 使用 update 进行更新
+ * 根据文档 id 更新， 使用 set 进行替换
  * @param {string} dbName - 集合的名字.
  * @param {string} docId - 文档 id.
  * @param {Object} data - 需要更新的数据.
@@ -61,11 +61,10 @@ export const cloudSetById = async (
     .doc(docId)
     .set(data)
     .catch(() => showError());
-  console.log(res);
   return res;
 };
 /**
- * 根据文档 id 更新,使用 set 进行替换
+ * 根据文档 id 更新,使用 update 进行更新
  * @param {string} dbName - 集合的名字.
  * @param {string} docId - 文档 id.
  * @param {Object} data - 需要更新的数据.
@@ -80,7 +79,6 @@ export const cloudUpdateById = async (
     .doc(docId)
     .update(data)
     .catch(() => showError());
-  console.log(res);
   return res;
 };
 
