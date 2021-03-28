@@ -20,56 +20,40 @@ export default function approvingCases() {
 
   const approvingColumns: ProColumns<Case>[] = [
     {
-      title: '案件名称',
-      width: 90,
-      dataIndex: 'title', // 列数据在数据项中对应的路径，支持通过数组查询嵌套路径，设置了这个值就无需 key
+      title: '案由',
+      width: 80,
+      dataIndex: 'caseCause', // 列数据在数据项中对应的路径，支持通过数组查询嵌套路径，设置了这个值就无需 key
       fixed: 'left',
     },
     {
-      title: '涉案金额',
-      width: 120,
-      dataIndex: 'amount',
-      align: 'center',
-      search: false,
-      valueType: 'money',
-    },
-    {
-      title: '收费',
-      width: 120,
-      align: 'center',
-      dataIndex: 'toll',
-      valueType: 'money',
-    },
-    {
-      title: '当事人',
-      dataIndex: 'litigant',
-      width: 120,
-      align: 'center',
-    },
-    {
-      title: '被告人',
-      dataIndex: 'Defendant',
+      title: '当事人名称',
       width: 80,
+      dataIndex: 'litigant',
       align: 'center',
     },
-
     {
-      title: '创建时间',
-      width: 140,
+      title: '承办律师',
+      width: 60,
+      align: 'center',
+      dataIndex: 'undertakerName',
+    },
+    {
+      title: '承办人基本意见',
+      dataIndex: 'undertakerOpinion',
+      ellipsis: true,
+      width: 120,
+      align: 'center',
+    },
+    {
+      title: '立案时间',
+      width: 100,
       dataIndex: 'createTime',
       align: 'center',
       valueType: 'date',
     },
     {
-      title: '案件描述',
-      dataIndex: 'description',
-      ellipsis: true,
-      align: 'center',
-      width: 160,
-    },
-    {
-      title: '提交人',
-      dataIndex: 'commiterName',
+      title: '案件基本情况',
+      dataIndex: 'caseSituation',
       ellipsis: true,
       align: 'center',
       width: 160,
@@ -81,17 +65,23 @@ export default function approvingCases() {
       fixed: 'right',
       align: 'center',
       render: (e) => [
-        //  这个 row 不加 key 会报错
-        <Row key="key">
-          <Col span={12}>
-            <Button type="link">同意</Button>
-          </Col>
-          <Col span={12}>
-            <Button type="link" danger>
-              拒绝
-            </Button>
-          </Col>
-        </Row>,
+        <div key="action">
+          <Row justify="center">
+            <Col span={10}>
+              <Button type="link">同意</Button>
+            </Col>
+            <Col span={10}>
+              <Button type="link" danger>
+                拒绝
+              </Button>
+            </Col>
+          </Row>
+          <Row justify="center">
+            <Col>
+              <Button type="text">查看详情</Button>
+            </Col>
+          </Row>
+        </div>,
       ],
     },
   ];

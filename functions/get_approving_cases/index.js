@@ -35,8 +35,16 @@ exports.main = async () => {
       foreignField: '_openid',
       as: 'commiter',
     })
+    // 获取承办律师的名字
+    .lookup({
+      from: 'User',
+      localField: 'undertaker',
+      foreignField: '_openid',
+      as: 'undertakerName',
+    })
     .addFields({
       commiterName: '$commiter.name',
+      undertakerName: '$undertakerName.name',
     })
     .project({
       commiter: 0,

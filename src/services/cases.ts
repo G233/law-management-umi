@@ -58,12 +58,13 @@ export interface Case {
   clientSituation?: string;
   // 案件基本情况
   caseSituation?: string;
+  // 承办律师
+  undertaker: string;
   // 承办人基本意见
   undertakerOpinion?: string;
   // 立案时间
   createTime: Date;
-  // 承办律师
-  undertaker: string;
+
   // 案号
   // TODO: 根据类型自动生成案号
   caseId: string;
