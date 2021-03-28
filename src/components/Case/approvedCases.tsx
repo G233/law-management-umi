@@ -1,58 +1,55 @@
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
 
-import { Cases, fetchApprovedCases } from '@/services/cases';
+import { Case, fetchApprovedCases } from '@/services/cases';
 
 export default function approvedCases() {
-  const approvedColumns: ProColumns<Cases>[] = [
+  const approvedColumns: ProColumns<Case>[] = [
     {
-      title: '案件名称',
-      width: 90,
-      dataIndex: 'title', // 列数据在数据项中对应的路径，支持通过数组查询嵌套路径，设置了这个值就无需 key
+      title: '案由',
+      width: 80,
+      dataIndex: 'caseCause', // 列数据在数据项中对应的路径，支持通过数组查询嵌套路径，设置了这个值就无需 key
       fixed: 'left',
     },
     {
-      title: '涉案金额',
-      width: 120,
-      dataIndex: 'amount',
-      align: 'center',
-      search: false,
-      valueType: 'money',
-      // TODO: 排序 sorter: (a, b) => a.containers - b.containers,
-    },
-    {
-      title: '收费',
-      width: 120,
-      align: 'center',
-      dataIndex: 'toll',
-      valueType: 'money',
-    },
-    {
-      title: '当事人',
-      dataIndex: 'litigant',
-      width: 120,
-      align: 'center',
-    },
-    {
-      title: '被告人',
-      dataIndex: 'Defendant',
+      title: '当事人名称',
       width: 80,
+      dataIndex: 'litigant',
       align: 'center',
     },
-
     {
-      title: '创建时间',
-      width: 140,
+      title: '承办律师',
+      width: 60,
+      align: 'center',
+      dataIndex: 'undertakerName',
+    },
+    {
+      title: '承办人基本意见',
+      dataIndex: 'undertakerOpinion',
+      ellipsis: true,
+      width: 120,
+      align: 'center',
+    },
+    {
+      title: '立案时间',
+      width: 100,
       dataIndex: 'createTime',
       align: 'center',
       valueType: 'date',
     },
     {
-      title: '案件描述',
-      dataIndex: 'description',
+      title: '案件基本情况',
+      dataIndex: 'caseSituation',
       ellipsis: true,
       align: 'center',
       width: 160,
+    },
+    {
+      title: '案号',
+      dataIndex: 'caseId',
+      ellipsis: true,
+      align: 'center',
+      width: 130,
     },
     {
       title: '审批结果',
@@ -84,7 +81,7 @@ export default function approvedCases() {
   ];
 
   return (
-    <ProTable<Cases>
+    <ProTable<Case>
       columns={approvedColumns}
       request={fetchApprovedCases}
       scroll={{ x: 1300 }}

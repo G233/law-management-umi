@@ -14,6 +14,8 @@ export const cloudFunction = async (name: string, data?: any) => {
       data: data,
     })
     .catch(() => showError());
+  console.log(`调用云函数: ${name} 返回数据`);
+  console.log('🚀 ~ file: until.ts ~ line 17 ~ cloudFunction ~ res', res);
   return res?.result;
 };
 

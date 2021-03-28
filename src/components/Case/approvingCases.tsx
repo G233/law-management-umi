@@ -59,6 +59,13 @@ export default function approvingCases() {
       width: 160,
     },
     {
+      title: '案号',
+      dataIndex: 'caseId',
+      ellipsis: true,
+      align: 'center',
+      width: 160,
+    },
+    {
       title: '操作',
       width: 100,
       valueType: 'option',

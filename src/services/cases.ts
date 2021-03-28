@@ -66,7 +66,6 @@ export interface Case {
   createTime: Date;
 
   // 案号
-  // TODO: 根据类型自动生成案号
   caseId: string;
   // 审批状态
   approvestatus: CaseStatus;
@@ -236,8 +235,7 @@ export const downloadFile = async (file: any) => {
 // (2021）河清行代 1 号
 // (2021）河清刑辩 1 号
 export const generatedCaseId = async (Case: Case) => {
-  // const year = new Date().getFullYear();
-  const year = 2022;
+  const year = new Date().getFullYear();
   const res = await cloudFIndById('Cache', CaseIdCacheId);
   let caseIdNum: number;
   const iCaseType = Case.CaseType;

@@ -28,30 +28,16 @@ exports.main = async () => {
     .sort({
       createTime: -1,
     })
-    // 获取案件提交人的名字
-    .lookup({
-      from: 'User',
-      localField: '_openid',
-      foreignField: '_openid',
-      as: 'commiter',
-    })
     // 获取承办律师的名字
     .lookup({
       from: 'User',
       localField: 'undertaker',
       foreignField: '_openid',
-      as: 'undertakerName',
+      as: 'undertaker',
     })
     .addFields({
-      commiterName: '$commiter.name',
-      undertakerName: '$undertakerName.name',
-    })
-    .project({
-      commiter: 0,
+      undertakerName: '$undertaker.name',
     })
     .end();
-  return res.data.map((e) => {
-    e.commiterName = e.commiterName[0];
-    return e;
-  });
+  return res.data;
 };

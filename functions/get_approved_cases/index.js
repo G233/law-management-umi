@@ -4,7 +4,7 @@ const app = cloudbase.init({
   env: 'atom-2gbnzw0gde4242dc',
 });
 const db = app.database();
-const { gt, eq, or } = db.command.aggregate;
+const { gt, eq, or, neq } = db.command.aggregate;
 
 const CaseStatus = {
   AGREE: 0,
@@ -23,28 +23,33 @@ exports.main = async () => {
     // 不加 limit 默认返回 20 个，需要注意
     .limit(100)
     .match({
-      status: eq(CaseStatus.REJECT),
+      status: neq(CaseStatus.WAITING),
       approveTime: gt(oldDate),
     })
     .sort({
       createTime: -1,
     })
-    // 获取案件提交人的名字
+    // 获取审批律师的名字
     .lookup({
       from: 'User',
-      localField: '_openid',
+      localField: 'approverId',
       foreignField: '_openid',
       as: 'approver',
     })
+    // 获取承办律师的名字
+    .lookup({
+      from: 'User',
+      localField: 'undertaker',
+      foreignField: '_openid',
+      as: 'undertaker',
+    })
     .addFields({
+      undertakerName: '$undertaker.name',
       approverName: '$approver.name',
     })
     .project({
       approver: 0,
     })
     .end();
-  return res.data.map((e) => {
-    e.approverName = e.approverName[0];
-    return e;
-  });
+  return res.data;
 };

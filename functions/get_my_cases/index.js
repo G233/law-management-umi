@@ -16,7 +16,7 @@ exports.main = async ({ openId }) => {
     .aggregate()
     .limit(100)
     .match({
-      _openid: openId,
+      undertaker: openId,
     })
     .sort({
       createTime: -1,
@@ -35,8 +35,5 @@ exports.main = async ({ openId }) => {
       approver: 0,
     })
     .end();
-  return res.data.map((e) => {
-    e.approverName = e.approverName[0];
-    return e;
-  });
+  return res.data;
 };
