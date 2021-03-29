@@ -7,17 +7,23 @@ export default {
   exportStatic: {},
   // 图标可以查阅：https://ant.design/components/icon-cn/
   routes: [
-    { exact: true, path: '/', redirect: '/CaseList' },
+    { exact: true, path: '/', redirect: '/Cases' },
     {
-      path: '/Cases',
-      component: '@/pages/Cases/index',
-      name: '案件列表',
+      path: '/CaseApprove',
+      component: '@/pages/CaseApprove/index',
+      name: '案件审批',
       icon: 'SnippetsOutlined',
     },
     {
       path: '/CaseList',
       component: '@/pages/CaseList/index',
       name: '所有案件',
+      icon: 'SnippetsOutlined',
+    },
+    {
+      path: '/MyCases',
+      component: '@/pages/MyCases/index',
+      name: '我的案件',
       icon: 'SnippetsOutlined',
     },
     {
@@ -39,6 +45,7 @@ export default {
       layout: false,
       hideInMenu: true,
     },
+    { component: '@/pages/404' },
   ],
 
   layout: {
