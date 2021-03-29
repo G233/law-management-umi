@@ -2,17 +2,22 @@ export default {
   nodeModulesTransform: {
     type: 'none',
   },
-  // 使用 esbuild 进行构建
   esbuild: {},
-  // 生产环境下生成静态话站点
+  // 生产环境下生成静态化站点
   exportStatic: {},
   // 图标可以查阅：https://ant.design/components/icon-cn/
   routes: [
-    { exact: true, path: '/', redirect: '/Cases' },
+    { exact: true, path: '/', redirect: '/CaseList' },
     {
       path: '/Cases',
       component: '@/pages/Cases/index',
       name: '案件列表',
+      icon: 'SnippetsOutlined',
+    },
+    {
+      path: '/CaseList',
+      component: '@/pages/CaseList/index',
+      name: '所有案件',
       icon: 'SnippetsOutlined',
     },
     {

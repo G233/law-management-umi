@@ -64,9 +64,9 @@ export interface Case {
   undertakerOpinion?: string;
   // 立案时间
   createTime: Date;
-
   // 案号
   caseId: string;
+
   // 审批状态
   approvestatus: CaseStatus;
   // 审批意见
@@ -75,41 +75,12 @@ export interface Case {
   approver: string;
   // 审批时间
   approverTime: Date;
+
   // 案件类别
   CaseType: CaseType;
+
   // 附件
   annex: string;
-  // 向数据库插入数据的时候会自动添加
-  _id?: string;
-  _openid?: string;
-}
-
-// 案件属性
-export interface Cases {
-  // 案件名
-  title: string;
-  // 涉案金额
-  amount?: string;
-  // 发起时间
-  createTime: Date;
-  // 审批状态
-  status: CaseStatus;
-  // 收费
-  toll: string;
-  // 被告人
-  Defendant: string;
-  // 当事人
-  litigant: string;
-  // 案件描述
-  description: string;
-
-  // 审批人的 openid
-  approverId?: string;
-  // 审批通过时间
-  approveTime?: Date;
-  // 审批意见
-  approveMsg?: string;
-
   // 向数据库插入数据的时候会自动添加
   _id?: string;
   _openid?: string;
@@ -139,6 +110,15 @@ export const fetchApprovedCases = async () => ({
  */
 export const fetchMyCases = async (openId: string) => ({
   data: (await cloudFunction('get_my_cases', { openId })) ?? [],
+  success: true,
+});
+
+/**
+ *  获取所有案件
+ * @param {string} openId - 当前登陆用户的 openId.
+ */
+export const fetchCaseList = async (data?: any) => ({
+  data: (await cloudFunction('get_case_list', { data })) ?? [],
   success: true,
 });
 
@@ -266,7 +246,7 @@ export const generatedCaseId = async (Case: Case) => {
 };
 
 // 新建一百个案件，测试用 mock 数据
-// export const createCase = async (value: Cases) => {
+// export const createCase = async (value: Case) => {
 //   for (let i = 0; i < 100; i++) {
 //     dbCase.add(await formatCase(value));
 //   }
