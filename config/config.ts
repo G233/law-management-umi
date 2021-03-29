@@ -7,7 +7,7 @@ export default {
   exportStatic: {},
   // 图标可以查阅：https://ant.design/components/icon-cn/
   routes: [
-    { exact: true, path: '/', redirect: '/Cases' },
+    { exact: true, path: '/', redirect: '/CaseList' },
     {
       path: '/CaseApprove',
       component: '@/pages/CaseApprove/index',
