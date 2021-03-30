@@ -25,6 +25,7 @@
     "@ant-design/pro-layout": "^6.5.0",
     "@ant-design/pro-table": "^2.30.6",
     "@cloudbase/js-sdk": "^1.4.0",
+    "@cloudbase/node-sdk": "^2.5.0",
     "@umijs/preset-react": "1.x",
     "react-helmet-async": "^1.0.7",
     "umi": "^3.3.9"

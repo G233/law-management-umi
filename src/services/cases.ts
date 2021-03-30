@@ -97,13 +97,20 @@ export interface requestProp {
   openId?: string;
 }
 
-const dbUser = db.collection('User');
+const condition = {
+  // 获取三个月内审批过的案件
+  approvedCases: 'approvedCases',
+};
 
+const dbUser = db.collection('User');
 /**
- * 获取所有待审批案件，需要手动去云函数中修改限制
+ * 获取所有待审批案件
  */
 export const fetchApprovingCases = async (data: requestProp) => {
-  const res = await cloudFunction('get_approving_cases', data);
+  const res = await cloudFunction('get_case_list', {
+    ...data,
+    condition: { approveStatus: CaseStatus.WAITING },
+  });
 
   return {
     data: res.caseList ?? [],
@@ -116,8 +123,10 @@ export const fetchApprovingCases = async (data: requestProp) => {
  * 获取 一个月内审批过的案件
  */
 export const fetchApprovedCases = async (data: requestProp) => {
-  const res = await cloudFunction('get_approved_cases', data);
-
+  const res = await cloudFunction('get_case_list', {
+    ...data,
+    condition: condition.approvedCases,
+  });
   return {
     data: res.caseList ?? [],
     success: true,
@@ -127,11 +136,13 @@ export const fetchApprovedCases = async (data: requestProp) => {
 
 /**
  *  获取所有我的案件
- * @param {string} openId - 当前登陆用户的 openId.
  */
 
 export const fetchMyCases = async (data: requestProp) => {
-  const res = await cloudFunction('get_my_cases', data);
+  const res = await cloudFunction('get_case_list', {
+    ...data,
+    condition: { undertaker: data.openId },
+  });
 
   return {
     data: res.caseList ?? [],
@@ -144,8 +155,10 @@ export const fetchMyCases = async (data: requestProp) => {
  */
 
 export const fetchCaseList = async (data: requestProp) => {
-  const res = await cloudFunction('get_case_list', data);
-
+  const res = await cloudFunction('get_case_list', {
+    ...data,
+    condition: { approveStatus: CaseStatus.AGREE },
+  });
   return {
     data: res.caseList ?? [],
     success: true,

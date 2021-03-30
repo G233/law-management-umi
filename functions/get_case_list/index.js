@@ -1,25 +1,39 @@
 const cloudbase = require('@cloudbase/node-sdk');
 
-const CaseStatus = {
-  AGREE: 0,
-  WAITING: 1,
-  REJECT: 2,
-};
-// 获取所有的案件(带条件查询)
 const db = cloudbase
   .init({
     env: 'atom-2gbnzw0gde4242dc',
   })
   .database();
 
-exports.main = async ({ current, pageSize }) => {
+const CaseStatus = {
+  AGREE: 0,
+  WAITING: 1,
+  REJECT: 2,
+};
+
+const now = new Date();
+let oldDate = new Date(now.setDate(now.getDate() - 30));
+
+const { gt, eq, or, neq } = db.command.aggregate;
+
+// 一些特殊的查询条件
+const ConditionList = {
+  // 获取三个月内审批过的案件
+  approvedCases: {
+    approveStatus: neq(CaseStatus.WAITING),
+    approveTime: gt(oldDate),
+  },
+};
+
+exports.main = async ({ current, pageSize, condition }) => {
+  const conditionI =
+    typeof condition === 'string' ? ConditionList[condition] : condition;
   const res = await db
     .collection('Cases')
     // 不加 limit 默认返回 20 个，需要注意
-    .aggregate()
-    .match({
-      approveStatus: CaseStatus.AGREE,
-    })
+    .aggregate(conditionI)
+    .match(typeof condition === 'string' ? ConditionList[condition] : condition)
     .sort({
       createTime: -1,
     })
@@ -32,19 +46,26 @@ exports.main = async ({ current, pageSize }) => {
       foreignField: '_openid',
       as: 'undertaker',
     })
+    // 获取审批律师的名字
+    .lookup({
+      from: 'User',
+      localField: 'approverId',
+      foreignField: '_openid',
+      as: 'approver',
+    })
     .addFields({
       undertakerName: '$undertaker.name',
+      approverName: '$approver.name',
     })
     .project({
       undertaker: 0,
+      approver: 0,
     })
     .end();
   const resCount = await db
     .collection('Cases')
     .aggregate()
-    .match({
-      approveStatus: CaseStatus.AGREE,
-    })
+    .match(conditionI)
     .count('count')
     .end();
   return {
