@@ -9,17 +9,18 @@ export default {
   routes: [
     { exact: true, path: '/', redirect: '/CaseList' },
     {
-      path: '/CaseApprove',
-      component: '@/pages/CaseApprove/index',
-      name: '案件审批',
-      icon: 'SnippetsOutlined',
-    },
-    {
       path: '/CaseList',
       component: '@/pages/CaseList/index',
       name: '所有案件',
       icon: 'SnippetsOutlined',
     },
+    {
+      path: '/CaseApprove',
+      component: '@/pages/CaseApprove/index',
+      name: '案件审批',
+      icon: 'SnippetsOutlined',
+    },
+
     {
       path: '/MyCases',
       component: '@/pages/MyCases/index',

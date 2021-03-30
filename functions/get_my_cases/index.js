@@ -9,18 +9,19 @@ const db = cloudbase
   })
   .database();
 
-exports.main = async ({ openId }) => {
+exports.main = async ({ openId, current, pageSize }) => {
   const res = await db
     .collection('Cases')
     // 不加 limit 默认返回 20 个，需要注意
     .aggregate()
-    .limit(100)
     .match({
       undertaker: openId,
     })
     .sort({
       createTime: -1,
     })
+    .skip((current - 1) * pageSize)
+    .limit(pageSize)
     // 获取案件审批人的名字
     .lookup({
       from: 'User',
@@ -35,5 +36,16 @@ exports.main = async ({ openId }) => {
       approver: 0,
     })
     .end();
-  return res.data;
+  const resCount = await db
+    .collection('Cases')
+    .aggregate()
+    .match({
+      undertaker: openId,
+    })
+    .count('count')
+    .end();
+  return {
+    caseList: res.data,
+    count: resCount.data[0] && resCount.data[0].count,
+  };
 };

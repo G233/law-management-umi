@@ -9,7 +9,7 @@ const dbCase = app.database().collection('Cases');
 
 const approveAgree = async (id, approverId, approveState, approveMsg) => {
   await dbCase.doc(id).update({
-    status: approveState,
+    approveStatus: approveState,
     approverId,
     approveMsg,
     approveTime: new Date(),

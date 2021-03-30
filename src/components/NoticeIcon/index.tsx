@@ -32,13 +32,13 @@ const getNoticeData = (
       newNotice.key = newNotice.id;
     }
 
-    if (newNotice.extra && newNotice.status) {
+    if (newNotice.extra && newNotice.approveStatus) {
       const color = {
         todo: '',
         processing: 'blue',
         urgent: 'red',
         doing: 'gold',
-      }[newNotice.status];
+      }[newNotice.approveStatus];
       newNotice.extra = (
         <Tag
           color={color}

@@ -28,8 +28,7 @@ const updateCaseCause = async (Case) => {
 
 const formatCase = (value) => {
   value.createTime = new Date();
-  value.status = CaseStatus.WAITING;
-  console.log(value);
+  value.approveStatus = CaseStatus.WAITING;
   return value;
 };
 

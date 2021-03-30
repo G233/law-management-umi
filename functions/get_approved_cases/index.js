@@ -16,19 +16,20 @@ const CaseStatus = {
 const now = new Date();
 let oldDate = new Date(now.setDate(now.getDate() - 30));
 
-exports.main = async () => {
+exports.main = async ({ current, pageSize }) => {
   const res = await db
     .collection('Cases')
     .aggregate()
     // 不加 limit 默认返回 20 个，需要注意
-    .limit(100)
     .match({
-      status: neq(CaseStatus.WAITING),
+      approveStatus: neq(CaseStatus.WAITING),
       approveTime: gt(oldDate),
     })
     .sort({
       createTime: -1,
     })
+    .skip((current - 1) * pageSize)
+    .limit(pageSize)
     // 获取审批律师的名字
     .lookup({
       from: 'User',
@@ -51,5 +52,18 @@ exports.main = async () => {
       approver: 0,
     })
     .end();
-  return res.data;
+
+  const resCount = await db
+    .collection('Cases')
+    .aggregate()
+    .match({
+      approveStatus: neq(CaseStatus.WAITING),
+      approveTime: gt(oldDate),
+    })
+    .count('count')
+    .end();
+  return {
+    caseList: res.data,
+    count: resCount.data[0] && resCount.data[0].count,
+  };
 };

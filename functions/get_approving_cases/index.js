@@ -16,18 +16,19 @@ const db = app.database();
 const $ = db.command.aggregate;
 const _ = db.command;
 
-exports.main = async () => {
+exports.main = async ({ current, pageSize }) => {
   const res = await db
     .collection('Cases')
     .aggregate()
     // 不加 limit 默认返回 20 个，需要注意
-    .limit(100)
     .match({
-      status: CaseStatus.WAITING,
+      approveStatus: CaseStatus.WAITING,
     })
     .sort({
       createTime: -1,
     })
+    .skip((current - 1) * pageSize)
+    .limit(pageSize)
     // 获取承办律师的名字
     .lookup({
       from: 'User',
@@ -39,5 +40,16 @@ exports.main = async () => {
       undertakerName: '$undertaker.name',
     })
     .end();
-  return res.data;
+  const resCount = await db
+    .collection('Cases')
+    .aggregate()
+    .match({
+      approveStatus: CaseStatus.WAITING,
+    })
+    .count('count')
+    .end();
+  return {
+    caseList: res.data,
+    count: resCount.data[0] && resCount.data[0].count,
+  };
 };

@@ -29,7 +29,12 @@ export enum CaseType {
 export const CaseStatusText = {
   [CaseStatus.AGREE]: '审批通过',
   [CaseStatus.WAITING]: '等待审批中',
-  [CaseStatus.REJECT]: '拒绝审批',
+  [CaseStatus.REJECT]: '审批没通过',
+};
+export const CaseStatusColor = {
+  [CaseStatus.AGREE]: 'green',
+  [CaseStatus.WAITING]: 'blue',
+  [CaseStatus.REJECT]: 'volcano',
 };
 
 export const CaseTypeText = {
@@ -68,7 +73,7 @@ export interface Case {
   caseId: string;
 
   // 审批状态
-  approvestatus: CaseStatus;
+  approveStatus: CaseStatus;
   // 审批意见
   approveMsg: string;
   // 审批人
@@ -86,42 +91,67 @@ export interface Case {
   _openid?: string;
 }
 
+export interface requestProp {
+  current?: number;
+  pageSize?: number;
+  openId?: string;
+}
+
 const dbUser = db.collection('User');
 
 /**
- * 获取所有待审批案件，默认为 100 条，需要手动去云函数中修改限制
+ * 获取所有待审批案件，需要手动去云函数中修改限制
  */
-export const fetchApprovingCases = async () => ({
-  data: (await cloudFunction('get_approving_cases')) ?? [],
-  success: true,
-});
+export const fetchApprovingCases = async (data: requestProp) => {
+  const res = await cloudFunction('get_approving_cases', data);
+
+  return {
+    data: res.caseList ?? [],
+    success: true,
+    total: res.count,
+  };
+};
 
 /**
- *  获取 一个月内审批过的案件，同样限制为 100 条
+ * 获取 一个月内审批过的案件
  */
-export const fetchApprovedCases = async () => ({
-  data: (await cloudFunction('get_approved_cases')) ?? [],
-  success: true,
-});
+export const fetchApprovedCases = async (data: requestProp) => {
+  const res = await cloudFunction('get_approved_cases', data);
+
+  return {
+    data: res.caseList ?? [],
+    success: true,
+    total: res.count,
+  };
+};
 
 /**
  *  获取所有我的案件
  * @param {string} openId - 当前登陆用户的 openId.
  */
-export const fetchMyCases = async (openId: string) => ({
-  data: (await cloudFunction('get_my_cases', { openId })) ?? [],
-  success: true,
-});
 
+export const fetchMyCases = async (data: requestProp) => {
+  const res = await cloudFunction('get_my_cases', data);
+
+  return {
+    data: res.caseList ?? [],
+    success: true,
+    total: res.count,
+  };
+};
 /**
- *  获取所有案件
- * @param {string} openId - 当前登陆用户的 openId.
+ *  获取所有审批通过了的案件
  */
-export const fetchCaseList = async (data?: any) => ({
-  data: (await cloudFunction('get_case_list', { data })) ?? [],
-  success: true,
-});
 
+export const fetchCaseList = async (data: requestProp) => {
+  const res = await cloudFunction('get_case_list', data);
+
+  return {
+    data: res.caseList ?? [],
+    success: true,
+    total: res.count,
+  };
+};
 /**
  *  新建审批
  */
@@ -129,7 +159,13 @@ export const createCase = async (value: Case) => {
   await cloudFunction('create_case', await generatedCaseId(value));
   message.success('新建成功，等待审批中');
 };
-
+// // 新建一百个案件，测试用 mock 数据
+// export const createCase = async (value: Case) => {
+//   for (let i = 0; i < 300; i++) {
+//     await cloudFunction('create_case', await generatedCaseId(value));
+//   }
+//   message.success('新建成功，等待审批中');
+// };
 /**
  *  一键审批
  */
@@ -244,12 +280,3 @@ export const generatedCaseId = async (Case: Case) => {
 
   return Case;
 };
-
-// 新建一百个案件，测试用 mock 数据
-// export const createCase = async (value: Case) => {
-//   for (let i = 0; i < 100; i++) {
-//     dbCase.add(await formatCase(value));
-//   }
-//     message.success('新建成功，等待审批中');
-
-// };

@@ -1,66 +1,32 @@
 import ProTable from '@ant-design/pro-table';
 import { useModel } from 'umi';
-
+import { Tag } from 'antd';
+import {
+  Case,
+  fetchMyCases,
+  requestProp,
+  CaseStatusColor,
+  CaseStatusText,
+} from '@/services/cases';
 import type { ProColumns } from '@ant-design/pro-table';
 
-import { Case, fetchMyCases, CaseStatusText } from '@/services/cases';
+import { commonColumns } from '@/components/Case/tableColumns';
 
-export default function approvedCases() {
+export default function myCases() {
   const { initialState } = useModel('@@initialState');
   const openId = initialState?.currentUser?.uid;
   const myCasesColumns: ProColumns<Case>[] = [
-    {
-      title: '案由',
-      width: 80,
-      dataIndex: 'caseCause', // 列数据在数据项中对应的路径，支持通过数组查询嵌套路径，设置了这个值就无需 key
-      fixed: 'left',
-    },
-    {
-      title: '当事人名称',
-      width: 80,
-      dataIndex: 'litigant',
-      align: 'center',
-    },
-    {
-      title: '承办律师',
-      width: 60,
-      align: 'center',
-      dataIndex: 'undertakerName',
-    },
-    {
-      title: '承办人基本意见',
-      dataIndex: 'undertakerOpinion',
-      ellipsis: true,
-      width: 120,
-      align: 'center',
-    },
-    {
-      title: '立案时间',
-      width: 100,
-      dataIndex: 'createTime',
-      align: 'center',
-      valueType: 'date',
-    },
-    {
-      title: '案件基本情况',
-      dataIndex: 'caseSituation',
-      ellipsis: true,
-      align: 'center',
-      width: 160,
-    },
-    {
-      title: '案号',
-      dataIndex: 'caseId',
-      ellipsis: true,
-      align: 'center',
-      width: 130,
-    },
+    ...commonColumns,
     {
       title: '审批状态',
-      dataIndex: 'status',
+      dataIndex: 'approveStatus',
       align: 'center',
       width: 160,
-      renderText: (e: 0 | 1 | 2) => CaseStatusText[e],
+      render: (_, record) => (
+        <Tag color={CaseStatusColor[record.approveStatus]}>
+          {CaseStatusText[record.approveStatus]}
+        </Tag>
+      ),
     },
     {
       title: '审批意见',
@@ -87,7 +53,7 @@ export default function approvedCases() {
   return (
     <ProTable<Case>
       columns={myCasesColumns}
-      request={() => fetchMyCases(openId as string)}
+      request={(data: requestProp) => fetchMyCases({ ...data, openId })}
       scroll={{ x: 1300 }}
       options={false}
       search={false}
