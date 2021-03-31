@@ -9,6 +9,7 @@ export default function CaseApprove() {
   enum CaseListType {
     approving = 'approving', //已审批
     approved = 'approved', // 待审批
+    my = 'my', // 我的审批案件
   }
   const [tab, setTab] = useState<CaseListType>(CaseListType.approving);
 
@@ -29,6 +30,9 @@ export default function CaseApprove() {
           </ProCard.TabPane>
           <ProCard.TabPane key={CaseListType.approved} tab="已审批案件">
             <ApprovedCases />
+          </ProCard.TabPane>
+          <ProCard.TabPane key={CaseListType.my} tab="我的审批案件">
+            <MyCases />
           </ProCard.TabPane>
         </ProCard>
       </PageContainer>

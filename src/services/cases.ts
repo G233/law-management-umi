@@ -138,7 +138,7 @@ export const fetchApprovedCases = async (data: requestProp) => {
  *  获取所有我的案件
  */
 
-export const fetchMyCases = async (data: requestProp) => {
+export const fetchMyCases = async (data: any) => {
   const res = await cloudFunction('get_case_list', {
     ...data,
     condition: { undertaker: data.openId },
@@ -157,7 +157,7 @@ export const fetchMyCases = async (data: requestProp) => {
 export const fetchCaseList = async (data: requestProp) => {
   const res = await cloudFunction('get_case_list', {
     ...data,
-    condition: { approveStatus: CaseStatus.AGREE },
+    condition: { approveStatus: CaseStatus.WAITING },
   });
   return {
     data: res.caseList ?? [],
@@ -268,7 +268,7 @@ export const generatedCaseId = async (Case: Case) => {
   const res = await cloudFIndById('Cache', CaseIdCacheId);
   let caseIdNum: number;
   const iCaseType = Case.CaseType;
-  // TODO: 优化为事务
+  // TODO: 可以优化为事务
   // 当年还没有案号数据，新建
   if (!res[year]) {
     await cloudUpdateById('Cache', CaseIdCacheId, {

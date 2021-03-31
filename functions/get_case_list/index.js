@@ -26,14 +26,42 @@ const ConditionList = {
   },
 };
 
-exports.main = async ({ current, pageSize, condition }) => {
+exports.main = async ({
+  current,
+  pageSize,
+  condition,
+  caseCause,
+  litigant,
+  undertakerName,
+  caseSituation,
+  caseId,
+}) => {
   const conditionI =
-    typeof condition === 'string' ? ConditionList[condition] : condition;
+    typeof condition === 'string'
+      ? ConditionList[condition]
+      : {
+          ...condition,
+          caseCause: new db.RegExp({
+            regexp: `.*${caseCause || ''}.*`,
+          }),
+          litigant: new db.RegExp({
+            regexp: `.*${litigant || ''}.*`,
+          }),
+          // undertakerName: new db.RegExp({
+          //   regexp: `.*${undertakerName || ''}.*`,
+          // }),
+          caseSituation: new db.RegExp({
+            regexp: `.*${caseSituation || ''}.*`,
+          }),
+          caseId: new db.RegExp({
+            regexp: `.*${caseId || ''}.*`,
+          }),
+        };
+  console.log(conditionI);
   const res = await db
     .collection('Cases')
-    // 不加 limit 默认返回 20 个，需要注意
-    .aggregate(conditionI)
-    .match(typeof condition === 'string' ? ConditionList[condition] : condition)
+    .aggregate()
+    .match(conditionI)
     .sort({
       createTime: -1,
     })

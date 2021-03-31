@@ -37,13 +37,19 @@ export default function CaseList() {
       width: 130,
     },
   ];
+  const searchConfig = {
+    searchText: '搜索',
+    resetText: '重置',
+    submitText: '提交',
+    defaultCollapsed: false,
+  };
 
   return (
     <ProTable<Case>
       columns={myCasesColumns}
       request={fetchCaseList}
       scroll={{ x: 1300 }}
-      // options={false}
+      // search={searchConfig}
       rowKey={(e) => e._id ?? 'key'}
       headerTitle="所有案件"
       toolBarRender={() => []}
