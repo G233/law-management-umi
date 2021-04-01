@@ -32,9 +32,10 @@ exports.main = async ({
   condition,
   caseCause,
   litigant,
-  undertakerName,
+  undertaker,
   caseSituation,
   caseId,
+  CaseType,
 }) => {
   const conditionI =
     typeof condition === 'string'
@@ -56,7 +57,14 @@ exports.main = async ({
           caseId: new db.RegExp({
             regexp: `.*${caseId || ''}.*`,
           }),
+          undertaker: new db.RegExp({
+            regexp: `.*${undertaker || ''}.*`,
+          }),
         };
+  if (CaseType) {
+    conditionI['CaseType'] = Number(CaseType);
+  }
+  console.log(conditionI);
   console.log(conditionI);
   const res = await db
     .collection('Cases')
@@ -99,5 +107,6 @@ exports.main = async ({
   return {
     caseList: res.data,
     count: resCount.data[0] && resCount.data[0].count,
+    rrr: conditionI,
   };
 };

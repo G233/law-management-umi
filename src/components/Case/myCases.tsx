@@ -16,7 +16,7 @@ export default function myCases() {
   const { initialState } = useModel('@@initialState');
   const openId = initialState?.currentUser?.uid;
   const myCasesColumns: ProColumns<Case>[] = [
-    ...commonColumns,
+    ...commonColumns(),
     {
       title: '审批状态',
       dataIndex: 'approveStatus',

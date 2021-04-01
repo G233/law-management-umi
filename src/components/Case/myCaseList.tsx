@@ -8,7 +8,7 @@ import { commonColumns } from '@/components/Case/tableColumns';
 export default function myCases() {
   const { initialState } = useModel('@@initialState');
   const openId = initialState?.currentUser?.uid;
-  const myCasesColumns: ProColumns<Case>[] = [...commonColumns];
+  const myCasesColumns: ProColumns<Case>[] = [...commonColumns()];
 
   return (
     <ProTable<Case>

@@ -11,7 +11,7 @@ import {
 
 export default function approvedCases() {
   const approvedColumns: ProColumns<Case>[] = [
-    ...commonColumns,
+    ...commonColumns(),
     {
       title: '审批结果',
       dataIndex: 'approveStatus',

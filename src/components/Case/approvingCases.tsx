@@ -21,7 +21,7 @@ export default function approvingCases() {
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
   const approvingColumns: ProColumns<Case>[] = [
-    ...commonColumns,
+    ...commonColumns(),
     {
       title: '操作',
       width: 140,

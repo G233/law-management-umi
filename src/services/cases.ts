@@ -6,6 +6,7 @@ import {
   cloudFunction,
   cloudFIndById,
   cloudUpdateById,
+  cloudWhere,
 } from '@/services/until';
 import { CaseCauseId, CaseIdCacheId } from '@/services/const';
 
@@ -292,4 +293,10 @@ export const generatedCaseId = async (Case: Case) => {
   Case.caseId = `（${year}）河清${caseIdText[Case.CaseType]} ${caseIdNum} 号`;
 
   return Case;
+};
+
+export const findUserIdByName = async (name: string) => {
+  const res = await cloudWhere('User', { name: name });
+  console.log(res[0]._openid);
+  return res[0]._openid;
 };
