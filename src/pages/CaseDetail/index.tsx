@@ -71,10 +71,13 @@ export default function CreateCasePage() {
       showRemoveIcon: false,
     },
   };
+  const headerprops = {
+    onBack: () => history.back(),
+  };
 
   return (
     <div>
-      <PageContainer>
+      <PageContainer header={headerprops}>
         {caseId ? (
           <ProCard>
             <ProForm
