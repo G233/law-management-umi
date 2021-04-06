@@ -1,5 +1,6 @@
 import ProTable from '@ant-design/pro-table';
-import { useModel } from 'umi';
+import { Button } from 'antd';
+import { useModel, history } from 'umi';
 
 import type { ProColumns } from '@ant-design/pro-table';
 import { commonColumns } from '@/components/Case/tableColumns';
@@ -14,8 +15,6 @@ export default function CaseList() {
     {
       title: '案件类别',
       dataIndex: 'CaseType',
-      filters: true,
-      onFilter: true,
       width: 60,
       valueType: 'select',
       valueEnum: {
@@ -29,6 +28,29 @@ export default function CaseList() {
           text: CaseTypeText[CaseType.Administrative],
         },
       },
+    },
+    {
+      title: '操作',
+      width: 40,
+      valueType: 'option',
+      fixed: 'right',
+      align: 'center',
+      render: (_, record) => [
+        <Button
+          type="link"
+          key="btn"
+          onClick={() => {
+            history.push({
+              pathname: '/CaseDetail',
+              query: {
+                id: record._id as string,
+              },
+            });
+          }}
+        >
+          查看详情
+        </Button>,
+      ],
     },
   ];
   const searchConfig = {

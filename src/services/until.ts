@@ -46,7 +46,7 @@ export const cloudFIndById = async (dbName: string, docId: string) => {
     .doc(docId)
     .get()
     .catch(() => showError());
-  return res?.data[0];
+  return res?.data?.[0];
 };
 
 /**

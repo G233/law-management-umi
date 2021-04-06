@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useModel } from 'umi';
+import { useModel, history } from 'umi';
 import { Button, Space, Table, Row, Col } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
@@ -62,7 +62,20 @@ export default function approvingCases() {
               </Button>
             </Col>
             <Col span={8}>
-              <Button type="link">详情</Button>
+              <Button
+                type="link"
+                key="btn"
+                onClick={() => {
+                  history.push({
+                    pathname: '/CaseDetail',
+                    query: {
+                      id: record._id as string,
+                    },
+                  });
+                }}
+              >
+                详情
+              </Button>
             </Col>
           </Row>
         </div>,
