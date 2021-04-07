@@ -38,7 +38,12 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         loginOut();
         return;
       }
-      history.push(`/account/${key}`);
+      if (key === 'center') {
+        history.push(`/My`);
+      }
+      if (key === 'settings') {
+        history.push(`/setting`);
+      }
     },
     [initialState, setInitialState],
   );
@@ -58,12 +63,6 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   if (!initialState) {
     return Loading;
   }
-
-  // const { avatar, name } = initialState;
-
-  // if (!currentUser || !currentUser.name) {
-  //   return loading;
-  // }
 
   const menuHeaderDropdown = (
     <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>

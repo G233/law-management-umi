@@ -31,14 +31,14 @@ export default {
       path: '/My',
       component: '@/pages/My/index',
       name: '我的',
-      icon: 'TeamOutlined',
+      icon: 'UserOutlined',
     },
 
     {
-      path: '/user',
+      path: '/setting',
       component: '@/pages/User/index',
-      name: '个人信息',
-      icon: 'UserOutlined',
+      name: '个人设置',
+      icon: 'SettingOutlined',
     },
     {
       path: '/CaseDetail',

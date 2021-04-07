@@ -17,7 +17,7 @@ const GlobalHeaderRight: React.FC = () => {
   return (
     <Space className={className}>
       {/* 头像：退出登陆，修改姓名 */}
-      <Avatar />
+      <Avatar menu />
     </Space>
   );
 };
