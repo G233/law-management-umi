@@ -34,8 +34,14 @@ export default {
       icon: 'SnippetsOutlined',
     },
     {
-      path: '/Advisory',
-      component: '@/pages/Advisory/index',
+      path: '/AllAdvisory',
+      component: '@/pages/Advisory/all',
+      name: '法律顾问单位信息',
+      icon: 'SnippetsOutlined',
+    },
+    {
+      path: '/MyAdvisory',
+      component: '@/pages/Advisory/my',
       name: '我的法律顾问单位',
       icon: 'SnippetsOutlined',
     },

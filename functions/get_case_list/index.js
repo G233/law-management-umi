@@ -64,8 +64,6 @@ exports.main = async ({
   if (CaseType) {
     conditionI['CaseType'] = Number(CaseType);
   }
-  console.log(conditionI);
-  console.log(conditionI);
   const res = await db
     .collection('Cases')
     .aggregate()
@@ -107,6 +105,5 @@ exports.main = async ({
   return {
     caseList: res.data,
     count: resCount.data[0] && resCount.data[0].count,
-    rrr: conditionI,
   };
 };

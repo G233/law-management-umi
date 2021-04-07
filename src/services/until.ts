@@ -26,7 +26,7 @@ export const cloudFunction = async (name: string, data?: any) => {
  * @param {string} dbName - 集合的名字.
  * @param {string} data - 查询参数.
  */
-export const cloudWhere = async (dbName: string, data?: any) => {
+export const cloudWhere = async (dbName: string, data: any = {}) => {
   const res = await db
     .collection(dbName)
     .where(data)

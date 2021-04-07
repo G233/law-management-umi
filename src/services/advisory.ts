@@ -28,7 +28,7 @@ const AdDb = db.collection('Advisory');
  */
 export const newAdvisory = async (data: AdvisoryType) => {
   console.log(data);
-  const res = await AdDb.add(data);
+  const res = await AdDb.add({ ...data, createTime: new Date() });
   if (!res.message) {
     message.success('添加法律顾问单位成功');
     return;
@@ -52,10 +52,10 @@ export const featchMyAdvisory = async (data: requestProp) => {
  * 获取所有法律顾问单位
  */
 export const featchAllAdvisory = async () => {
-  const res = await cloudWhere('Advisory');
+  const res = await cloudFunction('fetch_all_advisory');
+  console.log(res);
   return {
-    data: res?.caseList ?? [],
+    data: res?.data ?? [],
     success: true,
-    total: res?.count,
   };
 };
