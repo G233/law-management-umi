@@ -34,17 +34,24 @@ export default {
       icon: 'SnippetsOutlined',
     },
     {
-      path: '/CaseDetail',
-      component: '@/pages/CaseDetail/index',
-      name: '案件详情',
-      hideInMenu: true,
+      path: '/Advisory',
+      component: '@/pages/Advisory/index',
+      name: '我的法律顾问单位',
       icon: 'SnippetsOutlined',
     },
+
     {
       path: '/user',
       component: '@/pages/User/index',
       name: '个人中心',
       icon: 'UserOutlined',
+    },
+    {
+      path: '/CaseDetail',
+      component: '@/pages/CaseDetail/index',
+      name: '案件详情',
+      hideInMenu: true,
+      icon: 'SnippetsOutlined',
     },
     {
       path: '/login',
