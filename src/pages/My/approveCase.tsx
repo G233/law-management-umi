@@ -10,7 +10,7 @@ import {
 } from '@/services/cases';
 import type { ProColumns } from '@ant-design/pro-table';
 
-import { commonColumns } from '@/components/Case/tableColumns';
+import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 
 export default function myCases() {
   const { initialState } = useModel('@@initialState');

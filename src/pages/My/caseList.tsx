@@ -1,9 +1,10 @@
 import ProTable from '@ant-design/pro-table';
 import { useModel } from 'umi';
-import { Case, fetchMyCases, requestProp } from '@/services/cases';
 import type { ProColumns } from '@ant-design/pro-table';
 
-import { commonColumns } from '@/components/Case/tableColumns';
+import { commonColumns } from '@/pages/CaseApprove/tableColumns';
+import { Case, fetchMyCases, requestProp } from '@/services/cases';
+import createCase from '@/pages/My/createCase';
 
 export default function myCases() {
   const { initialState } = useModel('@@initialState');
@@ -17,8 +18,8 @@ export default function myCases() {
       scroll={{ x: 1300 }}
       search={false}
       rowKey={(e) => e._id ?? 'key'}
-      headerTitle="待审批案件"
-      toolBarRender={() => []}
+      headerTitle="我的案件"
+      toolBarRender={() => [createCase()]}
     />
   );
 }

@@ -3,8 +3,7 @@ import { Button } from 'antd';
 import { useModel, history } from 'umi';
 
 import type { ProColumns } from '@ant-design/pro-table';
-import { commonColumns } from '@/components/Case/tableColumns';
-
+import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 import { Case, fetchCaseList, CaseType, CaseTypeText } from '@/services/cases';
 
 export default function CaseList() {

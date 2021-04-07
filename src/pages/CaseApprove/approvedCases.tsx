@@ -1,13 +1,14 @@
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
 import { Tag } from 'antd';
-import { commonColumns } from '@/components/Case/tableColumns';
+
 import {
   Case,
   fetchApprovedCases,
   CaseStatusColor,
   CaseStatusText,
 } from '@/services/cases';
+import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 
 export default function approvedCases() {
   const approvedColumns: ProColumns<Case>[] = [

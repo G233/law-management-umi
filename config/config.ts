@@ -15,41 +15,29 @@ export default {
       icon: 'SnippetsOutlined',
     },
     {
+      path: '/AllAdvisory',
+      component: '@/pages/Advisory/all',
+      name: '法律顾问单位',
+      icon: 'CommentOutlined',
+    },
+    {
       path: '/CaseApprove',
       component: '@/pages/CaseApprove/index',
       name: '案件审批',
-      icon: 'SnippetsOutlined',
+      icon: 'BellOutlined',
     },
 
     {
-      path: '/MyCases',
-      component: '@/pages/MyCases/index',
-      name: '我的案件',
-      icon: 'SnippetsOutlined',
-    },
-    {
-      path: '/CreateCases',
-      component: '@/pages/CreateCases/index',
-      name: '新建审批',
-      icon: 'SnippetsOutlined',
-    },
-    {
-      path: '/AllAdvisory',
-      component: '@/pages/Advisory/all',
-      name: '法律顾问单位信息',
-      icon: 'SnippetsOutlined',
-    },
-    {
-      path: '/MyAdvisory',
-      component: '@/pages/Advisory/my',
-      name: '我的法律顾问单位',
-      icon: 'SnippetsOutlined',
+      path: '/My',
+      component: '@/pages/My/index',
+      name: '我的',
+      icon: 'TeamOutlined',
     },
 
     {
       path: '/user',
       component: '@/pages/User/index',
-      name: '个人中心',
+      name: '个人信息',
       icon: 'UserOutlined',
     },
     {

@@ -1,6 +1,5 @@
 import ProTable from '@ant-design/pro-table';
 import { Button } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
 import { requestProp } from '@/services/cases';
 
 import {
@@ -27,18 +26,15 @@ export default function advisoryList() {
   const advisoryColumns: ProColumns<AdvisoryType>[] = [
     {
       title: '公司名称',
-      width: 50,
       dataIndex: 'name',
     },
     {
       title: '签约时间',
-      width: 50,
       dataIndex: 'timeRange',
       valueType: 'dateRange',
     },
     {
       title: '签约金额',
-      width: 50,
       dataIndex: 'price',
       valueType: 'money',
     },
@@ -93,17 +89,13 @@ export default function advisoryList() {
     </ModalForm>
   );
   return (
-    <div>
-      <PageContainer>
-        <ProTable<AdvisoryType>
-          columns={advisoryColumns}
-          request={(data: requestProp) => featchMyAdvisory({ ...data, openId })}
-          scroll={{ x: 1300 }}
-          rowKey={(e) => e._id ?? 'key'}
-          search={false}
-          toolBarRender={(data) => [createBtn(data)]}
-        />
-      </PageContainer>
-    </div>
+    <ProTable<AdvisoryType>
+      columns={advisoryColumns}
+      request={(data: requestProp) => featchMyAdvisory({ ...data, openId })}
+      scroll={{ x: 1300 }}
+      rowKey={(e) => e._id ?? 'key'}
+      search={false}
+      toolBarRender={(data) => [createBtn(data)]}
+    />
   );
 }

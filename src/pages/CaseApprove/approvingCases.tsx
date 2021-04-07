@@ -4,7 +4,6 @@ import { Button, Space, Table, Row, Col } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { commonColumns } from '@/components/Case/tableColumns';
 
 import {
   Case,
@@ -12,6 +11,7 @@ import {
   oneClickApprove,
   CaseStatus,
 } from '@/services/cases';
+import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 
 export default function approvingCases() {
   const [isShowModal, setIsShowModal] = useState(false);
