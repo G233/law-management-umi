@@ -19,12 +19,14 @@ export default {
       component: '@/pages/Advisory/all',
       name: '法律顾问单位',
       icon: 'CommentOutlined',
+      access: 'admin',
     },
     {
       path: '/CaseApprove',
       component: '@/pages/CaseApprove/index',
       name: '案件审批',
       icon: 'BellOutlined',
+      access: 'admin',
     },
 
     {

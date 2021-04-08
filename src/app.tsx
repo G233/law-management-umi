@@ -3,7 +3,7 @@ import type { RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
-import { fetchUserInfo } from '@/services/user';
+import { fetchUserInfo, UserInfo } from '@/services/user';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -14,7 +14,7 @@ export const initialStateConfig = {
 
 export async function getInitialState() {
   let hasLogin = false;
-  let currentUser = null;
+  let currentUser: UserInfo | null;
 
   currentUser = await fetchUserInfo();
   if (currentUser) {

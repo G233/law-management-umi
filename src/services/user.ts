@@ -20,6 +20,7 @@ export interface UserInfo {
   uid: string;
   email: string;
   avatarUrl?: string;
+  role: string;
 }
 
 // 退出登陆
@@ -51,6 +52,7 @@ const formatUserInfo = (currentUser: any, data: any): UserInfo => {
     uid: currentUser.uid,
     email: currentUser.email,
     avatarUrl: data.avatarUrl ?? null,
+    role: data.role ?? 'user',
   };
 };
 
