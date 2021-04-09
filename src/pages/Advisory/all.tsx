@@ -1,18 +1,5 @@
 import ProTable from '@ant-design/pro-table';
-import { Button } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
-import { requestProp } from '@/services/cases';
-
-import {
-  ModalForm,
-  ProFormText,
-  ProFormDateRangePicker,
-  ProFormDigit,
-} from '@ant-design/pro-form';
-
-import { useModel } from 'umi';
-import { PlusOutlined } from '@ant-design/icons';
-
 import type { ProColumns } from '@ant-design/pro-table';
 
 import { featchAllAdvisory, AdvisoryType } from '@/services/advisory';

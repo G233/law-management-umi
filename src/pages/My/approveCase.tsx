@@ -53,9 +53,10 @@ export default function myCases() {
   return (
     <ProTable<Case>
       columns={myCasesColumns}
-      request={(data: requestProp) => fetchMyCases({ ...data, openId })}
+      request={(data: requestProp) =>
+        fetchMyCases({ ...data, openId, tag: 'all' })
+      }
       scroll={{ x: 1300 }}
-      options={false}
       search={false}
       rowKey={(e) => e._id ?? 'key'}
       headerTitle="待审批案件"

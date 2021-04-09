@@ -140,9 +140,18 @@ export const fetchApprovedCases = async (data: requestProp) => {
  */
 
 export const fetchMyCases = async (data: any) => {
+  let condition = {
+    undertaker: data.openId,
+  };
+  // 我的案件是查看所有通过审批了的案件,未通过审批的需要在 审批案件 中查看
+  if (data.tag !== 'all') {
+    // @ts-ignore
+    condition.approveStatus = CaseStatus.AGREE;
+  }
+
   const res = await cloudFunction('get_case_list', {
     ...data,
-    condition: { undertaker: data.openId },
+    condition,
   });
 
   return {
@@ -158,7 +167,7 @@ export const fetchMyCases = async (data: any) => {
 export const fetchCaseList = async (data: requestProp) => {
   const res = await cloudFunction('get_case_list', {
     ...data,
-    condition: { approveStatus: CaseStatus.WAITING },
+    condition: { approveStatus: CaseStatus.AGREE },
   });
   return {
     data: res.caseList ?? [],

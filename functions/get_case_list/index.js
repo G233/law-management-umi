@@ -41,7 +41,6 @@ exports.main = async ({
     typeof condition === 'string'
       ? ConditionList[condition]
       : {
-          ...condition,
           caseCause: new db.RegExp({
             regexp: `.*${caseCause || ''}.*`,
           }),
@@ -60,6 +59,7 @@ exports.main = async ({
           undertaker: new db.RegExp({
             regexp: `.*${undertaker || ''}.*`,
           }),
+          ...condition,
         };
   if (CaseType) {
     conditionI['CaseType'] = Number(CaseType);
@@ -105,5 +105,6 @@ exports.main = async ({
   return {
     caseList: res.data,
     count: resCount.data[0] && resCount.data[0].count,
+    conditionI,
   };
 };

@@ -6,7 +6,7 @@ import { Link, history, useModel } from 'umi';
 import Footer from '@/components/Footer';
 
 import styles from './index.less';
-import { signIn } from '@/services/user';
+import { signIn, fetchUserInfo } from '@/services/user';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -33,12 +33,9 @@ const Login: React.FC = () => {
     autoLogin?: boolean;
   }
   const [submitting, setSubmitting] = useState(false);
-  const [loginStatus, setLoginStatus] = useState<LoginStatus>(
-    LoginStatus.LODING,
-  );
+  const [loginStatus, setLoginStatus] = useState(LoginStatus.LODING);
   const { initialState, setInitialState, refresh } = useModel('@@initialState');
 
-  // FIXME：是否保持登陆这一块流程还需要完善
   // 用户登陆函数
   const handleSubmit = async (values: LoginParams) => {
     setSubmitting(true);
@@ -54,11 +51,11 @@ const Login: React.FC = () => {
 
     if (userInfo && initialState) {
       // FIXME： 需要优化
-      // !!! 这两行看起来是重复的，但是删去任意一个会导致在 history.push('/') 之后，
+      // 只运行一次会导致首次进入系统的时候,在 history.push('/') 之后，
       // onPageChange 函数拿不到新的 initialState，无法判断是否登陆，导致第一次无法进入管理页面
-      setInitialState({ ...initialState, hasLogin: true });
-      await refresh();
-
+      const currentUser = await fetchUserInfo();
+      setInitialState({ currentUser, hasLogin: true });
+      setInitialState({ currentUser, hasLogin: true });
       history.push('/');
     }
     setSubmitting(false);
@@ -79,9 +76,6 @@ const Login: React.FC = () => {
 
         <div className={styles.main}>
           <ProForm
-            initialValues={{
-              autoLogin: true,
-            }}
             submitter={{
               searchConfig: {
                 submitText: '登录',
@@ -137,17 +131,6 @@ const Login: React.FC = () => {
                 },
               ]}
             />
-
-            <div
-              style={{
-                marginBottom: 24,
-              }}
-            >
-              <ProFormCheckbox noStyle name="autoLogin">
-                自动登录
-              </ProFormCheckbox>
-              {/* <Button type="link">同意</Button> */}
-            </div>
           </ProForm>
         </div>
       </div>

@@ -51,7 +51,6 @@ export default function approvedCases() {
       columns={approvedColumns}
       request={fetchApprovedCases}
       scroll={{ x: 1300 }}
-      options={false}
       search={false}
       rowKey={(e) => e._id ?? 'key'}
       headerTitle="待审批案件"

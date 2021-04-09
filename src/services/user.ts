@@ -1,9 +1,14 @@
 import { message } from 'antd';
-import { auth, db } from '@/cloud_function';
+import { auth, db, cloudApp } from '@/cloud_function';
 
 const collection = db.collection('User');
-import { cloudWhere } from '@/services/until';
 
+import {
+  cloudFunction,
+  cloudFIndById,
+  cloudUpdateById,
+  cloudWhere,
+} from '@/services/until';
 export interface emailProp {
   newEmail: string;
   oldEmail: string;
@@ -38,20 +43,38 @@ export const fetchUserInfo = async () => {
   if (auth.hasLoginState()) {
     const currentUser = await auth.getCurrenUser();
     const User = await cloudWhere('User', { _openid: currentUser?.uid });
+    // 如果是第一次登陆系统需要在自定义的用户表中新建
+
+    if (!User[0]) {
+      addUserInfo(currentUser?.uid as string);
+    }
+
     const userInfo = formatUserInfo(currentUser, User[0]);
+
     return userInfo;
   }
   return null;
 };
 
+// 新建用户信息
+const addUserInfo = async (openId: string) => {
+  const userInfo = {
+    name: '律师',
+    phone: '',
+    role: 'user',
+  };
+  const res = await collection.add(userInfo);
+  console.log('🚀 ~ file: user.ts ~ line 66 ~ addUserInfo ~ res', res);
+};
+
 // 格式化用户信息
 const formatUserInfo = (currentUser: any, data: any): UserInfo => {
   return {
-    name: data.name ?? null,
-    phone: data.phone ?? null,
-    uid: currentUser.uid,
-    email: currentUser.email,
-    avatarUrl: data.avatarUrl ?? null,
+    name: data?.name,
+    phone: data?.phone,
+    uid: currentUser?.uid,
+    email: currentUser?.email,
+    avatarUrl: data?.avatarUrl,
     role: data.role ?? 'user',
   };
 };
@@ -59,14 +82,9 @@ const formatUserInfo = (currentUser: any, data: any): UserInfo => {
 // 重设个人信息
 export const reSetUserInfo = async (data: userInfoProp, uid: string) => {
   const User = await cloudWhere('User', { _openid: uid });
+  const docId: string = User[0]._id;
+  await collection.doc(docId).update(data);
 
-  // 如果用户已经设置过个人信息了，则更新信息
-  if (User[0]) {
-    const docId: string = User[0]._id;
-    await collection.doc(docId).update(data);
-  } else {
-    await collection.add(data);
-  }
   message.success('更新个人信息成功！');
 };
 
@@ -91,4 +109,28 @@ export const resetPassword = async (email: string) => {
   return auth.sendPasswordResetEmail(email).then(() => {
     message.success('重置密码邮件发送成功，请注意查收');
   });
+};
+
+// 获取所有用户信息
+export const fetchAllUser = async () => {
+  const res = await cloudFunction('fetch_all_user');
+  return res;
+};
+
+// 添加用户
+export const addUser = async (data: { email: string }) => {
+  console.log(data);
+  cloudApp
+    .auth({
+      persistence: 'local',
+    })
+    .signUpWithEmailAndPassword('214546439@qq.com', 'heqing123456')
+    .then(() => {
+      // 发送验证邮件成功
+    });
+  // auth.sendPasswordResetEmail('liuxgu@qq.com').then(() => {
+  //   // 发送重置密码邮件成功
+  // });
+  const res = await cloudFunction('fetch_all_user');
+  return res;
 };

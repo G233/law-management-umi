@@ -28,6 +28,13 @@ export default {
       icon: 'BellOutlined',
       access: 'admin',
     },
+    {
+      path: '/UserManage',
+      component: '@/pages/UserManage/index',
+      name: '人员管理',
+      icon: 'UserSwitchOutlined',
+      access: 'admin',
+    },
 
     {
       path: '/My',
