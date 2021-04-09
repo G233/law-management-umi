@@ -1,20 +1,12 @@
 import { message } from 'antd';
-import type { ActionType } from '@ant-design/pro-table';
-
-import { db, cloudApp } from '@/cloud_function/index';
-import {
-  cloudFunction,
-  cloudFIndById,
-  cloudUpdateById,
-  cloudWhere,
-} from '@/services/until';
-import { CaseCauseId, CaseIdCacheId } from '@/services/const';
+import { db } from '@/cloud_function/index';
+import { cloudFunction, cloudWhere } from '@/services/until';
 import { requestProp } from '@/services/cases';
 
 export interface AdvisoryType {
   // 法律顾问单位名称
   name: string;
-  // 担任时间
+  // 聘任期限
   timeRange: string;
   // 价格
   price: string;

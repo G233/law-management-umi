@@ -32,6 +32,7 @@ export const CaseStatusText = {
   [CaseStatus.WAITING]: '等待审批中',
   [CaseStatus.REJECT]: '审批没通过',
 };
+
 export const CaseStatusColor = {
   [CaseStatus.AGREE]: 'green',
   [CaseStatus.WAITING]: 'blue',

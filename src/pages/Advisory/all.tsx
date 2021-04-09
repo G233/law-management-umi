@@ -7,12 +7,12 @@ import { featchAllAdvisory, AdvisoryType } from '@/services/advisory';
 export default function advisoryList() {
   const advisoryColumns: ProColumns<AdvisoryType>[] = [
     {
-      title: '公司名称',
+      title: '法律顾问单位名称',
       width: 50,
       dataIndex: 'name',
     },
     {
-      title: '签约时间',
+      title: '聘任期限',
       width: 50,
       dataIndex: 'timeRange',
       valueType: 'dateRange',
@@ -24,7 +24,7 @@ export default function advisoryList() {
       valueType: 'money',
     },
     {
-      title: '律师',
+      title: '顾问律师',
       width: 50,
       dataIndex: 'userName',
     },

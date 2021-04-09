@@ -25,16 +25,16 @@ export default function advisoryList() {
   const openId = initialState?.currentUser?.uid;
   const advisoryColumns: ProColumns<AdvisoryType>[] = [
     {
-      title: '公司名称',
+      title: '法律顾问单位名称',
       dataIndex: 'name',
     },
     {
-      title: '签约时间',
+      title: '聘任期限',
       dataIndex: 'timeRange',
       valueType: 'dateRange',
     },
     {
-      title: '签约金额',
+      title: '薪资',
       dataIndex: 'price',
       valueType: 'money',
     },
