@@ -75,7 +75,7 @@ const formatUserInfo = (currentUser: any, data: any): UserInfo => {
     uid: currentUser?.uid,
     email: currentUser?.email,
     avatarUrl: data?.avatarUrl,
-    role: data.role ?? 'user',
+    role: data?.role ?? 'user',
   };
 };
 
@@ -84,7 +84,6 @@ export const reSetUserInfo = async (data: userInfoProp, uid: string) => {
   const User = await cloudWhere('User', { _openid: uid });
   const docId: string = User[0]._id;
   await collection.doc(docId).update(data);
-
   message.success('更新个人信息成功！');
 };
 
@@ -111,26 +110,39 @@ export const resetPassword = async (email: string) => {
   });
 };
 
-// 获取所有用户信息
+// 获取所有普通用户信息
 export const fetchAllUser = async () => {
   const res = await cloudFunction('fetch_all_user');
   return res;
 };
 
 // 添加用户
-export const addUser = async (data: { email: string }) => {
-  console.log(data);
+export const addUser = (data: { email: string }) =>
   cloudApp
     .auth({
       persistence: 'local',
     })
-    .signUpWithEmailAndPassword('214546439@qq.com', 'heqing123456')
-    .then(() => {
-      // 发送验证邮件成功
+    .signUpWithEmailAndPassword(data.email, 'heqing123456')
+    .then((res) => {
+      message.success('注册成功,请前往邮箱确认');
+    })
+    .catch((err) => {
+      message.error('邮箱注册失败,请检查此邮箱是否已经注册');
     });
-  // auth.sendPasswordResetEmail('liuxgu@qq.com').then(() => {
-  //   // 发送重置密码邮件成功
-  // });
-  const res = await cloudFunction('fetch_all_user');
-  return res;
+interface rowType {
+  index: number;
+  name: string;
+  phone: string;
+  role: string;
+  _id: string;
+  _openid: string;
+}
+
+// 管理律师修改人员信息
+export const updateUserInfo = async (_: any, row: rowType) => {
+  const res = await cloudFunction('update_user_info', row);
+  if (res?.updated) {
+    message.success('更新信息成功！');
+    return true;
+  }
 };

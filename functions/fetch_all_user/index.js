@@ -7,6 +7,13 @@ const db = cloudbase
   .database();
 
 exports.main = async () => {
-  const res = await db.collection('User').aggregate().limit(1000).end();
+  const res = await db
+    .collection('User')
+    .aggregate()
+    .match({
+      role: 'user',
+    })
+    .limit(1000)
+    .end();
   return res;
 };
