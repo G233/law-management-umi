@@ -42,7 +42,7 @@ export default function approvedCases() {
       dataIndex: 'approveTime',
       align: 'center',
       width: 160,
-      valueType: 'date',
+      valueType: 'dateTime',
     },
   ];
 

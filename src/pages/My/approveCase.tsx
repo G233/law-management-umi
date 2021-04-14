@@ -46,7 +46,7 @@ export default function myCases() {
       dataIndex: 'approveTime',
       align: 'center',
       width: 160,
-      valueType: 'date',
+      valueType: 'dateTime',
     },
   ];
 
