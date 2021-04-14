@@ -5,6 +5,7 @@ import RightContent from '@/components/RightContent';
 import NoticeIconView from '@/components/NoticeIcon';
 import Footer from '@/components/Footer';
 import { fetchUserInfo, UserInfo } from '@/services/user';
+import { Space, Button } from 'antd';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -33,7 +34,19 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     footerRender: () => <Footer />,
     rightContentRender: () => (
       <div>
-        <NoticeIconView /> <RightContent />
+        <Space>
+          <Button
+            type="link"
+            onClick={() =>
+              window.open(
+                'https://docs.qq.com/form/page/DSmZ1SUtmVWl1aUh3?_w_tencentdocx_form=1',
+              )
+            }
+          >
+            问题反馈
+          </Button>
+          <NoticeIconView /> <RightContent />
+        </Space>
       </div>
     ),
 
