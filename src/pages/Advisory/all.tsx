@@ -18,12 +18,6 @@ export default function advisoryList() {
       valueType: 'dateRange',
     },
     {
-      title: '签约金额',
-      width: 50,
-      dataIndex: 'price',
-      valueType: 'money',
-    },
-    {
       title: '顾问律师',
       width: 50,
       dataIndex: 'userName',

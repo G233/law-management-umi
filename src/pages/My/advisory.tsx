@@ -33,11 +33,6 @@ export default function advisoryList() {
       dataIndex: 'timeRange',
       valueType: 'dateRange',
     },
-    {
-      title: '薪资',
-      dataIndex: 'price',
-      valueType: 'money',
-    },
   ];
   const createBtn = (fn: ActionType | undefined) => (
     <ModalForm<AdvisoryType>
@@ -63,16 +58,6 @@ export default function advisoryList() {
           {
             required: true,
             message: '请输入公司名称',
-          },
-        ]}
-      />
-      <ProFormDigit
-        label="签约金额"
-        name="price"
-        rules={[
-          {
-            required: true,
-            message: '请输入签约金额',
           },
         ]}
       />

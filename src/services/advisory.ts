@@ -8,8 +8,6 @@ export interface AdvisoryType {
   name: string;
   // 聘任期限
   timeRange: string;
-  // 价格
-  price: string;
   _id: string;
   _openid: string;
 }
