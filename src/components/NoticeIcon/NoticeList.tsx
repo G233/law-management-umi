@@ -1,22 +1,23 @@
-import { Avatar, List } from 'antd';
+import { List } from 'antd';
 
 import React from 'react';
 import classNames from 'classnames';
 import styles from './NoticeList.less';
+import { Notice, noticeState, noticeType } from '@/services/notice';
 
 export type NoticeIconTabProps = {
   count?: number;
   showClear?: boolean;
   showViewMore?: boolean;
   style?: React.CSSProperties;
-  title: string;
-  tabKey: API.NoticeIconItemType;
-  onClick?: (item: API.NoticeIconItem) => void;
+  title?: string;
+  tabKey: noticeType;
+  onClick?: (item: Notice) => void;
   onClear?: () => void;
   emptyText?: string;
   clearText?: string;
   viewMoreText?: string;
-  list: API.NoticeIconItem[];
+  list: Notice[];
   onViewMore?: (e: any) => void;
 };
 const NoticeList: React.FC<NoticeIconTabProps> = ({
@@ -44,43 +45,35 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
   }
   return (
     <div>
-      <List<API.NoticeIconItem>
+      <List<Notice>
         className={styles.list}
         dataSource={list}
         renderItem={(item, i) => {
           const itemCls = classNames(styles.item, {
-            [styles.read]: item.read,
+            [styles.read]: item.state === noticeState.read,
           });
-          // eslint-disable-next-line no-nested-ternary
-          const leftIcon = item.avatar ? (
-            typeof item.avatar === 'string' ? (
-              <Avatar className={styles.avatar} src={item.avatar} />
-            ) : (
-              <span className={styles.iconElement}>{item.avatar}</span>
-            )
-          ) : null;
 
           return (
             <List.Item
               className={itemCls}
-              key={item.key || i}
+              key={item._id ?? i}
               onClick={() => {
                 onClick?.(item);
               }}
             >
               <List.Item.Meta
                 className={styles.meta}
-                avatar={leftIcon}
+                // avatar={leftIcon}
                 title={
                   <div className={styles.title}>
                     {item.title}
-                    <div className={styles.extra}>{item.extra}</div>
+                    {/* <div className={styles.extra}>{item.extra}</div> */}
                   </div>
                 }
                 description={
                   <div>
-                    <div className={styles.description}>{item.description}</div>
-                    <div className={styles.datetime}>{item.datetime}</div>
+                    <div className={styles.description}>{item.msg}</div>
+                    <div className={styles.datetime}>{item.createTime}</div>
                   </div>
                 }
               />
@@ -89,11 +82,7 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
         }}
       />
       <div className={styles.bottomBar}>
-        {showClear ? (
-          <div onClick={onClear}>
-            {clearText} {title}
-          </div>
-        ) : null}
+        {showClear ? <div onClick={onClear}>{clearText}</div> : null}
         {showViewMore ? (
           <div
             onClick={(e) => {

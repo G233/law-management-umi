@@ -41,6 +41,27 @@ export default {
       component: '@/pages/My/index',
       name: '我的',
       icon: 'UserOutlined',
+      defaultCollapsed: true,
+      routes: [
+        {
+          path: '/My/caseList',
+          component: '@/pages/My/caseList',
+          name: '案件',
+          icon: 'UserOutlined',
+        },
+        {
+          path: '/My/approveCase',
+          component: '@/pages/My/approveCase',
+          name: '审批案件',
+          icon: 'UserOutlined',
+        },
+        {
+          path: '/My/advisory',
+          component: '@/pages/My/advisory',
+          name: '法律顾问单位',
+          icon: 'UserOutlined',
+        },
+      ],
     },
 
     {

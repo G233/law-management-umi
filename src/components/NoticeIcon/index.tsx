@@ -2,8 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Tag, message } from 'antd';
 import { groupBy } from 'lodash';
 import moment from 'moment';
-import { useModel } from 'umi';
-import { getNotices } from '@/services/api';
+import { useModel, history } from 'umi';
+import {
+  getNotices,
+  Notice,
+  noticeState,
+  noticeType,
+  readNotice,
+} from '@/services/notice';
 
 import NoticeIcon from './NoticeIcon';
 import styles from './index.less';
@@ -14,137 +20,99 @@ export type GlobalHeaderRightProps = {
   onNoticeClear?: (tabName?: string) => void;
 };
 
-const getNoticeData = (
-  notices: API.NoticeIconItem[],
-): Record<string, API.NoticeIconItem[]> => {
+// 将 api 返回的数据,格式化为 ui 需要的数据格式
+const getNoticeData = (notices: Notice[]): Notice[] => {
   if (!notices || notices.length === 0 || !Array.isArray(notices)) {
-    return {};
+    return [];
   }
 
   const newNotices = notices.map((notice) => {
     const newNotice = { ...notice };
-
-    if (newNotice.datetime) {
-      newNotice.datetime = moment(notice.datetime as string).fromNow();
+    // 把时间格式化为相对时间
+    if (newNotice.createTime) {
+      moment.locale('zh-cn');
+      newNotice.createTime = moment(notice.createTime).fromNow();
     }
-
-    if (newNotice.id) {
-      newNotice.key = newNotice.id;
-    }
-
-    if (newNotice.extra && newNotice.approveStatus) {
-      const color = {
-        todo: '',
-        processing: 'blue',
-        urgent: 'red',
-        doing: 'gold',
-      }[newNotice.approveStatus];
-      newNotice.extra = (
-        <Tag
-          color={color}
-          style={{
-            marginRight: 0,
-          }}
-        >
-          {newNotice.extra}
-        </Tag>
-      ) as any;
-    }
-
     return newNotice;
   });
-  return groupBy(newNotices, 'type');
-};
-const getUnreadData = (noticeData: Record<string, API.NoticeIconItem[]>) => {
-  const unreadMsg: Record<string, number> = {};
-  Object.keys(noticeData).forEach((key) => {
-    const value = noticeData[key];
 
-    if (!unreadMsg[key]) {
-      unreadMsg[key] = 0;
-    }
-
-    if (Array.isArray(value)) {
-      unreadMsg[key] = value.filter((item) => !item.read).length;
-    }
-  });
-  return unreadMsg;
+  return newNotices;
 };
+
+// 获取未读消息数量
+const getUnreadData = (noticeData: Notice[]) =>
+  noticeData.reduce(
+    (accumulator, notice) =>
+      accumulator + (notice.state === noticeState.unReade ? 1 : 0),
+    0,
+  );
 
 const NoticeIconView = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
-  const [notices, setNotices] = useState<API.NoticeIconItem[]>([]);
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [popupVisible, setPopupVisible] = useState(false);
 
   useEffect(() => {
-    getNotices().then(({ data }) => setNotices(data || []));
+    getNotices(currentUser?.uid as string).then((res: Notice[]) =>
+      setNotices(res ?? []),
+    );
   }, []);
 
   const noticeData = getNoticeData(notices);
-  const unreadMsg = getUnreadData(noticeData || {});
+  console.log('消息', noticeData);
+  const unreadMsgCount = getUnreadData(noticeData || []);
 
   const changeReadState = (id: string) => {
     setNotices(
       notices.map((item) => {
         const notice = { ...item };
-        if (notice.id === id) {
-          notice.read = true;
+        if (notice._id === id) {
+          notice.state = noticeState.read;
+          console.log('aaa');
+          readNotice(item);
         }
         return notice;
       }),
     );
   };
 
-  const clearReadState = (title: string, key: string) => {
+  const clearReadState = () => {
     setNotices(
       notices.map((item) => {
         const notice = { ...item };
-        if (notice.type === key) {
-          notice.read = true;
-        }
+        notice.state = noticeState.read;
+        readNotice(item);
         return notice;
       }),
     );
-    message.success(`${'清空了'} ${title}`);
+    message.success('已清空所有通知');
   };
 
   return (
     <NoticeIcon
       className={styles.action}
-      count={currentUser && currentUser.unreadCount}
+      count={unreadMsgCount}
+      onPopupVisibleChange={setPopupVisible}
+      popupVisible={popupVisible}
       onItemClick={(item) => {
-        changeReadState(item.id!);
+        if (item.state === noticeState.read) return;
+        changeReadState(item._id!);
+        history.push(
+          item.type === noticeType.approve ? '/CaseApprove' : '/My/approveCase',
+        );
+        setPopupVisible(false);
       }}
-      onClear={(title: string, key: string) => clearReadState(title, key)}
+      onClear={clearReadState}
       loading={false}
-      clearText="清空"
+      clearText="一键已读"
       viewMoreText="查看更多"
-      onViewMore={() => message.info('Click on view more')}
       clearClose
     >
       <NoticeIcon.Tab
-        tabKey="notification"
-        count={unreadMsg.notification}
-        list={noticeData.notification}
-        title="通知"
-        emptyText="你已查看所有通知"
-        showViewMore
-      />
-      <NoticeIcon.Tab
-        tabKey="message"
-        count={unreadMsg.message}
-        list={noticeData.message}
-        title="消息"
-        emptyText="您已读完所有消息"
-        showViewMore
-      />
-      <NoticeIcon.Tab
-        tabKey="event"
-        title="待办"
-        emptyText="你已完成所有待办"
-        count={unreadMsg.event}
-        list={noticeData.event}
-        showViewMore
+        tabKey={noticeType.approve}
+        list={noticeData}
+        emptyText="没有新的通知"
       />
     </NoticeIcon>
   );

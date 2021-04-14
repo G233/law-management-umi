@@ -2,6 +2,7 @@ import { PageLoading } from '@ant-design/pro-layout';
 import type { RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
 import RightContent from '@/components/RightContent';
+import NoticeIconView from '@/components/NoticeIcon';
 import Footer from '@/components/Footer';
 import { fetchUserInfo, UserInfo } from '@/services/user';
 
@@ -30,7 +31,11 @@ export async function getInitialState() {
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     footerRender: () => <Footer />,
-    rightContentRender: () => <RightContent />,
+    rightContentRender: () => (
+      <div>
+        <NoticeIconView /> <RightContent />
+      </div>
+    ),
 
     onPageChange: () => {
       const { location } = history;

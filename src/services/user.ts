@@ -3,12 +3,7 @@ import { auth, db, cloudApp } from '@/cloud_function';
 
 const collection = db.collection('User');
 
-import {
-  cloudFunction,
-  cloudFIndById,
-  cloudUpdateById,
-  cloudWhere,
-} from '@/services/until';
+import { cloudFunction, cloudWhere } from '@/services/until';
 export interface emailProp {
   newEmail: string;
   oldEmail: string;
@@ -129,6 +124,7 @@ export const addUser = (data: { email: string }) =>
     .catch((err) => {
       message.error('邮箱注册失败,请检查此邮箱是否已经注册');
     });
+
 interface rowType {
   index: number;
   name: string;
