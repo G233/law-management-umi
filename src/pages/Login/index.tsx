@@ -1,7 +1,8 @@
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Alert, message } from 'antd';
 import React, { useState } from 'react';
-import ProForm, { ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
+import { trim } from 'lodash';
+import ProForm, { ProFormText } from '@ant-design/pro-form';
 import { Link, history, useModel } from 'umi';
 import Footer from '@/components/Footer';
 
@@ -41,8 +42,8 @@ const Login: React.FC = () => {
     setSubmitting(true);
 
     const userInfo = await signIn(
-      values.email as string,
-      values.password as string,
+      trim(values.email as string),
+      trim(values.password as string),
     ).catch((err) => {
       // 登陆失败的情况包括密码错误与其他报错,因为云开发密码错误也是直接报错
       message.error('登录失败，请重试！');
