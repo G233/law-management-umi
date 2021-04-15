@@ -26,7 +26,7 @@ export default function CaseApprove() {
           <ProCard.TabPane key={CaseListType.approving} tab="待审批案件">
             <ApprovingCases />
           </ProCard.TabPane>
-          <ProCard.TabPane key={CaseListType.approved} tab="已审批案件">
+          <ProCard.TabPane key={CaseListType.approved} tab="案件审批记录">
             <ApprovedCases />
           </ProCard.TabPane>
         </ProCard>

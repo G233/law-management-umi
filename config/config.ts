@@ -19,7 +19,6 @@ export default {
       component: '@/pages/Advisory/all',
       name: '法律顾问单位',
       icon: 'CommentOutlined',
-      access: 'admin',
     },
     {
       path: '/CaseApprove',
