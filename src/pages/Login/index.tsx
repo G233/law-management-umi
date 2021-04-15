@@ -104,8 +104,7 @@ const Login: React.FC = () => {
                 size: 'large',
                 prefix: <MailOutlined className={styles.prefixIcon} />,
               }}
-              placeholder="请输入注册邮箱"
-              initialValue="liuxgu@qq.com"
+              placeholder="请输入登陆邮箱"
               rules={[
                 {
                   required: true,
@@ -119,7 +118,6 @@ const Login: React.FC = () => {
             />
             <ProFormText.Password
               name="password"
-              initialValue="123456789liugu"
               fieldProps={{
                 size: 'large',
                 prefix: <LockOutlined className={styles.prefixIcon} />,
