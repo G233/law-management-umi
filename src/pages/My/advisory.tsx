@@ -53,21 +53,21 @@ export default function advisoryList() {
     >
       <ProFormText
         name="name"
-        label="签约公司"
+        label="法律顾问单位名称"
         rules={[
           {
             required: true,
-            message: '请输入公司名称',
+            message: '请输入法律顾问单位名称',
           },
         ]}
       />
       <ProFormDateRangePicker
         name="timeRange"
-        label="签约日期"
+        label="聘任期限"
         rules={[
           {
             required: true,
-            message: '请输入签约时间',
+            message: '请输入聘任期限',
           },
         ]}
       />
