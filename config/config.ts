@@ -87,7 +87,7 @@ export default {
   ],
 
   layout: {
-    name: '河清律师事务所',
+    name: '湖南河清律师事务所',
     layout: 'side',
   },
   fastRefresh: {},

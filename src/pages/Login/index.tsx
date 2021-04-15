@@ -72,7 +72,7 @@ const Login: React.FC = () => {
               <span className={styles.title}>河清管理</span>
             </Link>
           </div>
-          <div className={styles.desc}>河清律师事务所管理系统</div>
+          <div className={styles.desc}>湖南河清律师事务所管理系统</div>
         </div>
 
         <div className={styles.main}>
