@@ -1,8 +1,8 @@
-import ProTable from '@ant-design/pro-table';
 import { Button } from 'antd';
 import { useModel, history } from 'umi';
-
 import type { ProColumns } from '@ant-design/pro-table';
+import { PageContainer } from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
 import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 import { Case, fetchCaseList, CaseType, CaseTypeText } from '@/services/cases';
 
@@ -59,14 +59,15 @@ export default function CaseList() {
   };
 
   return (
-    <ProTable<Case>
-      columns={myCasesColumns}
-      request={fetchCaseList}
-      scroll={{ x: 1300 }}
-      search={searchConfig}
-      rowKey={(e) => e._id ?? 'key'}
-      headerTitle="所有案件"
-      toolBarRender={() => []}
-    />
+    <PageContainer>
+      <ProTable<Case>
+        columns={myCasesColumns}
+        request={fetchCaseList}
+        scroll={{ x: 1300 }}
+        search={searchConfig}
+        rowKey={(e) => e._id ?? 'key'}
+        toolBarRender={() => []}
+      />
+    </PageContainer>
   );
 }

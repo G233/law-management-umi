@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import ProTable from '@ant-design/pro-table';
 import { Button, Alert, Space } from 'antd';
-import { ModalForm, ProFormText, ProFormSelect } from '@ant-design/pro-form';
+import { PageContainer } from '@ant-design/pro-layout';
+import { ModalForm, ProFormText } from '@ant-design/pro-form';
 import { EditableProTable } from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -91,20 +91,22 @@ export default function advisoryList() {
     </ModalForm>
   );
   return (
-    <EditableProTable
-      columns={userColumns}
-      request={fetchAllUser}
-      recordCreatorProps={false}
-      editable={{
-        type: 'single',
-        editableKeys,
-        onSave: updateUserInfo,
-        onChange: setEditableRowKeys,
-      }}
-      scroll={{ x: 1300 }}
-      rowKey={(e) => e._id ?? 'key'}
-      search={false}
-      toolBarRender={(data) => [createBtn(data)]}
-    />
+    <PageContainer>
+      <EditableProTable
+        columns={userColumns}
+        request={fetchAllUser}
+        recordCreatorProps={false}
+        editable={{
+          type: 'single',
+          editableKeys,
+          onSave: updateUserInfo,
+          onChange: setEditableRowKeys,
+        }}
+        scroll={{ x: 1300 }}
+        rowKey={(e) => e._id ?? 'key'}
+        search={false}
+        toolBarRender={(data) => [createBtn(data)]}
+      />
+    </PageContainer>
   );
 }
