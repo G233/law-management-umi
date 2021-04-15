@@ -10,9 +10,11 @@ export const commonColumns = (): ProColumns<Case>[] => {
     label?: string;
   }
   const [caseCauseList, setCaseCauseList] = useState<optionType[]>();
+
   const initAutoData = async () => {
     setCaseCauseList(await fetchCaseCauseList());
   };
+
   useEffect(() => {
     initAutoData();
   }, []);
@@ -60,6 +62,7 @@ export const commonColumns = (): ProColumns<Case>[] => {
       ellipsis: true,
       width: 120,
       align: 'center',
+      hideInSearch: true,
     },
     {
       title: '立案时间',
@@ -68,6 +71,7 @@ export const commonColumns = (): ProColumns<Case>[] => {
       align: 'center',
       valueType: 'date',
       search: false,
+      hideInSearch: true,
     },
     {
       title: '案件基本情况',
@@ -75,12 +79,14 @@ export const commonColumns = (): ProColumns<Case>[] => {
       ellipsis: true,
       align: 'center',
       width: 160,
+      hideInSearch: true,
     },
     {
       title: '案号',
       dataIndex: 'caseId',
       ellipsis: true,
       align: 'center',
+
       width: 130,
     },
   ];

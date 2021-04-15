@@ -38,12 +38,17 @@ export const featchMyAdvisory = async (data: requestProp) => {
   };
 };
 
+interface tableProp {
+  name?: string;
+  undertaker?: string;
+  current?: number;
+  pageSize?: number;
+}
 /**
  * 获取所有法律顾问单位
  */
-export const featchAllAdvisory = async () => {
-  const res = await cloudFunction('fetch_all_advisory');
-  console.log(res);
+export const featchAllAdvisory = async ({ name, undertaker }: tableProp) => {
+  const res = await cloudFunction('fetch_all_advisory', { name, undertaker });
   return {
     data: res?.data ?? [],
     success: true,

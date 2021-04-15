@@ -6,10 +6,18 @@ const db = cloudbase
   })
   .database();
 
-exports.main = async () => {
+exports.main = async ({ name, undertaker }) => {
   const res = await db
     .collection('Advisory')
     .aggregate()
+    .match({
+      name: new db.RegExp({
+        regexp: `.*${name || ''}.*`,
+      }),
+      _openid: new db.RegExp({
+        regexp: `.*${undertaker || ''}.*`,
+      }),
+    })
     .limit(1000)
     .sort({
       createTime: -1,

@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import { useModel, history } from 'umi';
+import { history } from 'umi';
 import type { ProColumns } from '@ant-design/pro-table';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -7,8 +7,6 @@ import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 import { Case, fetchCaseList, CaseType, CaseTypeText } from '@/services/cases';
 
 export default function CaseList() {
-  const lawList = useModel('useLawList');
-  console.log('🚀 ~ file: index.tsx ~ line 11 ~ CaseList ~ lawList', lawList);
   const myCasesColumns: ProColumns<Case>[] = [
     ...commonColumns(),
     {
@@ -52,11 +50,6 @@ export default function CaseList() {
       ],
     },
   ];
-  const searchConfig = {
-    searchText: '搜索',
-    resetText: '重置',
-    defaultCollapsed: false,
-  };
 
   return (
     <PageContainer>
@@ -64,7 +57,12 @@ export default function CaseList() {
         columns={myCasesColumns}
         request={fetchCaseList}
         scroll={{ x: 1300 }}
-        search={searchConfig}
+        search={{
+          labelWidth: 'auto',
+          searchText: '搜索',
+          resetText: '重置',
+          defaultCollapsed: false,
+        }}
         rowKey={(e) => e._id ?? 'key'}
         toolBarRender={() => []}
       />

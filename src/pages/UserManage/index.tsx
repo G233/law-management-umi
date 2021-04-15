@@ -27,6 +27,7 @@ export default function advisoryList() {
     {
       title: '联系方式',
       dataIndex: 'phone',
+      copyable: true,
     },
     {
       title: '权限',
