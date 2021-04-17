@@ -28,24 +28,25 @@
     "@ant-design/pro-layout": "^6.5.0",
     "@ant-design/pro-table": "^2.30.6",
     "@cloudbase/js-sdk": "^1.4.0",
+    "@cloudbase/node-sdk": "^2.5.0",
     "@umijs/preset-react": "1.x",
     "react-helmet-async": "^1.0.7",
     "umi": "^3.3.9",
-    "@cloudbase/node-sdk": "^2.5.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@cloudbase/cli": "^1.6.7",
     "@types/classnames": "^2.2.11",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@umijs/plugin-esbuild": "^1.0.1",
     "@umijs/test": "^3.3.9",
+    "esbuild": "^0.11.11",
     "lint-staged": "^10.0.7",
     "prettier": "^2.2.0",
     "react": "17.x",
     "react-dom": "17.x",
     "typescript": "^4.1.2",
-    "yorkie": "^2.0.0",
-    "esbuild": "^0.11.11"
+    "yorkie": "^2.0.0"
   }
 }

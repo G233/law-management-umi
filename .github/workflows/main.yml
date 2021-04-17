@@ -21,8 +21,7 @@ jobs:
           node-version: '14.x'
 
       - name: Build project
-        run: yarn global add @cloudbase/cli &&
- yarn && tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}  && yarn build
+        run: yarn && tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}  && yarn build
 
       - name: Upload COS
         uses: zkqiang/tencent-cos-action@v0.1.0
