@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: '14.x'
 
+      - name: Add tcb
+        run: yarn global add @cloudbase/cli
+
       - name: Build project
         run: yarn && tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}  && yarn build
 
