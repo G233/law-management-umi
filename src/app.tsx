@@ -20,6 +20,8 @@ export async function getInitialState() {
   if (currentUser) {
     hasLogin = true;
   }
+  const isDev = process.env.NODE_ENV === 'development';
+  console.log(isDev ? '当前处于开发环境' : '当前处于生产环境');
 
   return {
     hasLogin,

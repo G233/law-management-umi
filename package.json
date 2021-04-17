@@ -5,9 +5,9 @@
     "build": "yarn run fnBuild &&  yarn run fnDeployPrd  && umi build ",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
-    "fnBuild": " esbuild functions/src/index.ts --bundle --outdir=functions/fn_call  --platform=node --target=node10.4  ",
-    "fnDeployDev": "yarn run fnBuild && tcb fn deploy fn_call -e atom-2gbnzw0gde4242dc --force",
-    "fnDeployPrd": "yarn run fnBuild && tcb fn deploy fn_call -e law-build-8gty78990cd939d6 --force",
+    "fnBuild": "esbuild functions/src/index.ts --bundle --outdir=functions/fn_call  --platform=node --target=node10.4  ",
+    "fnDeployDev": "NODE_ENV=development yarn run fnBuild  && tcb fn deploy fn_call -e atom-2gbnzw0gde4242dc --force",
+    "fnDeployPrd": "NODE_ENV=production yarn run fnBuild && tcb fn deploy fn_call -e law-build-8gty78990cd939d6 --force",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
   },

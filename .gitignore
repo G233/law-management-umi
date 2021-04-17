@@ -9,6 +9,7 @@
 
 # production
 /dist
+functions/fn_call/index.js
 
 # misc
 .DS_Store
