@@ -7,8 +7,6 @@ import Footer from '@/components/Footer';
 import { fetchUserInfo, UserInfo } from '@/services/user';
 import { Space, Button } from 'antd';
 
-const isDev = process.env.NODE_ENV === 'development';
-
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
   loading: <PageLoading />,

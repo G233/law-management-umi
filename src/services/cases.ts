@@ -221,7 +221,7 @@ export const oneClickApprove = async (
  */
 export const fetchCaseCauseList = async () => {
   const res = await cloudFIndById('Cache', CaseCauseId);
-  return res.caseCauseList.map((e: string) => {
+  return res?.caseCauseList?.map((e: string) => {
     return { value: e };
   });
 };

@@ -8,16 +8,16 @@ const _ = db.command;
  * @param {string} data - 函数参数.
  */
 export const cloudFunction = async (name: string, data?: any) => {
-  // console.log(`调用云函数: ${name} 参数`);
-  // console.log(data);
+  console.log(`调用云函数: ${name} 参数`);
+  console.log(data);
   const res = await cloudApp
     .callFunction({
       name: 'fn_call',
       data: { fnName: name, data: data },
     })
     .catch(() => showError());
-  // console.log(`调用云函数: ${name} 返回数据`);
-  // console.log(res);
+  console.log(`调用云函数: ${name} 返回数据`);
+  console.log(res);
   return res?.result;
 };
 

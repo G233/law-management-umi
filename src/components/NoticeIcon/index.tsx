@@ -59,7 +59,6 @@ const NoticeIconView = () => {
   }, []);
 
   const noticeData = getNoticeData(notices);
-  console.log('消息', noticeData);
   const unreadMsgCount = getUnreadData(noticeData || []);
 
   const changeReadState = (id: string) => {

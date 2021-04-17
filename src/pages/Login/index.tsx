@@ -35,7 +35,7 @@ const Login: React.FC = () => {
   }
   const [submitting, setSubmitting] = useState(false);
   const [loginStatus, setLoginStatus] = useState(LoginStatus.LODING);
-  const { initialState, setInitialState, refresh } = useModel('@@initialState');
+  const { initialState, setInitialState } = useModel('@@initialState');
 
   // 用户登陆函数
   const handleSubmit = async (values: LoginParams) => {

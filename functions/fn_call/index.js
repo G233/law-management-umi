@@ -75927,9 +75927,10 @@ var require_uuid2 = __commonJS((exports2, module2) => {
 
 // functions/src/until.ts
 var cloudbase = __toModule(require_lib8());
+var isDev = process.env.NODE_ENV === 'development';
 var db = cloudbase
   .init({
-    env: 'atom-2gbnzw0gde4242dc',
+    env: isDev ? 'atom-2gbnzw0gde4242dc' : 'law-build-9gbw1ney8060a480',
   })
   .database();
 var _ = db.command;

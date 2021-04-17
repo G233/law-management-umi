@@ -40,7 +40,7 @@ export const fetchUserInfo = async () => {
     const User = await cloudWhere('User', { _openid: currentUser?.uid });
     // 如果是第一次登陆系统需要在自定义的用户表中新建
 
-    if (!User[0]) {
+    if (!User?.[0]) {
       addUserInfo(currentUser?.uid as string);
     }
 

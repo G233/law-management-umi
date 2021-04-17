@@ -18,10 +18,10 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: "14.x"
+          node-version: '14.x'
 
       - name: Build project
-        run: yarn && yarn build
+        run: yarn && tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}  && yarn build
 
       - name: Upload COS
         uses: zkqiang/tencent-cos-action@v0.1.0

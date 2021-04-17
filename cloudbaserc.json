@@ -3,18 +3,13 @@
   "version": "2.0",
   "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
   "functionRoot": "./functions",
-  "region": "ap-shanghai",
   "framework": {
-    "name": "law-management",
+    "name": "law-build",
     "plugins": {}
   },
   "functions": [
     {
-      "name": "get_approved_cases",
-      "installDependency": true
-    },
-    {
-      "name": "get_approving_cases",
+      "name": "fn_call",
       "installDependency": true
     }
   ]
