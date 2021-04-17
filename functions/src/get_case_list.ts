@@ -1,21 +1,8 @@
-const cloudbase = require('@cloudbase/node-sdk');
-
-const db = cloudbase
-  .init({
-    env: 'atom-2gbnzw0gde4242dc',
-  })
-  .database();
-
-const CaseStatus = {
-  AGREE: 0,
-  WAITING: 1,
-  REJECT: 2,
-};
+import { db, CaseType, CaseStatus } from './until';
 
 const now = new Date();
-let oldDate = new Date(now.setDate(now.getDate() - 30));
-
-const { gt, eq, or, neq } = db.command.aggregate;
+const oldDate = new Date(now.setDate(now.getDate() - 30));
+const { gt, neq } = db.command.aggregate;
 
 // 一些特殊的查询条件
 const ConditionList = {
@@ -26,7 +13,19 @@ const ConditionList = {
   },
 };
 
-exports.main = async ({
+interface requestProp {
+  current: number;
+  pageSize: number;
+  condition: 'approvedCases' | Object;
+  caseCause: string;
+  litigant: string;
+  undertaker: string;
+  caseSituation: string;
+  caseId: string;
+  CaseType: CaseType;
+}
+
+const getCaseList = async ({
   current,
   pageSize,
   condition,
@@ -36,32 +35,43 @@ exports.main = async ({
   caseSituation,
   caseId,
   CaseType,
-}) => {
+}: requestProp) => {
   const conditionI =
-    typeof condition === 'string'
+    typeof condition === 'string' && condition === 'approvedCases'
       ? ConditionList[condition]
       : {
+          //@ts-ignore
+
           caseCause: new db.RegExp({
             regexp: `.*${caseCause || ''}.*`,
           }),
+          //@ts-ignore
+
           litigant: new db.RegExp({
             regexp: `.*${litigant || ''}.*`,
           }),
           // undertakerName: new db.RegExp({
           //   regexp: `.*${undertakerName || ''}.*`,
           // }),
+          //@ts-ignore
+
           caseSituation: new db.RegExp({
             regexp: `.*${caseSituation || ''}.*`,
           }),
+          //@ts-ignore
+
           caseId: new db.RegExp({
             regexp: `.*${caseId || ''}.*`,
           }),
+          //@ts-ignore
+
           undertaker: new db.RegExp({
             regexp: `.*${undertaker || ''}.*`,
           }),
-          ...condition,
+          ...(condition as Object),
         };
   if (CaseType) {
+    // @ts-ignore
     conditionI['CaseType'] = Number(CaseType);
   }
   const res = await db
@@ -108,3 +118,5 @@ exports.main = async ({
     conditionI,
   };
 };
+
+export { getCaseList };

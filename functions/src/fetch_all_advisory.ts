@@ -1,21 +1,25 @@
-const cloudbase = require('@cloudbase/node-sdk');
+import { db } from './until';
 
-const db = cloudbase
-  .init({
-    env: 'atom-2gbnzw0gde4242dc',
-  })
-  .database();
-
-exports.main = async ({ name, undertaker }) => {
+const fetchAllAdvisory = async ({
+  name,
+  undertaker,
+}: {
+  name: string;
+  undertaker: string;
+}) => {
   const res = await db
     .collection('Advisory')
     .aggregate()
     .match({
+      //@ts-ignore
       name: new db.RegExp({
         regexp: `.*${name || ''}.*`,
+        options: 'i',
       }),
+      //@ts-ignore
       _openid: new db.RegExp({
         regexp: `.*${undertaker || ''}.*`,
+        options: 'i',
       }),
     })
     .limit(1000)
@@ -38,3 +42,5 @@ exports.main = async ({ name, undertaker }) => {
     .end();
   return res;
 };
+
+export { fetchAllAdvisory };

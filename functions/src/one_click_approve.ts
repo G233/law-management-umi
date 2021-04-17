@@ -1,31 +1,14 @@
-// 一键审批函数
-const cloudbase = require('@cloudbase/node-sdk');
+import { db, CaseStatus, noticeState, noticeType } from './until';
 
-const app = cloudbase.init({
-  env: 'atom-2gbnzw0gde4242dc',
-});
+const dbCase = db.collection('Cases');
+const dbNotice = db.collection('Notice');
 
-const dbCase = app.database().collection('Cases');
-const dbNotice = app.database().collection('Notice');
-
-const CaseStatus = {
-  AGREE: 0,
-  WAITING: 1,
-  REJECT: 2,
-};
-
-const noticeState = {
-  unReade: 0,
-  read: 1,
-};
-
-const noticeType = {
-  approve: 'approve',
-  msg: 'msg',
-  approveResult: 'approveResult', // 审批结果通知
-};
-
-const approveAgree = async (id, approverId, approveState, approveMsg) => {
+const approveAgree = async (
+  id: string,
+  approverId: string,
+  approveState: CaseStatus,
+  approveMsg: string,
+) => {
   await dbCase.doc(id).update({
     approveStatus: approveState,
     approverId,
@@ -37,7 +20,7 @@ const approveAgree = async (id, approverId, approveState, approveMsg) => {
 };
 
 // 添加审批结果通知
-const addNotice = async (caseId, approveState) => {
+const addNotice = async (caseId: string, approveState: CaseStatus) => {
   const res = await dbCase.doc(caseId).get();
   const resCase = res.data[0];
   const notice = {
@@ -56,7 +39,7 @@ const addNotice = async (caseId, approveState) => {
 };
 
 // 清除关联同一个案件的审批通知
-const cleanNotice = async (caseId) => {
+const cleanNotice = async (caseId: string) => {
   const res = await dbNotice
     .where({
       type: noticeType.approve,
@@ -70,7 +53,21 @@ const cleanNotice = async (caseId) => {
   });
 };
 
-exports.main = async ({ approverId, idList, approveState, approveMsg }) =>
+interface requestProp {
+  approverId: string;
+  idList: string[];
+  approveState: CaseStatus;
+  approveMsg: string;
+}
+
+const oneClickApprove = async ({
+  approverId,
+  idList,
+  approveState,
+  approveMsg,
+}: requestProp) =>
   await Promise.all(
     idList.map((id) => approveAgree(id, approverId, approveState, approveMsg)),
   );
+
+export { oneClickApprove };

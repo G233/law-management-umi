@@ -12,8 +12,8 @@ export const cloudFunction = async (name: string, data?: any) => {
   // console.log(data);
   const res = await cloudApp
     .callFunction({
-      name: name,
-      data: data,
+      name: 'fn_call',
+      data: { fnName: name, data: data },
     })
     .catch(() => showError());
   // console.log(`调用云函数: ${name} 返回数据`);

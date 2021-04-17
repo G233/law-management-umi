@@ -1,9 +1,0 @@
-{
-    "name": "create_cases",
-    "version": "1.0.0",
-    "main": "index.js",
-    "dependencies": {
-        "@cloudbase/node-sdk": "^2.5.0",
-        "uuid": "^8.3.2"
-    }
-}

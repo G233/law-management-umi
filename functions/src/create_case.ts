@@ -1,34 +1,10 @@
-const cloudbase = require('@cloudbase/node-sdk');
 const { v4: uuidv4 } = require('uuid');
+import { db, CaseStatus, noticeType, noticeState, _ } from './until';
 
-const CaseStatus = {
-  AGREE: 0,
-  WAITING: 1,
-  REJECT: 2,
-};
-
-const app = cloudbase.init({
-  env: 'atom-2gbnzw0gde4242dc',
-});
 const CaseCauseId = '28ee4e3e605adc2e0c514fe90a97ea26';
 
-const db = app.database();
-const _ = db.command;
-
-const noticeType = {
-  approve: 'approve', // 有人发起审批
-  approveResult: 'approveResult', // 审批结果
-  msg: 'msg',
-};
-
-const noticeState = {
-  unReade: 0,
-  read: 1,
-};
-
 // 当前案由没有在缓存中就添加
-const updateCaseCause = async ({ caseCause }) => {
-  console.log('caseCause', caseCause);
+const updateCaseCause = async ({ caseCause }: { caseCause: string }) => {
   const caseCauseCache = db.collection('Cache').doc(CaseCauseId);
   const Cache = await caseCauseCache.get();
   if (Cache.data[0].caseCauseList.indexOf(caseCause) !== -1) return;
@@ -36,18 +12,18 @@ const updateCaseCause = async ({ caseCause }) => {
     .update({
       caseCauseList: _.push(caseCause),
     })
-    .catch((e) => e);
+    .catch(() => {});
 };
 
 // 新建针对所有管理律师的审批通知
-const addNotice = async (Case, id) => {
+const addNotice = async (Case: any, id: string) => {
   const res = await db
     .collection('User')
     .where({
       role: 'admin',
     })
     .get();
-  res.data.forEach((user) => {
+  res.data.forEach((user: any) => {
     // 自己新建的不需要通知
     if (user._openid !== Case.undertaker) {
       console.log('审批了');
@@ -65,14 +41,17 @@ const addNotice = async (Case, id) => {
   });
 };
 
-const formatCase = (value, id) => {
+const formatCase = (
+  value: { createTime: Date; approveStatus: CaseStatus; _id: string },
+  id: string,
+) => {
   value.createTime = new Date();
   value.approveStatus = CaseStatus.WAITING;
   value._id = id;
   return value;
 };
 
-exports.main = async (Case) => {
+const CreateCase = async (Case: any) => {
   const id = uuidv4();
   console.log('id:', id);
   const res = await db.collection('Cases').add(formatCase(Case, id));
@@ -82,3 +61,5 @@ exports.main = async (Case) => {
 
   return res;
 };
+
+export { CreateCase };
