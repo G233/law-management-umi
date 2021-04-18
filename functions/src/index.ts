@@ -18,6 +18,7 @@ export let isDev = false;
 
 exports.main = async function ({ fnName, data, isDev }: any) {
   isDev = isDev;
+  console.log(`当前处于${isDev ? '开发' : '生产'}环境`);
   //@ts-ignore
   return await fnList[fnName](data);
 };
