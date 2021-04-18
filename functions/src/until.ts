@@ -1,11 +1,9 @@
 import * as cloudbase from '@cloudbase/node-sdk';
-
-const isDev = process.env.NODE_ENV === 'development';
-
+import { isDev } from './index';
 // 云开发相关函数
 export const db = cloudbase
   .init({
-    env: 'law-build-9gbw1ney8060a480',
+    env: isDev ? 'atom-2gbnzw0gde4242dc' : 'law-build-8gty78990cd939d6',
   })
   .database();
 

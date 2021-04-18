@@ -8,12 +8,13 @@ const _ = db.command;
  * @param {string} data - 函数参数.
  */
 export const cloudFunction = async (name: string, data?: any) => {
+  const isDev = process.env.NODE_ENV === 'development';
   console.log(`调用云函数: ${name} 参数`);
   console.log(data);
   const res = await cloudApp
     .callFunction({
       name: 'fn_call',
-      data: { fnName: name, data: data },
+      data: { fnName: name, data: data, isDev },
     })
     .catch(() => showError());
   console.log(`调用云函数: ${name} 返回数据`);

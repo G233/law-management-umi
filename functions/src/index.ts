@@ -14,7 +14,10 @@ const fnList = {
   update_user_info: UpdateUserInfo,
 };
 
-exports.main = async function ({ fnName, data }: any) {
+export let isDev = false;
+
+exports.main = async function ({ fnName, data, isDev }: any) {
+  isDev = isDev;
   //@ts-ignore
   return await fnList[fnName](data);
 };
