@@ -101,7 +101,7 @@ export const resetEmail = async (newEmail: string, oldEmail: string) => {
 // 更改密码
 export const resetPassword = async (email: string) => {
   return auth.sendPasswordResetEmail(email).then(() => {
-    message.success('重置密码邮件发送成功，请注意查收');
+    message.success('重置密码邮件已发送，请注意查收');
   });
 };
 

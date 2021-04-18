@@ -1,18 +1,6 @@
-import { message } from 'antd';
-import type { ActionType } from '@ant-design/pro-table';
+import moment from 'moment';
 
-import { db, cloudApp } from '@/cloud_function/index';
-import {
-  cloudFunction,
-  cloudFIndById,
-  cloudUpdateById,
-  cloudWhere,
-  cloudAdd,
-} from '@/services/until';
-import { CaseCauseId, CaseIdCacheId } from '@/services/const';
-
-const _ = db.command;
-const dbNotice = db.collection('Notice');
+import { cloudUpdateById, cloudWhere, cloudAdd } from '@/services/until';
 
 export enum noticeState {
   unReade,
@@ -46,6 +34,25 @@ export const readNotice = async (item: Notice) => {
   });
 };
 
+// 将 api 返回的数据,格式化为 ui 需要的数据格式
+export const getNoticeData = (notices: Notice[]): Notice[] => {
+  if (!notices || notices.length === 0 || !Array.isArray(notices)) {
+    return [];
+  }
+  const newNotices = notices.map((notice) => {
+    const newNotice = { ...notice };
+    // 把时间格式化为相对时间
+    if (newNotice.createTime) {
+      moment.locale('zh-cn');
+      newNotice.createTime = moment(notice.createTime).fromNow();
+    }
+    return newNotice;
+  });
+
+  return newNotices;
+};
+
+// 获取通知消息
 export const getNotices = async (id: string) => {
   const res = await cloudWhere(
     'Notice',
@@ -54,3 +61,10 @@ export const getNotices = async (id: string) => {
   );
   return res;
 };
+// 获取未读消息数量
+export const getUnreadData = (noticeData: Notice[]) =>
+  noticeData.reduce(
+    (accumulator, notice) =>
+      accumulator + (notice.state === noticeState.unReade ? 1 : 0),
+    0,
+  );

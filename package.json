@@ -30,6 +30,7 @@
     "@cloudbase/js-sdk": "^1.4.0",
     "@cloudbase/node-sdk": "^2.5.0",
     "@umijs/preset-react": "1.x",
+    "ahooks": "^2.10.0",
     "react-helmet-async": "^1.0.7",
     "umi": "^3.3.9",
     "uuid": "^8.3.2"

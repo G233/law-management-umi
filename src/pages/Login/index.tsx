@@ -1,13 +1,13 @@
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
-import { Alert, message } from 'antd';
+import { Alert, message, Button } from 'antd';
 import React, { useState } from 'react';
 import { trim } from 'lodash';
-import ProForm, { ProFormText } from '@ant-design/pro-form';
+import ProForm, { ProFormText, ModalForm } from '@ant-design/pro-form';
 import { Link, history, useModel } from 'umi';
 import Footer from '@/components/Footer';
 
 import styles from './index.less';
-import { signIn, fetchUserInfo } from '@/services/user';
+import { signIn, fetchUserInfo, resetPassword } from '@/services/user';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -37,6 +37,29 @@ const Login: React.FC = () => {
   const [loginStatus, setLoginStatus] = useState(LoginStatus.LODING);
   const { initialState, setInitialState } = useModel('@@initialState');
 
+  const forgetPsw = () => (
+    <ModalForm
+      title="重置密码"
+      trigger={<Button type="link">忘记密码</Button>}
+      onFinish={async (values) => {
+        await resetPassword(values.email as string);
+        return true;
+      }}
+    >
+      <ProFormText
+        name="email"
+        label="登陆邮箱"
+        placeholder="请输入忘记密码的邮箱"
+        rules={[
+          {
+            required: true,
+            message: '请输入登陆邮箱',
+          },
+        ]}
+      />
+    </ModalForm>
+  );
+
   // 用户登陆函数
   const handleSubmit = async (values: LoginParams) => {
     setSubmitting(true);
@@ -58,6 +81,7 @@ const Login: React.FC = () => {
       setInitialState({ currentUser, hasLogin: true });
       setInitialState({ currentUser, hasLogin: true });
       history.push('/');
+      return;
     }
     setSubmitting(false);
   };
@@ -130,6 +154,13 @@ const Login: React.FC = () => {
                 },
               ]}
             />
+            <div
+              style={{
+                float: 'right',
+              }}
+            >
+              {forgetPsw()}
+            </div>
           </ProForm>
         </div>
       </div>

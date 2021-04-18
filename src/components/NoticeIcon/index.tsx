@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { message } from 'antd';
-import moment from 'moment';
+import { useUnmountedRef } from 'ahooks';
+
 import { useModel, history } from 'umi';
 import {
   getNotices,
@@ -8,58 +9,38 @@ import {
   noticeState,
   noticeType,
   readNotice,
+  getNoticeData,
+  getUnreadData,
 } from '@/services/notice';
 
 import NoticeIcon from './NoticeIcon';
 import styles from './index.less';
 
-export type GlobalHeaderRightProps = {
-  fetchingNotices?: boolean;
-  onNoticeVisibleChange?: (visible: boolean) => void;
-  onNoticeClear?: (tabName?: string) => void;
-};
-
-// 将 api 返回的数据,格式化为 ui 需要的数据格式
-const getNoticeData = (notices: Notice[]): Notice[] => {
-  if (!notices || notices.length === 0 || !Array.isArray(notices)) {
-    return [];
-  }
-
-  const newNotices = notices.map((notice) => {
-    const newNotice = { ...notice };
-    // 把时间格式化为相对时间
-    if (newNotice.createTime) {
-      moment.locale('zh-cn');
-      newNotice.createTime = moment(notice.createTime).fromNow();
-    }
-    return newNotice;
-  });
-
-  return newNotices;
-};
-
-// 获取未读消息数量
-const getUnreadData = (noticeData: Notice[]) =>
-  noticeData.reduce(
-    (accumulator, notice) =>
-      accumulator + (notice.state === noticeState.unReade ? 1 : 0),
-    0,
-  );
-
 const NoticeIconView = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
   const [notices, setNotices] = useState<Notice[]>([]);
+  const unmountRef: { current: boolean } = useUnmountedRef();
+  const [noticeData, setNoticeData] = useState<Notice[]>([]);
+  const [unreadMsgCount, setUnreadMsgCount] = useState<number>();
   const [popupVisible, setPopupVisible] = useState(false);
+  let didCancel = false;
+
+  const initData = async () => {
+    const res: Notice[] = await getNotices(currentUser?.uid as string);
+    const noticeData = getNoticeData(res);
+    const unreadMsgCount = getUnreadData(noticeData || []);
+    // 若函数组件已经背卸载就不设置数据了
+    if (!unmountRef.current) {
+      setUnreadMsgCount(unreadMsgCount ?? []);
+      setNotices(res ?? []);
+      setNoticeData(noticeData ?? []);
+    }
+  };
 
   useEffect(() => {
-    getNotices(currentUser?.uid as string).then((res: Notice[]) =>
-      setNotices(res ?? []),
-    );
+    initData();
   }, []);
-
-  const noticeData = getNoticeData(notices);
-  const unreadMsgCount = getUnreadData(noticeData || []);
 
   const changeReadState = (id: string) => {
     setNotices(
