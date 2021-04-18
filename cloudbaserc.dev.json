@@ -10,7 +10,10 @@
   "functions": [
     {
       "name": "fn_call",
-      "installDependency": true
+      "installDependency": true,
+      "envVariables": {
+        "NODE_ENV": "development"
+      }
     }
   ]
 }

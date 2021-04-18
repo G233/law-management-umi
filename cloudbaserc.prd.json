@@ -1,0 +1,19 @@
+{
+  "envId": "law-build-8gty78990cd939d6",
+  "version": "2.0",
+  "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
+  "functionRoot": "./functions",
+  "framework": {
+    "name": "law-build",
+    "plugins": {}
+  },
+  "functions": [
+    {
+      "name": "fn_call",
+      "installDependency": true,
+      "envVariables": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}

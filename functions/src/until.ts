@@ -1,5 +1,5 @@
 import * as cloudbase from '@cloudbase/node-sdk';
-import { isDev } from './index';
+const isDev = process.env.NODE_ENV === 'development';
 // 云开发相关函数
 export const db = cloudbase
   .init({
