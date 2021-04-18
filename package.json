@@ -5,7 +5,7 @@
     "build": "yarn run fnBuild &&  yarn run fnDeployPrd  && umi build ",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
-    "fnBuild": "esbuild functions/src/index.ts --bundle --outdir=functions/fn_call  --platform=node --target=node10.4  ",
+    "fnBuild": "esbuild functions/src/index.ts --bundle --outdir=functions/fn_call  --platform=node --target=node10.4 --minify  ",
     "fnDeployDev": " yarn run fnBuild  && tcb fn deploy fn_call --force --config-file cloudbaserc.dev.json ",
     "fnDeployPrd": " yarn run fnBuild && tcb fn deploy fn_call --force --config-file cloudbaserc.prd.json",
     "test": "umi-test",
