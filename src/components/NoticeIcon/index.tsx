@@ -13,34 +13,35 @@ import {
   getUnreadData,
 } from '@/services/notice';
 
+import useSafeState from '@/hook/useSafeState/index';
+
 import NoticeIcon from './NoticeIcon';
 import styles from './index.less';
 
 const NoticeIconView = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
-  const [notices, setNotices] = useState<Notice[]>([]);
-  const unmountRef: { current: boolean } = useUnmountedRef();
-  const [noticeData, setNoticeData] = useState<Notice[]>([]);
-  const [unreadMsgCount, setUnreadMsgCount] = useState<number>();
-  const [popupVisible, setPopupVisible] = useState(false);
+  const [notices, setNotices] = useSafeState<Notice[]>([]);
+  const [noticeData, setNoticeData] = useSafeState<Notice[]>([]);
+  const [unreadMsgCount, setUnreadMsgCount] = useSafeState<number>();
+  const [popupVisible, setPopupVisible] = useSafeState(false);
   let didCancel = false;
 
   const initData = async () => {
     const res: Notice[] = await getNotices(currentUser?.uid as string);
-    const noticeData = getNoticeData(res);
-    const unreadMsgCount = getUnreadData(noticeData || []);
-    // 若函数组件已经背卸载就不设置数据了
-    if (!unmountRef.current) {
-      setUnreadMsgCount(unreadMsgCount ?? []);
-      setNotices(res ?? []);
-      setNoticeData(noticeData ?? []);
-    }
+    setNotices(res ?? []);
   };
 
   useEffect(() => {
+    const noticeData = getNoticeData(notices);
+    const unreadMsgCount = getUnreadData(noticeData || []);
+    setUnreadMsgCount(unreadMsgCount ?? []);
+    setNoticeData(noticeData ?? []);
+  }, [notices]);
+
+  useEffect(() => {
     initData();
-  }, []);
+  }, [currentUser?.uid]);
 
   const changeReadState = (id: string) => {
     setNotices(
