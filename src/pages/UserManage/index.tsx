@@ -17,7 +17,7 @@ export default function advisoryList() {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const roleText = {
     admin: '管理律师',
-    user: '普通律师',
+    user: '执业律师',
   };
   const userColumns: ProColumns[] = [
     {
