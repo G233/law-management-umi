@@ -61,6 +61,8 @@ export interface Case {
   litigantPhone: string;
   // 当事人基本情况
   litigantSituation?: string;
+  // 对方当事人基本情况
+  otherLitigantSituation?: string;
   // 委托人基本要求
   clientSituation?: string;
   // 案件基本情况

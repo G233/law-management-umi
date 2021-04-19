@@ -134,7 +134,18 @@ export default function CreateCase() {
           rules={[
             {
               required: true,
-              message: '请选择承请输入当事人基本情况',
+              message: '输入当事人基本情况',
+            },
+          ]}
+        />
+        <ProFormTextArea
+          name="otherLitigantSituation"
+          label="对方当事人基本情况"
+          placeholder="请输入对方当事人基本情况"
+          rules={[
+            {
+              required: true,
+              message: '请输入对方当事人基本情况',
             },
           ]}
         />

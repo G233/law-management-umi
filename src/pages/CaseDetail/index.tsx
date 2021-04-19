@@ -20,12 +20,7 @@ import {
   uploadFile,
   downloadFile,
 } from '@/services/cases';
-import {
-  cloudFunction,
-  cloudFIndById,
-  cloudUpdateById,
-  cloudWhere,
-} from '@/services/until';
+import { cloudFIndById } from '@/services/until';
 
 export default function CreateCasePage() {
   interface optionType {
@@ -130,6 +125,12 @@ export default function CreateCasePage() {
                 readonly={readonly}
                 name="litigantSituation"
                 label="当事人基本情况"
+                placeholder="请输入当事人基本情况"
+              />
+              <ProFormTextArea
+                readonly={readonly}
+                name="otherLitigantSituation"
+                label="对方当事人基本情况"
                 placeholder="请输入当事人基本情况"
               />
               <ProFormTextArea
