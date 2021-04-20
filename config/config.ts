@@ -38,7 +38,6 @@ export default {
       component: '@/pages/UserManage/index',
       name: '律师信息',
       icon: 'UserSwitchOutlined',
-      access: 'admin',
     },
 
     {

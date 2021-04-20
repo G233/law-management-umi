@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Alert, Space } from 'antd';
+import { useAccess } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ModalForm, ProFormText } from '@ant-design/pro-form';
 import { EditableProTable } from '@ant-design/pro-table';
@@ -15,6 +16,8 @@ import {
 
 export default function advisoryList() {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  const access = useAccess();
+
   const roleText = {
     admin: '管理律师',
     user: '执业律师',
@@ -37,60 +40,67 @@ export default function advisoryList() {
         return record.role !== 'admin';
       },
     },
-    {
-      title: '操作',
-      valueType: 'option',
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action.startEditable?.(record._id);
-          }}
-        >
-          编辑
-        </a>,
-      ],
-    },
   ];
-  const createBtn = (fn: ActionType | undefined) => (
-    <ModalForm<UserInfo>
-      title="添加人员"
-      trigger={
-        <Button type="primary">
-          <PlusOutlined />
-          添加人员
-        </Button>
-      }
-      onFinish={async (values) => {
-        await addUser(values);
-        // @ts-ignore
-        fn.reloadAndRest();
 
-        return true;
-      }}
-    >
-      <ProFormText
-        name="email"
-        label="登陆邮箱"
-        tooltip="此邮箱将用于登陆管理系统"
-        placeholder="请输入邮箱"
-        width="sm"
-        rules={[
-          {
-            required: true,
-            message: '请输入登陆邮箱',
-          },
-        ]}
-      />
-      <Space direction="vertical" size="large">
-        <Alert
-          message="默认登陆密码「 heqing123456 」请尽快修改密码"
-          closable
-          type="info"
+  useEffect(() => {
+    access.admin &&
+      userColumns.push({
+        title: '操作',
+        valueType: 'option',
+        render: (text, record, _, action) => [
+          <a
+            key="editable"
+            onClick={() => {
+              action.startEditable?.(record._id);
+            }}
+          >
+            编辑
+          </a>,
+        ],
+      });
+  }, [access.admin]);
+
+  const createBtn = (fn: ActionType | undefined) =>
+    access.admin ? (
+      <ModalForm<UserInfo>
+        title="添加人员"
+        trigger={
+          <Button type="primary">
+            <PlusOutlined />
+            添加人员
+          </Button>
+        }
+        onFinish={async (values) => {
+          await addUser(values);
+          // @ts-ignore
+          fn.reloadAndRest();
+
+          return true;
+        }}
+      >
+        <ProFormText
+          name="email"
+          label="登陆邮箱"
+          tooltip="此邮箱将用于登陆管理系统"
+          placeholder="请输入邮箱"
+          width="sm"
+          rules={[
+            {
+              required: true,
+              message: '请输入登陆邮箱',
+            },
+          ]}
         />
-      </Space>
-    </ModalForm>
-  );
+        <Space direction="vertical" size="large">
+          <Alert
+            message="默认登陆密码「 heqing123456 」请尽快修改密码"
+            closable
+            type="info"
+          />
+        </Space>
+      </ModalForm>
+    ) : null;
+
   return (
     <PageContainer>
       <EditableProTable
