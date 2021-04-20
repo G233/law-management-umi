@@ -23,6 +23,22 @@ export default function approvingCases() {
   const approvingColumns: ProColumns<Case>[] = [
     ...commonColumns(),
     {
+      title: '案件基本情况',
+      dataIndex: 'caseSituation',
+      ellipsis: true,
+      align: 'center',
+      width: 160,
+      hideInSearch: true,
+    },
+    {
+      title: '承办人基本意见',
+      dataIndex: 'undertakerOpinion',
+      ellipsis: true,
+      width: 120,
+      align: 'center',
+      hideInSearch: true,
+    },
+    {
       title: '操作',
       width: 140,
       valueType: 'option',

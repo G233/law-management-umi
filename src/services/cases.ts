@@ -55,11 +55,13 @@ export const caseIdText = {
 export interface Case {
   // 案由：
   caseCause: string;
-  // 当事人名称
+  // 委托当事人姓名(名称)
   litigant: string;
-  // 当事人联系方式
+  // 对方当事人姓名(名称)
+  otherlitigant: string;
+  // 委托当事人联系方式
   litigantPhone: string;
-  // 当事人基本情况
+  // 委托当事人基本情况
   litigantSituation?: string;
   // 对方当事人基本情况
   otherLitigantSituation?: string;

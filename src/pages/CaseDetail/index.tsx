@@ -106,24 +106,43 @@ export default function CreateCasePage() {
 
               <ProForm.Group>
                 <ProFormText
-                  readonly={readonly}
                   name="litigant"
-                  label="当事人名称"
+                  label="委托当事人姓名(名称)"
                   width="md"
-                  placeholder="请输入当事人名字"
+                  readonly={readonly}
+                  placeholder="请输入委托当事人姓名(名称)"
+                  rules={[
+                    {
+                      required: true,
+                      message: '请输入委托当事人姓名(名称)',
+                    },
+                  ]}
                 />
                 <ProFormText
-                  readonly={readonly}
                   name="litigantPhone"
-                  label="当事人联系方式"
-                  placeholder="请输入当事人联系方式"
+                  label="委托当事人联系方式"
+                  readonly={readonly}
+                  placeholder="请输入委托当事人联系方式"
                   width="md"
+                />
+                <ProFormText
+                  name="otherlitigant"
+                  label="对方当事人姓名(名称)"
+                  readonly={readonly}
+                  width="md"
+                  placeholder="请输入对方当事人姓名(名称)"
+                  rules={[
+                    {
+                      required: true,
+                      message: '请输入对方当事人姓名(名称)',
+                    },
+                  ]}
                 />
               </ProForm.Group>
               <ProFormTextArea
                 readonly={readonly}
                 name="litigantSituation"
-                label="当事人基本情况"
+                label="委托当事人基本情况"
                 placeholder="请输入当事人基本情况"
               />
               <ProFormTextArea
@@ -169,6 +188,12 @@ export default function CreateCasePage() {
                     value: CaseType.Administrative,
                   },
                 ]}
+              />
+              <ProFormText
+                name="caseId"
+                label="案号"
+                width="lg"
+                readonly={readonly}
               />
               <ProFormUploadDragger
                 readonly={readonly}

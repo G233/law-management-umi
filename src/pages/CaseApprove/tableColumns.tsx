@@ -35,9 +35,15 @@ export const commonColumns = (): ProColumns<Case>[] => {
       ),
     },
     {
-      title: '当事人名称',
+      title: '委托当事人姓名(名称)',
       width: 80,
       dataIndex: 'litigant',
+      align: 'center',
+    },
+    {
+      title: '对方当事人姓名(名称)',
+      width: 80,
+      dataIndex: 'otherlitigant',
       align: 'center',
     },
     {
@@ -57,28 +63,12 @@ export const commonColumns = (): ProColumns<Case>[] => {
       ),
     },
     {
-      title: '承办人基本意见',
-      dataIndex: 'undertakerOpinion',
-      ellipsis: true,
-      width: 120,
-      align: 'center',
-      hideInSearch: true,
-    },
-    {
       title: '立案时间',
       width: 100,
       dataIndex: 'createTime',
       align: 'center',
       valueType: 'date',
       search: false,
-      hideInSearch: true,
-    },
-    {
-      title: '案件基本情况',
-      dataIndex: 'caseSituation',
-      ellipsis: true,
-      align: 'center',
-      width: 160,
       hideInSearch: true,
     },
     {

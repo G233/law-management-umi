@@ -56,7 +56,7 @@ export default function CreateCase() {
 
   return (
     <div>
-      <ModalForm
+      <ModalForm<Case>
         title="新建审批案件"
         trigger={
           <Button type="primary">
@@ -65,7 +65,7 @@ export default function CreateCase() {
           </Button>
         }
         onFinish={async (values) => {
-          await createCase(values as Case);
+          await createCase(values);
           return true;
         }}
       >
@@ -93,6 +93,7 @@ export default function CreateCase() {
             request={fetchLawList}
             placeholder="选择承办律师"
             rules={[{ required: true, message: '请选择承办律师' }]}
+            width="md"
             showSearch={true}
           />
         </ProForm.Group>
@@ -100,24 +101,36 @@ export default function CreateCase() {
         <ProForm.Group>
           <ProFormText
             name="litigant"
-            label="当事人名称"
+            label="委托当事人姓名(名称)"
             width="md"
-            placeholder="请输入当事人名字"
+            placeholder="请输入委托当事人姓名(名称)"
             rules={[
               {
                 required: true,
-                message: '请输入当事人名称',
+                message: '请输入委托当事人姓名(名称)',
+              },
+            ]}
+          />
+          <ProFormText
+            name="otherlitigant"
+            label="对方当事人姓名(名称)"
+            width="md"
+            placeholder="请输入对方当事人姓名(名称)"
+            rules={[
+              {
+                required: true,
+                message: '请输入对方当事人姓名(名称)',
               },
             ]}
           />
           <ProFormText
             name="litigantPhone"
-            label="当事人联系方式"
-            placeholder="请输入当事人联系方式"
+            label="委托当事人联系方式"
+            placeholder="请输入委托当事人联系方式"
             rules={[
               {
                 required: true,
-                message: '请输入当事人联系方式',
+                message: '请输入委托当事人联系方式',
               },
               {
                 pattern: numReg,
@@ -129,12 +142,12 @@ export default function CreateCase() {
         </ProForm.Group>
         <ProFormTextArea
           name="litigantSituation"
-          label="当事人基本情况"
-          placeholder="请输入当事人基本情况"
+          label="委托当事人基本情况"
+          placeholder="请输入委托当事人基本情况"
           rules={[
             {
               required: true,
-              message: '输入当事人基本情况',
+              message: '请输入委托当事人基本情况',
             },
           ]}
         />
