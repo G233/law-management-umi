@@ -1,6 +1,9 @@
-import ProTable from '@ant-design/pro-table';
 import { useModel } from 'umi';
 import { Tag } from 'antd';
+import type { ProColumns } from '@ant-design/pro-table';
+import { PageContainer } from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+
 import {
   Case,
   fetchMyCases,
@@ -8,9 +11,8 @@ import {
   CaseStatusColor,
   CaseStatusText,
 } from '@/services/cases';
-import type { ProColumns } from '@ant-design/pro-table';
-
 import { commonColumns } from '@/pages/CaseApprove/tableColumns';
+import createCase from '@/pages/addCaseApprove/createCase';
 
 export default function myCases() {
   const { initialState } = useModel('@@initialState');
@@ -51,16 +53,18 @@ export default function myCases() {
   ];
 
   return (
-    <ProTable<Case>
-      columns={myCasesColumns}
-      request={(data: requestProp) =>
-        fetchMyCases({ ...data, openId, tag: 'all' })
-      }
-      scroll={{ x: 1300 }}
-      search={false}
-      rowKey={(e) => e._id ?? 'key'}
-      headerTitle="待审批案件"
-      toolBarRender={() => []}
-    />
+    <PageContainer>
+      <ProTable<Case>
+        columns={myCasesColumns}
+        request={(data: requestProp) =>
+          fetchMyCases({ ...data, openId, tag: 'all' })
+        }
+        scroll={{ x: 1300 }}
+        search={false}
+        rowKey={(e) => e._id ?? 'key'}
+        headerTitle="案件审批记录"
+        toolBarRender={() => [createCase()]}
+      />
+    </PageContainer>
   );
 }

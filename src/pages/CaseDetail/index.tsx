@@ -30,7 +30,6 @@ export default function CreateCasePage() {
   const location = useLocation();
   //@ts-ignore
   const caseId: string | undefined = location?.query?.id;
-  const numReg = /^[0-9]*$/;
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
   const [caseData, setCaseData] = useState<Case>();

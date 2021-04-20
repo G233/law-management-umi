@@ -11,13 +11,13 @@ export default {
     {
       path: '/CaseList',
       component: '@/pages/CaseList/index',
-      name: '所有案件',
+      name: '律所案件信息',
       icon: 'SnippetsOutlined',
     },
     {
       path: '/AllAdvisory',
       component: '@/pages/Advisory/all',
-      name: '法律顾问单位',
+      name: '律所法律顾问单位信息',
       icon: 'CommentOutlined',
     },
     {
@@ -28,9 +28,15 @@ export default {
       access: 'admin',
     },
     {
+      path: '/addCaseApprove',
+      component: '@/pages/addCaseApprove/index',
+      name: '案件报批',
+      icon: 'UserSwitchOutlined',
+    },
+    {
       path: '/UserManage',
       component: '@/pages/UserManage/index',
-      name: '人员管理',
+      name: '律师信息',
       icon: 'UserSwitchOutlined',
       access: 'admin',
     },
@@ -46,12 +52,6 @@ export default {
           path: '/My/caseList',
           component: '@/pages/My/caseList',
           name: '案件',
-          icon: 'UserOutlined',
-        },
-        {
-          path: '/My/approveCase',
-          component: '@/pages/My/approveCase',
-          name: '审批案件',
           icon: 'UserOutlined',
         },
         {

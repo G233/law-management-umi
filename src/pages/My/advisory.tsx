@@ -6,7 +6,6 @@ import {
   ModalForm,
   ProFormText,
   ProFormDateRangePicker,
-  ProFormDigit,
 } from '@ant-design/pro-form';
 
 import { useModel } from 'umi';
