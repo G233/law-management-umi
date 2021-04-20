@@ -23,8 +23,14 @@ jobs:
       - name: Add tcb
         run: npm i -g @cloudbase/cli
 
+      - name: node_moudles
+        run: yarn
+
+      - name: tcb login
+        run: tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}
+
       - name: Build project
-        run: yarn && tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}  && yarn build
+        run: yarn build
 
       - name: Upload COS
         uses: zkqiang/tencent-cos-action@v0.1.0
