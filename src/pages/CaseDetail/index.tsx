@@ -21,6 +21,7 @@ import {
   downloadFile,
 } from '@/services/cases';
 import { cloudFIndById } from '@/services/until';
+import styles from './index.less';
 
 export default function CreateCasePage() {
   interface optionType {
@@ -34,14 +35,8 @@ export default function CreateCasePage() {
   const userInfo = initialState?.currentUser;
   const [caseData, setCaseData] = useState<Case>();
   const [readonly, setReadonly] = useState<boolean>(true);
-
-  const [caseCauseList, setCaseCauseList] = useState<optionType[]>();
   let formI = Form.useForm();
 
-  // 获取案由自动完成的列表
-  const initAutoData = async () => {
-    setCaseCauseList(await fetchCaseCauseList());
-  };
   const initData = async (caseId: string | undefined) => {
     if (!caseId) return;
     const res = await cloudFIndById('Cases', caseId);
@@ -70,7 +65,7 @@ export default function CreateCasePage() {
   };
 
   return (
-    <div>
+    <div className={styles.main}>
       <PageContainer header={headerprops}>
         {caseId ? (
           <ProCard>
@@ -85,15 +80,12 @@ export default function CreateCasePage() {
               }}
             >
               <ProForm.Group>
-                <Form.Item name="caseCause" label="案由">
-                  <AutoComplete
-                    disabled={readonly}
-                    options={caseCauseList}
-                    style={{ width: 200 }}
-                    filterOption
-                    placeholder="请输入案由"
-                  />
-                </Form.Item>
+                <ProFormText
+                  name="caseCause"
+                  label="案由"
+                  width="lg"
+                  readonly={readonly}
+                />
                 <ProFormSelect
                   readonly={readonly}
                   name="undertaker"
@@ -111,12 +103,6 @@ export default function CreateCasePage() {
                   width="md"
                   readonly={readonly}
                   placeholder="请输入委托当事人姓名(名称)"
-                  rules={[
-                    {
-                      required: true,
-                      message: '请输入委托当事人姓名(名称)',
-                    },
-                  ]}
                 />
                 <ProFormText
                   name="litigantPhone"
@@ -125,25 +111,19 @@ export default function CreateCasePage() {
                   placeholder="请输入委托当事人联系方式"
                   width="md"
                 />
-                <ProFormText
-                  name="otherlitigant"
-                  label="对方当事人姓名(名称)"
-                  readonly={readonly}
-                  width="md"
-                  placeholder="请输入对方当事人姓名(名称)"
-                  rules={[
-                    {
-                      required: true,
-                      message: '请输入对方当事人姓名(名称)',
-                    },
-                  ]}
-                />
               </ProForm.Group>
               <ProFormTextArea
                 readonly={readonly}
                 name="litigantSituation"
                 label="委托当事人基本情况"
                 placeholder="请输入当事人基本情况"
+              />
+              <ProFormText
+                name="otherlitigant"
+                label="对方当事人姓名(名称)"
+                readonly={readonly}
+                width="md"
+                placeholder="请输入对方当事人姓名(名称)"
               />
               <ProFormTextArea
                 readonly={readonly}
@@ -206,7 +186,7 @@ export default function CreateCasePage() {
         ) : (
           <Result
             status="500"
-            title="请输入案件 id 进行查询"
+            title="请输入案件 id 进行查看"
             extra={
               <Button type="primary" onClick={() => history.back()}>
                 返回上个页面
