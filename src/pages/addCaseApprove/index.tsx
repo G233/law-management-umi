@@ -59,7 +59,7 @@ export default function myCases() {
         request={(data: requestProp) =>
           fetchMyCases({ ...data, openId, tag: 'all' })
         }
-        scroll={{ x: 1300 }}
+        scroll={{ x: 1000 }}
         search={false}
         rowKey={(e) => e._id ?? 'key'}
         headerTitle="案件审批记录"

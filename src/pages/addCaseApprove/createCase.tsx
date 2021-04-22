@@ -58,12 +58,7 @@ export default function CreateCase() {
     <div>
       <ModalForm<Case>
         title="新建审批案件"
-        trigger={
-          <Button type="primary">
-            <PlusOutlined />
-            新建审批案件
-          </Button>
-        }
+        trigger={<Button type="primary">新建审批案件</Button>}
         onFinish={async (values) => {
           await createCase(values);
           return true;

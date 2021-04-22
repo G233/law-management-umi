@@ -45,7 +45,6 @@ export default function advisoryList() {
         <ProTable<AdvisoryType>
           columns={advisoryColumns}
           request={featchAllAdvisory}
-          scroll={{ x: 1300 }}
           search={{ labelWidth: 'auto' }}
           rowKey={(e) => e._id ?? 'key'}
         />

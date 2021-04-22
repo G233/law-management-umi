@@ -50,7 +50,6 @@ export default function approvedCases() {
     <ProTable<Case>
       columns={approvedColumns}
       request={fetchApprovedCases}
-      scroll={{ x: 1300 }}
       search={false}
       rowKey={(e) => e._id ?? 'key'}
       headerTitle="待审批案件"
