@@ -15,14 +15,12 @@ import {
 } from '@/services/user';
 
 export default function advisoryList() {
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const access = useAccess();
-
   const roleText = {
     admin: '管理律师',
     user: '执业律师',
   };
-  const userColumns: ProColumns[] = [
+  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  const [userColumns, setUserColumns] = useState<ProColumns[]>([
     {
       title: '姓名',
       dataIndex: 'name',
@@ -40,24 +38,29 @@ export default function advisoryList() {
         return record.role !== 'admin';
       },
     },
-  ];
+  ]);
+
+  const access = useAccess();
 
   useEffect(() => {
     access.admin &&
-      userColumns.push({
-        title: '操作',
-        valueType: 'option',
-        render: (text, record, _, action) => [
-          <a
-            key="editable"
-            onClick={() => {
-              action.startEditable?.(record._id);
-            }}
-          >
-            编辑
-          </a>,
-        ],
-      });
+      setUserColumns([
+        ...userColumns,
+        {
+          title: '修改权限',
+          valueType: 'option',
+          render: (text, record, _, action) => [
+            <a
+              key="editable"
+              onClick={() => {
+                action.startEditable?.(record._id);
+              }}
+            >
+              编辑
+            </a>,
+          ],
+        },
+      ]);
   }, [access.admin]);
 
   const createBtn = (fn: ActionType | undefined) =>

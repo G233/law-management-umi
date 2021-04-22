@@ -1,6 +1,11 @@
 import { message } from 'antd';
 import { db } from '@/cloud_function/index';
-import { cloudFunction, cloudWhere } from '@/services/until';
+import {
+  cloudFunction,
+  cloudUpdateById,
+  cloudWhere,
+  cloudRemoveById,
+} from '@/services/until';
 import { requestProp } from '@/services/cases';
 
 export interface AdvisoryType {
@@ -53,4 +58,32 @@ export const featchAllAdvisory = async ({ name, undertaker }: tableProp) => {
     data: res?.data ?? [],
     success: true,
   };
+};
+
+type rowType = AdvisoryType & {
+  index?: number | undefined;
+};
+
+// 修改自己的法律顾问单位信息
+export const updateAdvisory = async (_: any, row: rowType) => {
+  console.log(row);
+  const res = await cloudUpdateById('Advisory', row._id, {
+    name: row.name,
+    timeRange: row.timeRange,
+  });
+  console.log(res);
+  if (res?.updated) {
+    message.success('更新信息成功！');
+    return true;
+  }
+};
+
+// 删除法律顾问单位信息
+export const deleteAdvisory = async (_: any, row: rowType) => {
+  const res = await cloudRemoveById('Advisory', row._id);
+  console.log(res);
+  if (res?.deleted) {
+    message.success('删除法律顾问单位信息成功');
+    return true;
+  }
 };

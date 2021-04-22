@@ -1,27 +1,29 @@
-import ProTable from '@ant-design/pro-table';
+import { useState } from 'react';
+import { useModel } from 'umi';
 import { Button } from 'antd';
-import { requestProp } from '@/services/cases';
 
+import ProTable from '@ant-design/pro-table';
 import {
   ModalForm,
   ProFormText,
   ProFormDateRangePicker,
 } from '@ant-design/pro-form';
-
-import { useModel } from 'umi';
-import { PlusOutlined } from '@ant-design/icons';
-
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import {
   newAdvisory,
   featchMyAdvisory,
   AdvisoryType,
+  updateAdvisory,
+  deleteAdvisory,
 } from '@/services/advisory';
+import { requestProp } from '@/services/cases';
 
 export default function advisoryList() {
   const { initialState } = useModel('@@initialState');
   const openId = initialState?.currentUser?.uid;
+  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+
   const advisoryColumns: ProColumns<AdvisoryType>[] = [
     {
       title: '法律顾问单位名称',
@@ -32,16 +34,25 @@ export default function advisoryList() {
       dataIndex: 'timeRange',
       valueType: 'dateRange',
     },
+    {
+      title: '操作',
+      valueType: 'option',
+      render: (text, record, _, action) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action.startEditable?.(record._id);
+          }}
+        >
+          编辑
+        </a>,
+      ],
+    },
   ];
   const createBtn = (fn: ActionType | undefined) => (
     <ModalForm<AdvisoryType>
       title="添加法律顾问单位"
-      trigger={
-        <Button type="primary">
-          <PlusOutlined />
-          添加法律顾问单位
-        </Button>
-      }
+      trigger={<Button type="primary">添加法律顾问单位</Button>}
       onFinish={async (values) => {
         await newAdvisory(values as AdvisoryType);
         // @ts-ignore
@@ -76,9 +87,16 @@ export default function advisoryList() {
     <ProTable<AdvisoryType>
       columns={advisoryColumns}
       request={(data: requestProp) => featchMyAdvisory({ ...data, openId })}
-      scroll={{ x: 1300 }}
       rowKey={(e) => e._id ?? 'key'}
       search={false}
+      editable={{
+        type: 'single',
+        editableKeys,
+        onSave: updateAdvisory,
+        onChange: setEditableRowKeys,
+        onDelete: deleteAdvisory,
+        deletePopconfirmMessage: '确认删除这个法律顾问单位信息吗',
+      }}
       toolBarRender={(data) => [createBtn(data)]}
     />
   );
