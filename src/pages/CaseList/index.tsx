@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import { Button } from 'antd';
-import { history } from 'umi';
+import { history, useAccess } from 'umi';
 import type { ProColumns } from '@ant-design/pro-table';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -7,7 +8,8 @@ import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 import { Case, fetchCaseList, CaseType, CaseTypeText } from '@/services/cases';
 
 export default function CaseList() {
-  const myCasesColumns: ProColumns<Case>[] = [
+  const access = useAccess();
+  const [myCasesColumns, setMyCasesColumns] = useState<ProColumns<Case>[]>([
     ...commonColumns(),
     {
       title: '案件类别',
@@ -26,30 +28,38 @@ export default function CaseList() {
         },
       },
     },
-    {
-      title: '操作',
-      width: 40,
-      valueType: 'option',
-      fixed: 'right',
-      align: 'center',
-      render: (_, record) => [
-        <Button
-          type="link"
-          key="btn"
-          onClick={() => {
-            history.push({
-              pathname: '/CaseDetail',
-              query: {
-                id: record._id as string,
-              },
-            });
-          }}
-        >
-          查看详情
-        </Button>,
-      ],
-    },
-  ];
+  ]);
+
+  useEffect(() => {
+    if (access.admin) {
+      setMyCasesColumns([
+        ...myCasesColumns,
+        {
+          title: '操作',
+          width: 40,
+          valueType: 'option',
+          fixed: 'right',
+          align: 'center',
+          render: (_, record) => [
+            <Button
+              type="link"
+              key="btn"
+              onClick={() => {
+                history.push({
+                  pathname: '/CaseDetail',
+                  query: {
+                    id: record._id as string,
+                  },
+                });
+              }}
+            >
+              查看详情
+            </Button>,
+          ],
+        },
+      ]);
+    }
+  }, []);
 
   return (
     <PageContainer>

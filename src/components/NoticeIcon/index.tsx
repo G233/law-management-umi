@@ -79,7 +79,7 @@ const NoticeIconView = () => {
         if (item.state === noticeState.read) return;
         changeReadState(item._id!);
         history.push(
-          item.type === noticeType.approve ? '/CaseApprove' : '/My/approveCase',
+          item.type === noticeType.approve ? '/CaseApprove' : '/addCaseApprove',
         );
         setPopupVisible(false);
       }}
