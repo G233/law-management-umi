@@ -14,7 +14,6 @@ export default function myCases() {
     <ProTable<Case>
       columns={myCasesColumns}
       request={(data: requestProp) => fetchMyCases({ ...data, openId })}
-      scroll={{ x: 1300 }}
       search={false}
       rowKey={(e) => e._id ?? 'key'}
       headerTitle="我的案件"

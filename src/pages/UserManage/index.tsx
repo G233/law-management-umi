@@ -116,7 +116,6 @@ export default function advisoryList() {
           onSave: updateUserInfo,
           onChange: setEditableRowKeys,
         }}
-        scroll={{ x: 1300 }}
         rowKey={(e) => e._id ?? 'key'}
         search={false}
         toolBarRender={(data) => [createBtn(data)]}
