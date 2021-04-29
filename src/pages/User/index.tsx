@@ -4,10 +4,10 @@ import ProForm, { ProFormText } from '@ant-design/pro-form';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import {
-  resetEmail,
-  resetPassword,
   reSetUserInfo,
   userInfoProp,
+  updatePassword,
+  updateUserName,
 } from '@/services/user';
 import styles from './index.less';
 
@@ -17,7 +17,6 @@ export default function IndexPage() {
   const { Divider } = ProCard;
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
-  const email = userInfo?.email;
 
   return (
     <PageContainer>
@@ -30,9 +29,6 @@ export default function IndexPage() {
             render: (_, dom) => dom.pop(),
             submitButtonProps: {
               size: 'large',
-              style: {
-                width: '10rem',
-              },
             },
           }}
           onFinish={async (values) => {
@@ -74,58 +70,71 @@ export default function IndexPage() {
         </ProForm>
       </ProCard>
       <Divider />
-      <ProCard title="账户设置" headerBordered>
+      {/* <ProCard title="登陆用户名" headerBordered>
         <ProForm
           submitter={{
             searchConfig: {
-              submitText: '更新绑定邮箱',
+              submitText: '修改用户名',
             },
             render: (_, dom) => dom.pop(),
             submitButtonProps: {
               size: 'large',
-              style: {
-                width: '10rem',
-              },
             },
           }}
           onFinish={async (values) => {
-            await resetEmail(values.newEmail, email as string);
+            await updateUserName(values.userName);
           }}
         >
-          <ProForm.Group>
-            <ProFormText
-              initialValue={email}
-              width="md"
-              name="newEmail"
-              label="绑定邮箱"
-              rules={[
-                {
-                  required: true,
-                  message: '请输入邮箱!',
-                },
-                {
-                  type: 'email',
-                  message: '请输入正确格式的邮箱',
-                },
-              ]}
-              placeholder="请输入邮箱号"
-            />
-          </ProForm.Group>
+          <ProFormText
+            width="md"
+            name="userName"
+            label="自定义登陆用户名"
+            rules={[
+              {
+                required: true,
+                message: '请输入用户名',
+              },
+            ]}
+            placeholder="请输入用户名"
+          />
         </ProForm>
-        <Space>
-          <Button
-            danger
-            className={styles.pwBtn}
-            type="primary"
-            size="large"
-            onClick={() => {
-              resetPassword(userInfo?.email as string);
-            }}
-          >
-            重置密码
-          </Button>
-        </Space>
       </ProCard>
+      <Divider />
+      <ProCard title="登陆密码" headerBordered>
+        <ProForm
+          submitter={{
+            searchConfig: {
+              submitText: '修改登陆密码',
+            },
+            render: (_, dom) => dom.pop(),
+            submitButtonProps: {
+              size: 'large',
+            },
+          }}
+          onFinish={async (values) => {
+            await updatePassword(values.oldPssword, values.newPassword);
+          }}
+        >
+          <ProFormText
+            width="md"
+            name="oldPssword"
+            label="旧登陆密码"
+            placeholder="请输入旧密码，若未设置过则留空"
+          />
+          <ProFormText
+            width="md"
+            name="newPassword"
+            label="新登陆密码"
+            rules={[
+              {
+                required: true,
+                message: '请输入新登陆密码',
+              },
+            ]}
+            placeholder="请输入新登陆密码"
+          />
+        </ProForm>
+      </ProCard> */}
     </PageContainer>
   );
 }

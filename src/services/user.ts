@@ -4,6 +4,7 @@ import { auth, db, cloudApp } from '@/cloud_function';
 const collection = db.collection('User');
 
 import { cloudFunction, cloudWhere } from '@/services/until';
+
 export interface emailProp {
   newEmail: string;
   oldEmail: string;
@@ -37,11 +38,13 @@ export const signIn = async (email: string, password: string) => {
 export const fetchUserInfo = async () => {
   if (auth.hasLoginState()) {
     const currentUser = await auth.getCurrenUser();
+    console.log('登陆用户信息');
+    console.log(currentUser);
     const User = await cloudWhere('User', { _openid: currentUser?.uid });
     // 如果是第一次登陆系统需要在自定义的用户表中新建
 
     if (!User?.[0]) {
-      addUserInfo(currentUser?.uid as string);
+      await addUserInfo(currentUser?.uid as string);
     }
 
     const userInfo = formatUserInfo(currentUser, User[0]);
@@ -71,6 +74,7 @@ const formatUserInfo = (currentUser: any, data: any): UserInfo => {
     email: currentUser?.email,
     avatarUrl: data?.avatarUrl,
     role: data?.role ?? 'user',
+    ...currentUser,
   };
 };
 
@@ -140,5 +144,36 @@ export const updateUserInfo = async (_: any, row: rowType) => {
   if (res?.updated) {
     message.success('更新信息成功！');
     return true;
+  }
+};
+
+export const updateUserName = async (userName: string) => {
+  if (!(await auth.isUsernameRegistered(userName)) && auth.currentUser) {
+    const res = await auth.currentUser.updateUsername(userName).catch((e) => {
+      message.error('设置用户名失败，请联系刘固');
+    });
+    //@ts-ignore
+    if (res) {
+      message.success('设置用户名成功');
+    }
+    return;
+  }
+  message.warning('此用户名已经被使用，请换一个吧');
+};
+
+export const updatePassword = async (
+  oldPssword: string,
+  newPassword: string,
+) => {
+  if (auth.currentUser) {
+    const res = await auth.currentUser
+      .updatePassword(newPassword, oldPssword)
+      .catch((e) => {
+        message.warning('密码设置失败，请检查密码是否过于简单');
+      });
+    //@ts-ignore
+    if (res) {
+      message.success('设置密码成功');
+    }
   }
 };

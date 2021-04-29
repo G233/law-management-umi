@@ -9,6 +9,7 @@ import { history, useModel } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import { signOut } from '../../services/user';
+import { provider } from '@/cloud_function';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -19,7 +20,8 @@ export type GlobalHeaderRightProps = {
  */
 const loginOut = async () => {
   await signOut();
-  history.push('/login');
+  // 导航到微信扫码登陆页面
+  provider.signInWithRedirect();
 };
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {

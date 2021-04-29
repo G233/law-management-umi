@@ -75,13 +75,14 @@ export default {
       hideInMenu: true,
       icon: 'SnippetsOutlined',
     },
-    {
-      path: '/login',
-      component: '@/pages/Login/index',
-      name: 'Welcome',
-      layout: false,
-      hideInMenu: true,
-    },
+    // 暂时不需要登录页面
+    // {
+    //   path: '/login',
+    //   component: '@/pages/Login/index',
+    //   name: 'Welcome',
+    //   layout: false,
+    //   hideInMenu: true,
+    // },
     { component: '@/pages/404' },
   ],
 

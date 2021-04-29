@@ -7,7 +7,8 @@ import { Link, history, useModel } from 'umi';
 import Footer from '@/components/Footer';
 
 import styles from './index.less';
-import { signIn, fetchUserInfo, resetPassword } from '@/services/user';
+import { fetchUserInfo } from '@/services/user';
+import { provider, auth } from '@/cloud_function';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -29,7 +30,7 @@ enum LoginStatus {
 
 const Login: React.FC = () => {
   interface LoginParams {
-    email?: string;
+    userName?: string;
     password?: string;
     autoLogin?: boolean;
   }
@@ -37,41 +38,21 @@ const Login: React.FC = () => {
   const [loginStatus, setLoginStatus] = useState(LoginStatus.LODING);
   const { initialState, setInitialState } = useModel('@@initialState');
 
-  const forgetPsw = () => (
-    <ModalForm
-      title="重置密码"
-      trigger={<Button type="link">忘记密码</Button>}
-      onFinish={async (values) => {
-        await resetPassword(values.email as string);
-        return true;
-      }}
-    >
-      <ProFormText
-        name="email"
-        label="登陆邮箱"
-        placeholder="请输入忘记密码的邮箱"
-        rules={[
-          {
-            required: true,
-            message: '请输入登陆邮箱',
-          },
-        ]}
-      />
-    </ModalForm>
-  );
-
   // 用户登陆函数
   const handleSubmit = async (values: LoginParams) => {
     setSubmitting(true);
 
-    const userInfo = await signIn(
-      trim(values.email as string),
-      trim(values.password as string),
-    ).catch((err) => {
-      // 登陆失败的情况包括密码错误与其他报错,因为云开发密码错误也是直接报错
-      message.error('登录失败，请重试！');
-      setLoginStatus(LoginStatus.ERROR);
-    });
+    const userInfo = await auth
+      .signInWithUsernameAndPassword(
+        values.userName as string,
+        values.password as string,
+      )
+      .catch((err) => {
+        console.log(err);
+        // 登陆失败的情况包括密码错误与其他报错,因为云开发密码错误也是直接报错
+        message.error('登录失败，请重试！');
+        setLoginStatus(LoginStatus.ERROR);
+      });
 
     if (userInfo && initialState) {
       // FIXME： 需要优化
@@ -84,6 +65,10 @@ const Login: React.FC = () => {
       return;
     }
     setSubmitting(false);
+  };
+
+  const loginByWx = () => {
+    provider.signInWithRedirect();
   };
 
   return (
@@ -119,24 +104,20 @@ const Login: React.FC = () => {
             }}
           >
             {loginStatus === LoginStatus.ERROR && (
-              <LoginMessage content="邮箱或密码错误" />
+              <LoginMessage content="用户名或密码错误" />
             )}
 
             <ProFormText
-              name="email"
+              name="userName"
               fieldProps={{
                 size: 'large',
                 prefix: <MailOutlined className={styles.prefixIcon} />,
               }}
-              placeholder="请输入登陆邮箱"
+              placeholder="请输入用户名"
               rules={[
                 {
                   required: true,
-                  message: '请输入邮箱!',
-                },
-                {
-                  type: 'email',
-                  message: '请输入正确格式的邮箱',
+                  message: '请输入用户名',
                 },
               ]}
             />
@@ -146,7 +127,7 @@ const Login: React.FC = () => {
                 size: 'large',
                 prefix: <LockOutlined className={styles.prefixIcon} />,
               }}
-              placeholder="默认密码：heqing123456"
+              placeholder="请输入密码"
               rules={[
                 {
                   required: true,
@@ -154,14 +135,17 @@ const Login: React.FC = () => {
                 },
               ]}
             />
-            <div
-              style={{
-                float: 'right',
-              }}
-            >
-              {forgetPsw()}
-            </div>
           </ProForm>
+          <div>
+            <Button
+              onClick={loginByWx}
+              block={true}
+              type="default"
+              className={styles.wxBtn}
+            >
+              使用微信扫码登陆
+            </Button>
+          </div>
         </div>
       </div>
       <Footer />

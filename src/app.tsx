@@ -6,6 +6,7 @@ import NoticeIconView from '@/components/NoticeIcon';
 import Footer from '@/components/Footer';
 import { fetchUserInfo, UserInfo } from '@/services/user';
 import { Space, Button } from 'antd';
+import { provider } from '@/cloud_function';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -13,16 +14,20 @@ export const initialStateConfig = {
 };
 
 export async function getInitialState() {
+  // TODO 暂时允许扫码之后直接注册，需要在后期取消
+  await provider.getRedirectResult({
+    createUser: true,
+    syncUserInfo: true,
+  });
+
   let hasLogin = false;
   let currentUser: UserInfo | null;
-
   currentUser = await fetchUserInfo();
   if (currentUser) {
     hasLogin = true;
   }
   const isDev = process.env.NODE_ENV === 'development';
   console.log(isDev ? '当前处于开发环境' : '当前处于生产环境');
-
   return {
     hasLogin,
     currentUser,
@@ -52,11 +57,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 
     onPageChange: () => {
       const { location } = history;
-      // 如果没有登录，重定向到 login
-      if (!initialState?.hasLogin && location.pathname !== '/login') {
-        history.push('/login');
+      // 如果没有登录，重定向到微信扫码也进行登陆
+      if (!initialState?.hasLogin) {
+        provider.signInWithRedirect();
       }
     },
-    // ...initialState,
   };
 };
