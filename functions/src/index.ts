@@ -4,6 +4,7 @@ import { fetchAllUser } from './fetch_all_user';
 import { oneClickApprove } from './one_click_approve';
 import { getCaseList } from './get_case_list';
 import { UpdateUserInfo } from './update_user_info';
+import { wxLogin } from './wx_login';
 
 const fnList = {
   create_case: CreateCase,
@@ -12,6 +13,7 @@ const fnList = {
   one_click_approve: oneClickApprove,
   get_case_list: getCaseList,
   update_user_info: UpdateUserInfo,
+  wx_login: wxLogin,
 };
 
 export let isDev = false;
