@@ -21,7 +21,7 @@ import { requestProp } from '@/services/cases';
 
 export default function advisoryList() {
   const { initialState } = useModel('@@initialState');
-  const openId = initialState?.currentUser?.uid;
+  const unionId = initialState?.currentUser?.unionId;
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
 
   const advisoryColumns: ProColumns<AdvisoryType>[] = [
@@ -54,7 +54,7 @@ export default function advisoryList() {
       title="添加法律顾问单位"
       trigger={<Button type="primary">添加法律顾问单位</Button>}
       onFinish={async (values) => {
-        await newAdvisory(values as AdvisoryType);
+        await newAdvisory(values as AdvisoryType, unionId as string);
         // @ts-ignore
         fn.reloadAndRest();
 
@@ -86,7 +86,7 @@ export default function advisoryList() {
   return (
     <ProTable<AdvisoryType>
       columns={advisoryColumns}
-      request={(data: requestProp) => featchMyAdvisory({ ...data, openId })}
+      request={(data: requestProp) => featchMyAdvisory({ ...data, unionId })}
       rowKey={(e) => e._id ?? 'key'}
       search={false}
       editable={{

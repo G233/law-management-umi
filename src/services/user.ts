@@ -15,14 +15,32 @@ export interface userInfoProp {
   phone: string;
 }
 
-export interface UserInfo {
+// 云开发中的用户字段
+export interface UserCloudInfo {
+  avatarUrl: string;
+  customUserId: string;
+  gender: string;
+  hasPassword: false;
+  location: { country: string; province: string; city: string };
+  loginType: string;
+  nickName: string;
+  openid: string;
+  qqMiniOpenId: string;
+  uid: string;
+  unionId: string;
+  wxOpenId: string;
+  wxPublicId: string;
+}
+// 自定义的用户字段
+export interface UserAddInfo {
   name?: string;
   phone?: string;
   uid: string;
   email: string;
-  avatarUrl?: string;
   role: string;
 }
+
+export interface UserInfo extends UserAddInfo, UserCloudInfo {}
 
 // 退出登陆
 export const signOut = async () => {
@@ -38,31 +56,32 @@ export const signIn = async (email: string, password: string) => {
 export const fetchUserInfo = async () => {
   if (auth.hasLoginState()) {
     const currentUser = await auth.getCurrenUser();
-    console.log('登陆用户信息');
-    console.log(currentUser);
-    const User = await cloudWhere('User', { _openid: currentUser?.uid });
-    // 如果是第一次登陆系统需要在自定义的用户表中新建
 
+    let User = await cloudWhere('User', { unionId: currentUser?.unionId });
+    // 如果是第一次登陆系统需要在自定义的用户表中新建
+    console.log('当前用户信息', currentUser);
     if (!User?.[0]) {
-      await addUserInfo(currentUser?.uid as string);
+      await addUserInfo(currentUser?.unionId as string);
+      User = await cloudWhere('User', { unionId: currentUser?.unionId });
     }
 
     const userInfo = formatUserInfo(currentUser, User[0]);
-
+    console.log('登陆用户信息');
+    console.log(userInfo);
     return userInfo;
   }
   return null;
 };
 
 // 新建用户信息
-const addUserInfo = async (openId: string) => {
+const addUserInfo = async (unionId: string) => {
   const userInfo = {
-    name: '律师',
-    phone: '',
+    name: null,
+    phone: null,
     role: 'user',
+    unionId,
   };
-  const res = await collection.add(userInfo);
-  console.log('🚀 ~ file: user.ts ~ line 66 ~ addUserInfo ~ res', res);
+  await collection.add(userInfo);
 };
 
 // 格式化用户信息
@@ -70,17 +89,14 @@ const formatUserInfo = (currentUser: any, data: any): UserInfo => {
   return {
     name: data?.name,
     phone: data?.phone,
-    uid: currentUser?.uid,
-    email: currentUser?.email,
-    avatarUrl: data?.avatarUrl,
     role: data?.role ?? 'user',
     ...currentUser,
   };
 };
 
 // 重设个人信息
-export const reSetUserInfo = async (data: userInfoProp, uid: string) => {
-  const User = await cloudWhere('User', { _openid: uid });
+export const reSetUserInfo = async (data: userInfoProp, unionId: string) => {
+  const User = await cloudWhere('User', { unionId: unionId });
   const docId: string = User[0]._id;
   await collection.doc(docId).update(data);
   message.success('更新个人信息成功！');
@@ -135,7 +151,7 @@ interface rowType {
   phone: string;
   role: string;
   _id: string;
-  _openid: string;
+  unionId: string;
 }
 
 // 管理律师修改人员信息

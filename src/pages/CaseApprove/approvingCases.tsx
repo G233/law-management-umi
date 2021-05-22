@@ -54,7 +54,7 @@ export default function approvingCases() {
                   await oneClickApprove(
                     [record?._id as string],
                     ref as React.MutableRefObject<ActionType>,
-                    userInfo?.uid as string,
+                    userInfo?.unionId as string,
                     CaseStatus.AGREE,
                   );
                   setArgBtnLoding(false);
@@ -131,7 +131,7 @@ export default function approvingCases() {
                   oneClickApprove(
                     selectedRowKeys as string[],
                     ref as React.MutableRefObject<ActionType>,
-                    userInfo?.uid as string,
+                    userInfo?.unionId as string,
                     CaseStatus.AGREE,
                   )
                 }
@@ -168,7 +168,7 @@ export default function approvingCases() {
           await oneClickApprove(
             selectedCasesId as string[],
             ref as React.MutableRefObject<ActionType>,
-            userInfo?.uid as string,
+            userInfo?.unionId as string,
             CaseStatus.REJECT,
             values.msg,
           );

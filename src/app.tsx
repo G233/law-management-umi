@@ -56,7 +56,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     ),
 
     onPageChange: () => {
-      const { location } = history;
       // 如果没有登录，重定向到微信扫码也进行登陆
       if (!initialState?.hasLogin) {
         provider.signInWithRedirect();

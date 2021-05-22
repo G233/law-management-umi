@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { message } from 'antd';
-import { useUnmountedRef } from 'ahooks';
 
 import { useModel, history } from 'umi';
 import {
@@ -25,10 +24,9 @@ const NoticeIconView = () => {
   const [noticeData, setNoticeData] = useSafeState<Notice[]>([]);
   const [unreadMsgCount, setUnreadMsgCount] = useSafeState<number>();
   const [popupVisible, setPopupVisible] = useSafeState(false);
-  let didCancel = false;
 
   const initData = async () => {
-    const res: Notice[] = await getNotices(currentUser?.uid as string);
+    const res: Notice[] = await getNotices(currentUser?.unionId as string);
     setNotices(res ?? []);
   };
 
@@ -41,7 +39,7 @@ const NoticeIconView = () => {
 
   useEffect(() => {
     initData();
-  }, [currentUser?.uid]);
+  }, [currentUser?.unionId]);
 
   const changeReadState = (id: string) => {
     setNotices(

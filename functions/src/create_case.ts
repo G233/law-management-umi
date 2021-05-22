@@ -25,11 +25,11 @@ const addNotice = async (Case: any, id: string) => {
     .get();
   res.data.forEach((user: any) => {
     // 自己新建的不需要通知
-    if (user._openid !== Case.undertaker) {
+    if (user.unionId !== Case.undertaker) {
       console.log('审批了');
       const notice = {
         title: '审批通知',
-        openId: user._openid,
+        unionId: user.unionId,
         msg: '有案件需要审批,请点击查看',
         caseId: id,
         state: noticeState.unReade,
@@ -53,7 +53,6 @@ const formatCase = (
 
 const CreateCase = async (Case: any) => {
   const id = uuidv4();
-  console.log('id:', id);
   const res = await db.collection('Cases').add(formatCase(Case, id));
   // 如果成功新建了审批的话,就添加通知
   await updateCaseCause(Case).catch((e) => {});

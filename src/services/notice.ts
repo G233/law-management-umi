@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { cloudUpdateById, cloudWhere, cloudAdd } from '@/services/until';
+import { cloudUpdateById, cloudWhere } from '@/services/until';
 
 export enum noticeState {
   unReade,
@@ -15,7 +15,7 @@ export enum noticeType {
 
 export interface Notice {
   title: string;
-  openId: string;
+  unionId: string;
   msg: string;
   caseId: string;
   state: noticeState;
@@ -23,10 +23,6 @@ export interface Notice {
   createTime: Date | string;
   _id?: string;
 }
-
-export const addNotice = async (data: Notice) => {
-  const res = await cloudAdd('Notice', data);
-};
 
 export const readNotice = async (item: Notice) => {
   await cloudUpdateById('Notice', item._id as string, {
@@ -53,10 +49,10 @@ export const getNoticeData = (notices: Notice[]): Notice[] => {
 };
 
 // 获取通知消息
-export const getNotices = async (id: string) => {
+export const getNotices = async (unionId: string) => {
   const res = await cloudWhere(
     'Notice',
-    { openId: id, state: noticeState.unReade },
+    { unionId: unionId, state: noticeState.unReade },
     true,
   );
   return res;

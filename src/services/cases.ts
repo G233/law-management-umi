@@ -94,13 +94,13 @@ export interface Case {
   annex: string;
   // 向数据库插入数据的时候会自动添加
   _id?: string;
-  _openid?: string;
+  unionId?: string;
 }
 
 export interface requestProp {
   current?: number;
   pageSize?: number;
-  openId?: string;
+  unionId?: string;
 }
 
 const condition = {
@@ -146,7 +146,7 @@ export const fetchApprovedCases = async (data: requestProp) => {
 
 export const fetchMyCases = async (data: any) => {
   let condition = {
-    undertaker: data.openId,
+    undertaker: data.unionId,
   };
   // 我的案件是查看所有通过审批了的案件,未通过审批的需要在 审批案件 中查看
   if (data.tag !== 'all') {
@@ -183,7 +183,8 @@ export const fetchCaseList = async (data: requestProp) => {
 /**
  *  新建审批
  */
-export const createCase = async (value: Case) => {
+export const createCase = async (value: Case, unionId: string) => {
+  value.unionId = unionId;
   await cloudFunction('create_case', await generatedCaseId(value));
   message.success('新建成功，等待审批中');
 };
@@ -235,17 +236,18 @@ export const fetchCaseCauseList = async () => {
  */
 export const fetchLawList = async () => {
   const res = await dbUser.get();
-  return res.data.map((e: any) => ({ value: e._openid, label: e.name }));
+  // 存在不是微信登录的用户信息的时候，会出现因为 unionId 不存在而报没有唯一key的错的情况
+  return res.data.map((e: any) => ({ value: e.unionId, label: e.name }));
 };
 
 /**
  * 上传附件
  */
-export const uploadFile = async (data: any, openId: string) => {
+export const uploadFile = async (data: any, unionId: string) => {
   const { file, onError, onProgress, onSuccess } = data;
   const res = await cloudApp
     .uploadFile({
-      cloudPath: `${CasePath}/${openId}/${file.name}`,
+      cloudPath: `${CasePath}/${unionId}/${file.name}`,
       filePath: file,
       onUploadProgress: (progressEvent: any) => {
         var percentCompleted = Math.round(
@@ -311,6 +313,5 @@ export const generatedCaseId = async (Case: Case) => {
 
 export const findUserIdByName = async (name: string) => {
   const res = await cloudWhere('User', { name: name });
-  console.log(res[0]._openid);
-  return res[0]._openid;
+  return res[0].unionId;
 };

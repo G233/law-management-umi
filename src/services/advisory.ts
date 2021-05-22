@@ -14,16 +14,16 @@ export interface AdvisoryType {
   // 聘任期限
   timeRange: string;
   _id: string;
-  _openid: string;
+  unionId: string;
 }
 
 const AdDb = db.collection('Advisory');
 /**
  * 新建一个法律顾问单位
  */
-export const newAdvisory = async (data: AdvisoryType) => {
+export const newAdvisory = async (data: AdvisoryType, unionId: string) => {
   console.log(data);
-  const res = await AdDb.add({ ...data, createTime: new Date() });
+  const res = await AdDb.add({ ...data, createTime: new Date(), unionId });
   if (!res.message) {
     message.success('添加法律顾问单位成功');
     return;
@@ -35,7 +35,7 @@ export const newAdvisory = async (data: AdvisoryType) => {
  * 获取我的所有法律顾问单位
  */
 export const featchMyAdvisory = async (data: requestProp) => {
-  const res = await cloudWhere('Advisory', { _openid: data.openId });
+  const res = await cloudWhere('Advisory', { unionId: data.unionId });
   console.log(res);
   return {
     data: res ?? [],

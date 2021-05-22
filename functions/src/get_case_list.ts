@@ -87,14 +87,14 @@ const getCaseList = async ({
     .lookup({
       from: 'User',
       localField: 'undertaker',
-      foreignField: '_openid',
+      foreignField: 'unionId',
       as: 'undertaker',
     })
     // 获取审批律师的名字
     .lookup({
       from: 'User',
       localField: 'approverId',
-      foreignField: '_openid',
+      foreignField: 'unionId',
       as: 'approver',
     })
     .addFields({

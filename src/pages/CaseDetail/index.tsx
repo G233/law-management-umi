@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useModel, useLocation } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
-import { Form, AutoComplete, Result, Button } from 'antd';
+import { Form, Result, Button } from 'antd';
 import ProForm, {
   ProFormText,
   ProFormTextArea,
@@ -15,7 +15,6 @@ import {
   Case,
   CaseType,
   CaseTypeText,
-  fetchCaseCauseList,
   fetchLawList,
   uploadFile,
   downloadFile,
@@ -52,7 +51,7 @@ export default function CreateCasePage() {
 
   const fieldProps = {
     customRequest: (data: any) => {
-      uploadFile(data, userInfo?.uid as string);
+      uploadFile(data, userInfo?.unionId as string);
     },
     onDownload: downloadFile,
     showUploadList: {
@@ -76,7 +75,7 @@ export default function CreateCasePage() {
               form={formI[0]}
               initialValues={caseData}
               onFinish={async (values) => {
-                await createCase(values as Case);
+                await createCase(values as Case, userInfo?.unionId as string);
               }}
             >
               <ProForm.Group>

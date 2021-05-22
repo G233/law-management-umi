@@ -46,7 +46,7 @@ export default function CreateCase() {
 
   const fieldProps = {
     customRequest: (data: any) => {
-      uploadFile(data, userInfo?.uid as string);
+      uploadFile(data, userInfo?.unionId as string);
     },
     onDownload: downloadFile,
     showUploadList: {
@@ -60,7 +60,7 @@ export default function CreateCase() {
         title="新建审批案件"
         trigger={<Button type="primary">新建审批案件</Button>}
         onFinish={async (values) => {
-          await createCase(values);
+          await createCase(values, userInfo?.unionId as string);
           return true;
         }}
       >

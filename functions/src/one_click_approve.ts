@@ -25,7 +25,7 @@ const addNotice = async (caseId: string, approveState: CaseStatus) => {
   const resCase = res.data[0];
   const notice = {
     title: '立案审批结果',
-    openId: resCase.undertaker,
+    unionId: resCase.undertaker,
     msg:
       approveState === CaseStatus.AGREE
         ? '立案审批已经通过'

@@ -16,7 +16,7 @@ import createCase from '@/pages/addCaseApprove/createCase';
 
 export default function myCases() {
   const { initialState } = useModel('@@initialState');
-  const openId = initialState?.currentUser?.uid;
+  const unionId = initialState?.currentUser?.unionId;
   const myCasesColumns: ProColumns<Case>[] = [
     ...commonColumns(),
     {
@@ -57,7 +57,7 @@ export default function myCases() {
       <ProTable<Case>
         columns={myCasesColumns}
         request={(data: requestProp) =>
-          fetchMyCases({ ...data, openId, tag: 'all' })
+          fetchMyCases({ ...data, unionId, tag: 'all' })
         }
         scroll={{ x: 1000 }}
         search={false}

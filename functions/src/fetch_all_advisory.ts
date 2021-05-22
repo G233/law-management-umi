@@ -17,7 +17,7 @@ const fetchAllAdvisory = async ({
         options: 'i',
       }),
       //@ts-ignore
-      _openid: new db.RegExp({
+      unionId: new db.RegExp({
         regexp: `.*${undertaker || ''}.*`,
         options: 'i',
       }),
@@ -29,8 +29,8 @@ const fetchAllAdvisory = async ({
     // 获取律师的名字
     .lookup({
       from: 'User',
-      localField: '_openid',
-      foreignField: '_openid',
+      localField: 'unionId',
+      foreignField: 'unionId',
       as: 'User',
     })
     .addFields({

@@ -76,7 +76,6 @@ export const commonColumns = (): ProColumns<Case>[] => {
       dataIndex: 'caseId',
       ellipsis: true,
       align: 'center',
-
       width: 130,
     },
   ];
