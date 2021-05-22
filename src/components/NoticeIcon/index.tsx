@@ -47,7 +47,6 @@ const NoticeIconView = () => {
         const notice = { ...item };
         if (notice._id === id) {
           notice.state = noticeState.read;
-          console.log('aaa');
           readNotice(item);
         }
         return notice;

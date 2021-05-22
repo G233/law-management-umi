@@ -26,7 +26,6 @@ const addNotice = async (Case: any, id: string) => {
   res.data.forEach((user: any) => {
     // 自己新建的不需要通知
     if (user.unionId !== Case.undertaker) {
-      console.log('审批了');
       const notice = {
         title: '审批通知',
         unionId: user.unionId,

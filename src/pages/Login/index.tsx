@@ -48,7 +48,6 @@ const Login: React.FC = () => {
         values.password as string,
       )
       .catch((err) => {
-        console.log(err);
         // 登陆失败的情况包括密码错误与其他报错,因为云开发密码错误也是直接报错
         message.error('登录失败，请重试！');
         setLoginStatus(LoginStatus.ERROR);

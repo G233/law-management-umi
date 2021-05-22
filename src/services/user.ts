@@ -56,18 +56,13 @@ export const signIn = async (email: string, password: string) => {
 export const fetchUserInfo = async () => {
   if (auth.hasLoginState()) {
     const currentUser = await auth.getCurrenUser();
-
     let User = await cloudWhere('User', { unionId: currentUser?.unionId });
     // 如果是第一次登陆系统需要在自定义的用户表中新建
-    console.log('当前用户信息', currentUser);
     if (!User?.[0]) {
       await addUserInfo(currentUser?.unionId as string);
       User = await cloudWhere('User', { unionId: currentUser?.unionId });
     }
-
     const userInfo = formatUserInfo(currentUser, User[0]);
-    console.log('登陆用户信息');
-    console.log(userInfo);
     return userInfo;
   }
   return null;

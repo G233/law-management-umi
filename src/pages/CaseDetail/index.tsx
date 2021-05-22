@@ -41,7 +41,6 @@ export default function CreateCasePage() {
     const res = await cloudFIndById('Cases', caseId);
     setCaseData(res);
     formI[0].resetFields();
-    console.log(formI);
   };
 
   useEffect(() => {

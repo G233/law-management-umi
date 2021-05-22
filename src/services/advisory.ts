@@ -22,7 +22,6 @@ const AdDb = db.collection('Advisory');
  * 新建一个法律顾问单位
  */
 export const newAdvisory = async (data: AdvisoryType, unionId: string) => {
-  console.log(data);
   const res = await AdDb.add({ ...data, createTime: new Date(), unionId });
   if (!res.message) {
     message.success('添加法律顾问单位成功');
@@ -36,7 +35,6 @@ export const newAdvisory = async (data: AdvisoryType, unionId: string) => {
  */
 export const featchMyAdvisory = async (data: requestProp) => {
   const res = await cloudWhere('Advisory', { unionId: data.unionId });
-  console.log(res);
   return {
     data: res ?? [],
     success: true,
@@ -66,12 +64,10 @@ type rowType = AdvisoryType & {
 
 // 修改自己的法律顾问单位信息
 export const updateAdvisory = async (_: any, row: rowType) => {
-  console.log(row);
   const res = await cloudUpdateById('Advisory', row._id, {
     name: row.name,
     timeRange: row.timeRange,
   });
-  console.log(res);
   if (res?.updated) {
     message.success('更新信息成功！');
     return true;
@@ -81,7 +77,6 @@ export const updateAdvisory = async (_: any, row: rowType) => {
 // 删除法律顾问单位信息
 export const deleteAdvisory = async (_: any, row: rowType) => {
   const res = await cloudRemoveById('Advisory', row._id);
-  console.log(res);
   if (res?.deleted) {
     message.success('删除法律顾问单位信息成功');
     return true;
