@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useModel, useLocation } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
@@ -21,6 +21,7 @@ import {
 } from '@/services/cases';
 import { cloudFIndById } from '@/services/until';
 import styles from './index.less';
+import useSafeState from '@/hook/useSafeState/index';
 
 export default function CreateCasePage() {
   interface optionType {
@@ -32,8 +33,8 @@ export default function CreateCasePage() {
   const caseId: string | undefined = location?.query?.id;
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
-  const [caseData, setCaseData] = useState<Case>();
-  const [readonly, setReadonly] = useState<boolean>(true);
+  const [caseData, setCaseData] = useSafeState<Case>();
+  const [readonly, setReadonly] = useSafeState<boolean>(true);
   let formI = Form.useForm();
 
   const initData = async (caseId: string | undefined) => {

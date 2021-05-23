@@ -10,11 +10,6 @@ export interface emailProp {
   oldEmail: string;
 }
 
-export interface userInfoProp {
-  name: string;
-  phone: string;
-}
-
 // 云开发中的用户字段
 export interface UserCloudInfo {
   avatarUrl: string;
@@ -36,10 +31,22 @@ export interface UserAddInfo {
   name?: string;
   phone?: string;
   uid: string;
-  email: string;
+  // 没有使用邮箱了，将废弃
+  email?: string;
   role: string;
+  // 执业证号
+  licenseNumber?: string;
+  // 执业起始时间
+  startDate?: Date;
+  // 性别
+  sex?: string;
+  hasAddInfo: boolean;
 }
 
+export const sexText = {
+  MALE: '男',
+  FEMALE: '女',
+};
 export interface UserInfo extends UserAddInfo, UserCloudInfo {}
 
 // 退出登陆
@@ -63,6 +70,8 @@ export const fetchUserInfo = async () => {
       User = await cloudWhere('User', { unionId: currentUser?.unionId });
     }
     const userInfo = formatUserInfo(currentUser, User[0]);
+    const isDev = process.env.NODE_ENV === 'development';
+    isDev && console.log(userInfo);
     return userInfo;
   }
   return null;
@@ -75,6 +84,7 @@ const addUserInfo = async (unionId: string) => {
     phone: null,
     role: 'user',
     unionId,
+    hasAddInfo: false,
   };
   await collection.add(userInfo);
 };
@@ -85,16 +95,27 @@ const formatUserInfo = (currentUser: any, data: any): UserInfo => {
     name: data?.name,
     phone: data?.phone,
     role: data?.role ?? 'user',
+    licenseNumber: data?.licenseNumber,
+    startDate: data?.startDate,
+    sex: data?.sex,
+    hasAddInfo: data?.hasAddInfo,
     ...currentUser,
   };
 };
 
 // 重设个人信息
-export const reSetUserInfo = async (data: userInfoProp, unionId: string) => {
+export const reSetUserInfo = async (
+  data: UserAddInfo,
+  unionId: string,
+  refresh: () => Promise<any>,
+) => {
   const User = await cloudWhere('User', { unionId: unionId });
   const docId: string = User[0]._id;
+  data.hasAddInfo = true;
   await collection.doc(docId).update(data);
-  message.success('更新个人信息成功！');
+  // 重新获取用户信息
+  refresh();
+  message.success('您的个人信息已经更新好了！');
 };
 
 // 重置邮箱

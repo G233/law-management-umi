@@ -5,7 +5,7 @@ import RightContent from '@/components/RightContent';
 import NoticeIconView from '@/components/NoticeIcon';
 import Footer from '@/components/Footer';
 import { fetchUserInfo, UserInfo } from '@/services/user';
-import { Space, Button } from 'antd';
+import { Space, Button, message } from 'antd';
 import { provider } from '@/cloud_function';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
@@ -56,9 +56,17 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     ),
 
     onPageChange: () => {
-      // 如果没有登录，重定向到微信扫码也进行登陆
       if (!initialState?.hasLogin) {
+        // 如果没有登录，重定向到微信扫码也进行登陆
         provider.signInWithRedirect();
+      }
+      // 没有填写信息强制跳转填写
+      if (
+        !initialState?.currentUser?.hasAddInfo &&
+        history.location.pathname !== '/setting'
+      ) {
+        history.push('/setting');
+        message.warning('请完整填写个人信息后再开始使用本系统');
       }
     },
   };

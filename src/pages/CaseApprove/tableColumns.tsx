@@ -1,15 +1,16 @@
 import { Case, fetchLawList, fetchCaseCauseList } from '@/services/cases';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import type { ProColumns } from '@ant-design/pro-table';
 import { ProFormSelect } from '@ant-design/pro-form';
 import { Form, AutoComplete } from 'antd';
+import useSafeState from '@/hook/useSafeState/index';
 
 export const commonColumns = (): ProColumns<Case>[] => {
   interface optionType {
     value: string;
     label?: string;
   }
-  const [caseCauseList, setCaseCauseList] = useState<optionType[]>();
+  const [caseCauseList, setCaseCauseList] = useSafeState<optionType[]>();
 
   const initAutoData = async () => {
     setCaseCauseList(await fetchCaseCauseList());

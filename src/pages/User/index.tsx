@@ -1,13 +1,16 @@
 import { useModel } from 'umi';
-import ProForm, { ProFormText } from '@ant-design/pro-form';
+import ProForm, {
+  ProFormText,
+  ProFormDatePicker,
+  ProFormSelect,
+} from '@ant-design/pro-form';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
-import { reSetUserInfo, userInfoProp } from '@/services/user';
+import { reSetUserInfo, UserInfo, sexText } from '@/services/user';
 
 // 自定义用户模型
 export default function IndexPage() {
-  const { Divider } = ProCard;
-  const { initialState } = useModel('@@initialState');
+  const { initialState, refresh } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
 
   return (
@@ -25,8 +28,9 @@ export default function IndexPage() {
           }}
           onFinish={async (values) => {
             await reSetUserInfo(
-              values as userInfoProp,
+              values as UserInfo,
               userInfo?.unionId as string,
+              refresh,
             );
           }}
         >
@@ -44,23 +48,56 @@ export default function IndexPage() {
               tooltip="请输入真实姓名，用于展示"
               placeholder="请输入姓名"
             />
+            <ProFormSelect
+              name="sex"
+              label="性别"
+              initialValue={userInfo?.sex}
+              valueEnum={sexText}
+              placeholder="请选择您的性别"
+              rules={[{ required: true, message: '请选择您的性别' }]}
+            />
+          </ProForm.Group>
+          <ProForm.Group>
             <ProFormText
-              width="md"
-              name="phone"
-              label="手机号"
-              initialValue={userInfo?.phone}
-              placeholder="请输入手机号"
+              name="licenseNumber"
+              label="执业证号"
+              initialValue={userInfo?.licenseNumber}
               rules={[
                 {
                   required: true,
-                  message: '请输入手机号',
+                  message: '执业证号',
+                },
+              ]}
+              tooltip="请输入执业证号"
+              placeholder="请输入执业证号"
+            />
+            <ProFormDatePicker
+              name="startDate"
+              label="执业起始时间"
+              initialValue={userInfo?.startDate}
+              rules={[
+                {
+                  required: true,
+                  message: '请设置执业起始时间',
                 },
               ]}
             />
           </ProForm.Group>
+          <ProFormText
+            width="md"
+            name="phone"
+            label="手机号"
+            initialValue={userInfo?.phone}
+            placeholder="请输入手机号"
+            rules={[
+              {
+                required: true,
+                message: '请输入手机号',
+              },
+            ]}
+          />
         </ProForm>
       </ProCard>
-      <Divider />
     </PageContainer>
   );
 }

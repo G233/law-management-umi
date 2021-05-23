@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useModel } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import { Form, AutoComplete, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import useSafeState from '@/hook/useSafeState/index';
 
 import ProForm, {
   ProFormText,
@@ -33,7 +34,7 @@ export default function CreateCase() {
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
 
-  const [caseCauseList, setCaseCauseList] = useState<optionType[]>();
+  const [caseCauseList, setCaseCauseList] = useSafeState<optionType[]>();
 
   // 获取案由自动完成的列表
   const initAutoData = async () => {

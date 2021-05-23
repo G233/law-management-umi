@@ -1,14 +1,14 @@
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Alert, message, Button } from 'antd';
-import React, { useState } from 'react';
-import { trim } from 'lodash';
-import ProForm, { ProFormText, ModalForm } from '@ant-design/pro-form';
+import React from 'react';
+import ProForm, { ProFormText } from '@ant-design/pro-form';
 import { Link, history, useModel } from 'umi';
 import Footer from '@/components/Footer';
 
 import styles from './index.less';
 import { fetchUserInfo } from '@/services/user';
 import { provider, auth } from '@/cloud_function';
+import useSafeState from '@/hook/useSafeState/index';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -34,8 +34,8 @@ const Login: React.FC = () => {
     password?: string;
     autoLogin?: boolean;
   }
-  const [submitting, setSubmitting] = useState(false);
-  const [loginStatus, setLoginStatus] = useState(LoginStatus.LODING);
+  const [submitting, setSubmitting] = useSafeState(false);
+  const [loginStatus, setLoginStatus] = useSafeState(LoginStatus.LODING);
   const { initialState, setInitialState } = useModel('@@initialState');
 
   // 用户登陆函数

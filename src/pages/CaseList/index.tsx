@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Button } from 'antd';
 import { history, useAccess } from 'umi';
 import type { ProColumns } from '@ant-design/pro-table';
@@ -6,10 +6,11 @@ import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 import { Case, fetchCaseList, CaseType, CaseTypeText } from '@/services/cases';
+import useSafeState from '@/hook/useSafeState/index';
 
 export default function CaseList() {
   const access = useAccess();
-  const [myCasesColumns, setMyCasesColumns] = useState<ProColumns<Case>[]>([
+  const [myCasesColumns, setMyCasesColumns] = useSafeState<ProColumns<Case>[]>([
     ...commonColumns(),
     {
       title: '案件类别',

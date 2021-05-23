@@ -1,35 +1,47 @@
-import { useState, useEffect } from 'react';
-import { Button, Alert, Space } from 'antd';
+import { useEffect } from 'react';
 import { useAccess } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
-import { ModalForm, ProFormText } from '@ant-design/pro-form';
 import { EditableProTable } from '@ant-design/pro-table';
-import { PlusOutlined } from '@ant-design/icons';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import type { ProColumns } from '@ant-design/pro-table';
+import useSafeState from '@/hook/useSafeState/index';
 
-import {
-  UserInfo,
-  fetchAllUser,
-  addUser,
-  updateUserInfo,
-} from '@/services/user';
+import { fetchAllUser, updateUserInfo, sexText } from '@/services/user';
 
 export default function advisoryList() {
   const roleText = {
     admin: '管理律师',
     user: '执业律师',
   };
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [userColumns, setUserColumns] = useState<ProColumns[]>([
+
+  const [editableKeys, setEditableRowKeys] = useSafeState<React.Key[]>([]);
+  const [userColumns, setUserColumns] = useSafeState<ProColumns[]>([
     {
       title: '姓名',
       dataIndex: 'name',
     },
     {
+      title: '性别',
+      dataIndex: 'sex',
+      valueEnum: sexText,
+    },
+    {
       title: '联系方式',
       dataIndex: 'phone',
+      // width: 150,
       copyable: true,
     },
+
+    {
+      title: '执业证号',
+      dataIndex: 'licenseNumber',
+      copyable: true,
+    },
+    {
+      title: '执业起始时间',
+      dataIndex: 'startDate',
+      valueType: 'date',
+    },
+
     {
       title: '权限',
       dataIndex: 'role',
@@ -56,53 +68,12 @@ export default function advisoryList() {
                 action.startEditable?.(record._id);
               }}
             >
-              编辑
+              修改信息
             </a>,
           ],
         },
       ]);
   }, [access.admin]);
-
-  const createBtn = (fn: ActionType | undefined) =>
-    access.admin ? (
-      <ModalForm<UserInfo>
-        title="添加人员"
-        trigger={
-          <Button type="primary">
-            <PlusOutlined />
-            添加人员
-          </Button>
-        }
-        onFinish={async (values) => {
-          await addUser(values);
-          // @ts-ignore
-          fn.reloadAndRest();
-
-          return true;
-        }}
-      >
-        <ProFormText
-          name="email"
-          label="登陆邮箱"
-          tooltip="此邮箱将用于登陆管理系统"
-          placeholder="请输入邮箱"
-          width="sm"
-          rules={[
-            {
-              required: true,
-              message: '请输入登陆邮箱',
-            },
-          ]}
-        />
-        <Space direction="vertical" size="large">
-          <Alert
-            message="默认登陆密码「 heqing123456 」请尽快修改密码"
-            closable
-            type="info"
-          />
-        </Space>
-      </ModalForm>
-    ) : null;
 
   return (
     <PageContainer>
@@ -115,10 +86,10 @@ export default function advisoryList() {
           editableKeys,
           onSave: updateUserInfo,
           onChange: setEditableRowKeys,
+          deletePopconfirmMessage: '这个删除按钮并不会实际删除，还未开发完成',
         }}
         rowKey={(e) => e._id ?? 'key'}
         search={false}
-        toolBarRender={(data) => [createBtn(data)]}
       />
     </PageContainer>
   );

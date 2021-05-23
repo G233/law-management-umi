@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useModel } from 'umi';
 import { Button } from 'antd';
 
@@ -18,11 +17,12 @@ import {
   deleteAdvisory,
 } from '@/services/advisory';
 import { requestProp } from '@/services/cases';
+import useSafeState from '@/hook/useSafeState/index';
 
 export default function advisoryList() {
   const { initialState } = useModel('@@initialState');
   const unionId = initialState?.currentUser?.unionId;
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  const [editableKeys, setEditableRowKeys] = useSafeState<React.Key[]>([]);
 
   const advisoryColumns: ProColumns<AdvisoryType>[] = [
     {

@@ -1,15 +1,15 @@
-import { useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import ApprovingCases from '@/pages/CaseApprove/approvingCases';
 import ApprovedCases from '@/pages/CaseApprove/approvedCases';
+import useSafeState from '@/hook/useSafeState/index';
 
 export default function CaseApprove() {
   enum CaseListType {
     approving = 'approving', //已审批
     approved = 'approved', // 待审批
   }
-  const [tab, setTab] = useState<CaseListType>(CaseListType.approving);
+  const [tab, setTab] = useSafeState<CaseListType>(CaseListType.approving);
 
   return (
     <div>

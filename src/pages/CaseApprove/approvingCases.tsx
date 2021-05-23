@@ -1,9 +1,10 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { useModel, history } from 'umi';
 import { Button, Space, Table, Row, Col } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import useSafeState from '@/hook/useSafeState/index';
 
 import {
   Case,
@@ -14,9 +15,11 @@ import {
 import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 
 export default function approvingCases() {
-  const [isShowModal, setIsShowModal] = useState(false);
-  const [selectedCasesId, setSelectedCasesId] = useState<(string | number)[]>();
-  const [argBtnLoding, setArgBtnLoding] = useState(false);
+  const [isShowModal, setIsShowModal] = useSafeState(false);
+  const [selectedCasesId, setSelectedCasesId] = useSafeState<
+    (string | number)[]
+  >();
+  const [argBtnLoding, setArgBtnLoding] = useSafeState(false);
 
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
