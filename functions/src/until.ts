@@ -3,7 +3,7 @@ const isDev = process.env.NODE_ENV === 'development';
 // 云开发相关函数
 export const db = cloudbase
   .init({
-    env: isDev ? 'atom-2gbnzw0gde4242dc' : 'law-build-8gty78990cd939d6',
+    env: isDev ? 'atom-2gbnzw0gde4242dc' : 'cloud1-6gegtpsred131652',
   })
   .database();
 
