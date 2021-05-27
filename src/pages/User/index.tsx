@@ -12,6 +12,8 @@ import { reSetUserInfo, UserInfo, sexText } from '@/services/user';
 export default function IndexPage() {
   const { initialState, refresh } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
+  console.log('用户信息');
+  console.log(userInfo);
 
   return (
     <PageContainer>
@@ -87,7 +89,7 @@ export default function IndexPage() {
             width="md"
             name="phone"
             label="手机号"
-            initialValue={userInfo?.phone}
+            initialValue={11111111}
             placeholder="请输入手机号"
             rules={[
               {

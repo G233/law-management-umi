@@ -113,27 +113,16 @@ export const reSetUserInfo = async (
   unionId: string,
   refresh: () => Promise<any>,
 ) => {
-  console.log('更新的数据');
-  console.log(data);
-  console.log('更新的unionId');
-  console.log(unionId);
   const User = await cloudWhere('User', { unionId: unionId });
-  console.log('查到的用户');
-  console.log(User);
   const docId: string = User[0]._id;
-  console.log('查到的用户Id');
-  console.log(docId);
   data.hasAddInfo = true;
   const res = await collection.doc(docId).update(data);
-  console.log('更新的用户数据');
-  console.log(res);
   // 重新获取用户信息
   if (res.updated == 1) {
     message.success('您的个人信息已经更新好了！');
     await refresh();
     return;
   }
-  message.error('出现错误，请稍后重试');
 };
 
 // 重置邮箱
