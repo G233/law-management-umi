@@ -3,7 +3,7 @@ const isDev = process.env.NODE_ENV === 'development';
 // 云开发相关函数
 export const db = cloudbase
   .init({
-    env: isDev ? 'atom-build-3gucmakw82f1fc3c' : 'atom-build-3gucmakw82f1fc3c',
+    env: isDev ? 'atom-2gbnzw0gde4242dc' : 'atom-build-3gucmakw82f1fc3c',
   })
   .database();
 
