@@ -99,13 +99,14 @@ const addUserInfo = async (unionId: string) => {
 const formatUserInfo = (currentUser: any, data: any): UserInfo => {
   return {
     name: data?.name,
-    phone: data?.phone,
     role: data?.role ?? 'user',
     licenseNumber: data?.licenseNumber,
     startDate: data?.startDate,
     sex: data?.sex,
     hasAddInfo: data?.hasAddInfo,
     ...currentUser,
+    // 在生产环境下，currentUser 里面会有空白 phone
+    phone: data?.phone,
   };
 };
 
