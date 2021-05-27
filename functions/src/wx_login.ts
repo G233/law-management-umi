@@ -7,10 +7,11 @@ const wxCloudbase = require('wx-server-sdk');
  * event 参数包含小程序端调用传入的 data
  *
  */
+const isDev = process.env.NODE_ENV === 'development';
 
 const wxLogin = () => {
   wxCloudbase.init({
-    env: 'atom-2gbnzw0gde4242dc',
+    env: isDev ? 'atom-build-3gucmakw82f1fc3c' : 'atom-build-3gucmakw82f1fc3c',
   });
   const wxContext = wxCloudbase.getWXContext();
 

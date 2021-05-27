@@ -63,6 +63,10 @@ export const signIn = async (email: string, password: string) => {
 export const fetchUserInfo = async () => {
   if (auth.hasLoginState()) {
     const currentUser = await auth.getCurrenUser();
+    console.log(
+      '🚀 ~ file: user.ts ~ line 66 ~ fetchUserInfo ~ currentUser',
+      currentUser,
+    );
     let User = await cloudWhere('User', { unionId: currentUser?.unionId });
     // 如果是第一次登陆系统需要在自定义的用户表中新建
     if (!User?.[0]) {
@@ -109,8 +113,16 @@ export const reSetUserInfo = async (
   unionId: string,
   refresh: () => Promise<any>,
 ) => {
+  console.log('更新的数据');
+  console.log(data);
+  console.log('更新的unionId');
+  console.log(unionId);
   const User = await cloudWhere('User', { unionId: unionId });
+  console.log('查到的用户');
+  console.log(User);
   const docId: string = User[0]._id;
+  console.log('查到的用户Id');
+  console.log(docId);
   data.hasAddInfo = true;
   await collection.doc(docId).update(data);
   // 重新获取用户信息
