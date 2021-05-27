@@ -12,8 +12,6 @@ import { reSetUserInfo, UserInfo, sexText } from '@/services/user';
 export default function IndexPage() {
   const { initialState, refresh } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
-  console.log('用户信息');
-  console.log(userInfo);
 
   return (
     <PageContainer>
