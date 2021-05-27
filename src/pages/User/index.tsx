@@ -89,7 +89,7 @@ export default function IndexPage() {
             width="md"
             name="phone"
             label="手机号"
-            initialValue={11111111}
+            initialValue={userInfo?.phone}
             placeholder="请输入手机号"
             rules={[
               {
