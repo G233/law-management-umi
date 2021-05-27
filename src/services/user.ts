@@ -73,9 +73,11 @@ export const fetchUserInfo = async () => {
       await addUserInfo(currentUser?.unionId as string);
       User = await cloudWhere('User', { unionId: currentUser?.unionId });
     }
+    console.log('附加用户数据');
+    console.log(User[0]);
+    console.log('基础用户数据');
+    console.log(currentUser);
     const userInfo = formatUserInfo(currentUser, User[0]);
-    const isDev = process.env.NODE_ENV === 'development';
-    isDev && console.log(userInfo);
     return userInfo;
   }
   return null;
