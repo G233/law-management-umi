@@ -59,6 +59,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       if (!initialState?.hasLogin) {
         // 如果没有登录，重定向到微信扫码也进行登陆
         provider.signInWithRedirect();
+        return;
       }
       // 没有填写信息强制跳转填写
       if (

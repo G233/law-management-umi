@@ -124,10 +124,16 @@ export const reSetUserInfo = async (
   console.log('查到的用户Id');
   console.log(docId);
   data.hasAddInfo = true;
-  await collection.doc(docId).update(data);
+  const res = await collection.doc(docId).update(data);
+  console.log('更新的用户数据');
+  console.log(res);
   // 重新获取用户信息
-  refresh();
-  message.success('您的个人信息已经更新好了！');
+  if (res.updated == 1) {
+    message.success('您的个人信息已经更新好了！');
+    await refresh();
+    return;
+  }
+  message.error('出现错误，请稍后重试');
 };
 
 // 重置邮箱
