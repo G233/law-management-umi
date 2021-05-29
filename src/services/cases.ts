@@ -188,8 +188,9 @@ export const createCase = async (value: Case, unionId: string) => {
   await cloudFunction('create_case', await generatedCaseId(value));
   message.success('新建成功，等待审批中');
 };
-// // 新建一百个案件，测试用 mock 数据
-// export const createCase = async (value: Case) => {
+// 新建一百个案件，测试用 mock 数据
+// export const createCase = async (value: Case, unionId: string) => {
+//   value.unionId = unionId;
 //   for (let i = 0; i < 300; i++) {
 //     await cloudFunction('create_case', await generatedCaseId(value));
 //   }

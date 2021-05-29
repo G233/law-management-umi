@@ -2,6 +2,7 @@ export default {
   nodeModulesTransform: {
     type: 'none',
   },
+  hash: true,
   // esbuild: {},
   // 生产环境下生成静态化站点
   exportStatic: {},

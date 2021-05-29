@@ -77,6 +77,7 @@ export const updateAdvisory = async (_: any, row: rowType) => {
 // 删除法律顾问单位信息
 export const deleteAdvisory = async (_: any, row: rowType) => {
   const res = await cloudRemoveById('Advisory', row._id);
+  console.log(res);
   if (res?.deleted) {
     message.success('删除法律顾问单位信息成功');
     return true;

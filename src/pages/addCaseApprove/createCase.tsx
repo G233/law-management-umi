@@ -1,9 +1,6 @@
 import { useEffect } from 'react';
 import { useModel } from 'umi';
-import { PageContainer } from '@ant-design/pro-layout';
-import ProCard from '@ant-design/pro-card';
 import { Form, AutoComplete, Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
 import useSafeState from '@/hook/useSafeState/index';
 
 import ProForm, {
