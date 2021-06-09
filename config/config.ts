@@ -3,7 +3,7 @@ export default {
     type: 'none',
   },
   hash: true,
-  // esbuild: {},
+  esbuild: {},
   // 生产环境下生成静态化站点
   exportStatic: {},
   // 图标可以查阅：https://ant.design/components/icon-cn/

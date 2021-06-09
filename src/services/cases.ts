@@ -273,7 +273,7 @@ export const downloadFile = async (file: any) => {
     .downloadFile({
       fileID: file.response,
     })
-    .catch((e) => {});
+    .catch(() => {});
   message.success('附件开始下载');
 };
 
