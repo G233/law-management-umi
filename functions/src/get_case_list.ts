@@ -112,6 +112,12 @@ const getCaseList = async ({
     .match(conditionI)
     .count('count')
     .end();
+
+  res.data.map((e) => {
+    (e.undertakerName = e.undertakerName[0]),
+      (e.approverName = e.approverName[0]);
+  });
+
   return {
     caseList: res.data,
     count: resCount.data[0] && resCount.data[0].count,

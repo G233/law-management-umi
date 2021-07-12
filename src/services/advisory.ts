@@ -55,10 +55,6 @@ interface tableProp {
  */
 export const featchAllAdvisory = async ({ name, undertaker }: tableProp) => {
   const res = await cloudFunction('fetch_all_advisory', { name, undertaker });
-  console.log(res.data);
-  res.data.map((e: resAdvisoryType) => {
-    e.userName = e.userName[0];
-  });
   return {
     data: res?.data ?? [],
     success: true,

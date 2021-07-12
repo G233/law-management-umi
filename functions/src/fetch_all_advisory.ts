@@ -40,6 +40,9 @@ const fetchAllAdvisory = async ({
       User: 0,
     })
     .end();
+  res.data.map((e: { userName: any[] }) => {
+    e.userName = e.userName[0];
+  });
   return res;
 };
 
