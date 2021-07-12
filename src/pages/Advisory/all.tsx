@@ -46,7 +46,7 @@ export default function advisoryList() {
           columns={advisoryColumns}
           request={featchAllAdvisory}
           search={{ labelWidth: 'auto' }}
-          rowKey={(e) => e._id ?? 'key'}
+          rowKey={(e) => e._id}
         />
       </PageContainer>
     </div>
