@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useModel } from 'umi';
 import { Form, AutoComplete, Button } from 'antd';
+import type { FormInstance } from 'antd';
 import useSafeState from '@/hook/useSafeState/index';
 
 import ProForm, {
@@ -37,6 +38,7 @@ export default function CreateCase() {
   const initAutoData = async () => {
     setCaseCauseList(await fetchCaseCauseList());
   };
+  const formRef = useRef<FormInstance>();
 
   useEffect(() => {
     initAutoData();
@@ -56,9 +58,11 @@ export default function CreateCase() {
     <div>
       <ModalForm<Case>
         title="新建审批案件"
+        formRef={formRef}
         trigger={<Button type="primary">新建审批案件</Button>}
         onFinish={async (values) => {
           await createCase(values, userInfo?.unionId as string);
+          formRef.current?.resetFields();
           return true;
         }}
       >

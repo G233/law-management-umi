@@ -1,6 +1,7 @@
 import { useModel } from 'umi';
+import { useRef } from 'react';
 import { Button } from 'antd';
-
+import type { FormInstance } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import {
   ModalForm,
@@ -41,7 +42,7 @@ export default function advisoryList() {
         <a
           key="editable"
           onClick={() => {
-            action.startEditable?.(record._id);
+            action?.startEditable?.(record._id);
           }}
         >
           编辑
@@ -49,15 +50,17 @@ export default function advisoryList() {
       ],
     },
   ];
+  const formRef = useRef<FormInstance>();
   const createBtn = (fn: ActionType | undefined) => (
     <ModalForm<AdvisoryType>
       title="添加法律顾问单位"
       trigger={<Button type="primary">添加法律顾问单位</Button>}
+      formRef={formRef}
       onFinish={async (values) => {
         await newAdvisory(values as AdvisoryType, unionId as string);
         // @ts-ignore
         fn.reloadAndRest();
-
+        formRef.current?.resetFields();
         return true;
       }}
     >
