@@ -51,7 +51,7 @@ export const caseIdText = {
   [CaseType.Administrative]: '行代',
 };
 
-export enum agencyStageCivil {
+export enum agencyStageType {
   '一审',
   '二审',
   '再审',
@@ -61,13 +61,54 @@ export enum agencyStageCivil {
   '审判阶段',
 }
 export const agencyStageCivilText = {
-  [agencyStageCivil.一审]: '一审',
-  [agencyStageCivil.二审]: '二审',
-  [agencyStageCivil.再审]: '再审',
-  [agencyStageCivil.执行]: '执行',
-  [agencyStageCivil.侦查阶段]: '侦查阶段',
-  [agencyStageCivil.审查起诉阶段]: '审查起诉阶段',
-  [agencyStageCivil.审判阶段]: '审判阶段',
+  [agencyStageType.一审]: '一审',
+  [agencyStageType.二审]: '二审',
+  [agencyStageType.再审]: '再审',
+  [agencyStageType.执行]: '执行',
+  [agencyStageType.侦查阶段]: '侦查阶段',
+  [agencyStageType.审查起诉阶段]: '审查起诉阶段',
+  [agencyStageType.审判阶段]: '审判阶段',
+};
+
+const normalText = {
+  caseCause: '案由',
+  agencyStage: '代理阶段',
+  litigant: '委托当事人姓名(名称)',
+  litigantSituation: '委托当事人基本情况',
+  litigantPhone: '委托当事人联系方式',
+};
+
+export const text = {
+  [CaseType.Criminal]: {
+    caseCause: '涉案罪名',
+    agencyStage: '辩护阶段',
+    litigant: '犯罪嫌疑人或被告人姓名(名称)',
+    litigantSituation: '犯罪嫌疑人或被告人基本情况',
+    litigantPhone: '犯罪嫌疑人或被告人联系方式',
+  },
+  [CaseType.Civil]: normalText,
+  [CaseType.Administrative]: normalText,
+};
+
+export const agencyStageList = {
+  [CaseType.Criminal]: {
+    [agencyStageType.侦查阶段]: agencyStageCivilText[agencyStageType.侦查阶段],
+    [agencyStageType.审查起诉阶段]:
+      agencyStageCivilText[agencyStageType.审查起诉阶段],
+    [agencyStageType.审判阶段]: agencyStageCivilText[agencyStageType.审判阶段],
+  },
+  [CaseType.Civil]: {
+    [agencyStageType.一审]: agencyStageCivilText[agencyStageType.一审],
+    [agencyStageType.二审]: agencyStageCivilText[agencyStageType.二审],
+    [agencyStageType.再审]: agencyStageCivilText[agencyStageType.再审],
+    [agencyStageType.执行]: agencyStageCivilText[agencyStageType.执行],
+  },
+  [CaseType.Administrative]: {
+    [agencyStageType.一审]: agencyStageCivilText[agencyStageType.一审],
+    [agencyStageType.二审]: agencyStageCivilText[agencyStageType.二审],
+    [agencyStageType.再审]: agencyStageCivilText[agencyStageType.再审],
+    [agencyStageType.执行]: agencyStageCivilText[agencyStageType.执行],
+  },
 };
 
 // 案件属性
@@ -110,7 +151,7 @@ export interface Case {
   CaseType: CaseType;
 
   // 代理阶段
-  agencyStage: agencyStageCivil;
+  agencyStage: agencyStageType;
   // 拟收费金额及其说明
   toll: string;
   // 附件

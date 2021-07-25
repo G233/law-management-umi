@@ -22,7 +22,7 @@ export const commonColumns = (): ProColumns<Case>[] => {
 
   return [
     {
-      title: '案由',
+      title: '案由 (涉案罪名)',
       width: 80,
       dataIndex: 'caseCause', // 列数据在数据项中对应的路径，支持通过数组查询嵌套路径，设置了这个值就无需 key
       renderFormItem: () => (
@@ -36,13 +36,13 @@ export const commonColumns = (): ProColumns<Case>[] => {
       ),
     },
     {
-      title: '委托当事人姓名(名称)',
+      title: '委托当事人 (嫌疑人)',
       width: 80,
       dataIndex: 'litigant',
       align: 'center',
     },
     {
-      title: '对方当事人姓名(名称)',
+      title: '对方当事人姓名 (名称)',
       width: 80,
       dataIndex: 'otherlitigant',
       align: 'center',

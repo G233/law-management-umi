@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useModel, useLocation } from 'umi';
+import { useModel, useLocation, useAccess } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import { Form, Result, Button } from 'antd';
@@ -9,6 +9,7 @@ import ProForm, {
   ProFormRadio,
   ProFormUploadDragger,
   ProFormSelect,
+  ProFormDependency,
 } from '@ant-design/pro-form';
 import {
   createCase,
@@ -18,17 +19,17 @@ import {
   fetchLawList,
   uploadFile,
   downloadFile,
+  text,
+  agencyStageList,
 } from '@/services/cases';
 import { cloudFIndById } from '@/services/until';
 import styles from './index.less';
 import useSafeState from '@/hook/useSafeState/index';
 
 export default function CreateCasePage() {
-  interface optionType {
-    value: string;
-    label?: string;
-  }
   const location = useLocation();
+  const { admin } = useAccess();
+  const numReg = /^[0-9]*$/;
   //@ts-ignore
   const caseId: string | undefined = location?.query?.id;
   const { initialState } = useModel('@@initialState');
@@ -78,76 +79,6 @@ export default function CreateCasePage() {
                 await createCase(values as Case, userInfo?.unionId as string);
               }}
             >
-              <ProForm.Group>
-                <ProFormText
-                  name="caseCause"
-                  label="案由"
-                  width="lg"
-                  readonly={readonly}
-                />
-                <ProFormSelect
-                  readonly={readonly}
-                  name="undertaker"
-                  label="承办律师"
-                  request={fetchLawList}
-                  placeholder="选择承办律师"
-                  showSearch={true}
-                />
-              </ProForm.Group>
-
-              <ProForm.Group>
-                <ProFormText
-                  name="litigant"
-                  label="委托当事人姓名(名称)"
-                  width="md"
-                  readonly={readonly}
-                  placeholder="请输入委托当事人姓名(名称)"
-                />
-                <ProFormText
-                  name="litigantPhone"
-                  label="委托当事人联系方式"
-                  readonly={readonly}
-                  placeholder="请输入委托当事人联系方式"
-                  width="md"
-                />
-              </ProForm.Group>
-              <ProFormTextArea
-                readonly={readonly}
-                name="litigantSituation"
-                label="委托当事人基本情况"
-                placeholder="请输入当事人基本情况"
-              />
-              <ProFormText
-                name="otherlitigant"
-                label="对方当事人姓名(名称)"
-                readonly={readonly}
-                width="md"
-                placeholder="请输入对方当事人姓名(名称)"
-              />
-              <ProFormTextArea
-                readonly={readonly}
-                name="otherLitigantSituation"
-                label="对方当事人基本情况"
-                placeholder="请输入当事人基本情况"
-              />
-              <ProFormTextArea
-                readonly={readonly}
-                name="clientSituation"
-                label="委托人基本要求"
-                placeholder="请输入委托人基本要求"
-              />
-              <ProFormTextArea
-                readonly={readonly}
-                name="caseSituation"
-                label="案件基本情况"
-                placeholder="请输入案件基本情况"
-              />
-              <ProFormTextArea
-                readonly={readonly}
-                name="undertakerOpinion"
-                label="承办人基本意见"
-                placeholder="请输入承办人基本意见"
-              />
               <ProFormRadio.Group
                 readonly={readonly}
                 name="CaseType"
@@ -159,21 +90,121 @@ export default function CreateCasePage() {
                     value: CaseType.Civil,
                   },
                   {
-                    label: CaseTypeText[CaseType.Criminal],
-                    value: CaseType.Criminal,
-                  },
-                  {
                     label: CaseTypeText[CaseType.Administrative],
                     value: CaseType.Administrative,
                   },
+                  {
+                    label: CaseTypeText[CaseType.Criminal],
+                    value: CaseType.Criminal,
+                  },
                 ]}
               />
-              <ProFormText
-                name="caseId"
-                label="案号"
-                width="lg"
-                readonly={readonly}
-              />
+              <ProFormDependency name={['CaseType']}>
+                {(data) => {
+                  const caseType: CaseType = data.CaseType;
+                  return (
+                    <div>
+                      <ProForm.Group>
+                        <ProFormText
+                          name="caseCause"
+                          label={`${text[caseType]?.caseCause}`}
+                          width="lg"
+                          readonly={readonly}
+                        />
+                        {admin && (
+                          <ProFormSelect
+                            name="undertaker"
+                            readonly={readonly}
+                            label="承办律师"
+                            request={fetchLawList}
+                            placeholder="选择承办律师"
+                            width="md"
+                            showSearch={true}
+                          />
+                        )}
+                      </ProForm.Group>
+                      <ProForm.Group>
+                        <ProFormText
+                          readonly={readonly}
+                          name="litigant"
+                          label={`${text[caseType]?.litigant}`}
+                          width="md"
+                          placeholder={`${text[caseType]?.litigant}`}
+                        />
+                        {caseType !== CaseType.Criminal && (
+                          <ProFormText
+                            name="otherlitigant"
+                            readonly={readonly}
+                            label="对方当事人姓名(名称)"
+                            width="md"
+                            placeholder="请输入对方当事人姓名(名称)"
+                          />
+                        )}
+                      </ProForm.Group>
+                      <ProForm.Group>
+                        <ProFormText
+                          name="litigantPhone"
+                          readonly={readonly}
+                          label={`${text[caseType]?.litigantPhone}`}
+                          placeholder={`请输入${text[caseType]?.litigantPhone}`}
+                          width="md"
+                        />
+                        <ProFormSelect
+                          name="agencyStage"
+                          readonly={readonly}
+                          label={`${text[caseType]?.agencyStage}`}
+                          placeholder={`请选择${text[caseType]?.agencyStage}`}
+                          showSearch={true}
+                          valueEnum={agencyStageList[caseType]}
+                          width="md"
+                        />
+                      </ProForm.Group>
+                      <ProFormTextArea
+                        name="litigantSituation"
+                        readonly={readonly}
+                        label={`${text[caseType]?.litigantSituation}`}
+                        placeholder={`请输入${text[caseType]?.litigantSituation}`}
+                      />
+                      {caseType !== CaseType.Criminal && (
+                        <ProFormTextArea
+                          readonly={readonly}
+                          name="otherLitigantSituation"
+                          label="对方当事人基本情况"
+                          placeholder="请输入对方当事人基本情况"
+                        />
+                      )}
+                      {caseType !== CaseType.Criminal && (
+                        <ProFormTextArea
+                          name="clientSituation"
+                          label="委托人基本要求"
+                          readonly={readonly}
+                          placeholder="请输入委托人基本要求"
+                        />
+                      )}
+                      <ProFormTextArea
+                        name="caseSituation"
+                        readonly={readonly}
+                        label="案件基本情况"
+                        placeholder="请输入案件基本情况"
+                      />
+                      {/* <ProFormTextArea
+                        readonly={readonly}
+                        name="undertakerOpinion"
+                        label="承办人基本意见"
+                        placeholder="请输入承办律师意见"
+                      /> */}
+                      {/* <ProFormTextArea
+                        name="toll"
+                        readonly={readonly}
+                        label="拟收取律师费金额及说明"
+                        placeholder="请输入拟收取律师费金额及说明"
+                      /> */}
+                    </div>
+                  );
+                }}
+              </ProFormDependency>
+
+              {/* TODO:多文件上传 */}
               <ProFormUploadDragger
                 readonly={readonly}
                 label="附件"

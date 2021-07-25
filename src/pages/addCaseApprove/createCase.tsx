@@ -22,52 +22,9 @@ import {
   fetchLawList,
   uploadFile,
   downloadFile,
-  agencyStageCivil,
-  agencyStageCivilText,
+  text,
+  agencyStageList,
 } from '@/services/cases';
-
-const normalText = {
-  caseCause: '案由',
-  agencyStage: '代理阶段',
-  litigant: '委托当事人姓名(名称)',
-  litigantSituation: '委托当事人基本情况',
-  litigantPhone: '委托当事人联系方式',
-};
-
-export const text = {
-  [CaseType.Criminal]: {
-    caseCause: '涉案罪名',
-    agencyStage: '辩护阶段',
-    litigant: '犯罪嫌疑人或被告人姓名(名称)',
-    litigantSituation: '犯罪嫌疑人或被告人基本情况',
-    litigantPhone: '犯罪嫌疑人或被告人联系方式',
-  },
-  [CaseType.Civil]: normalText,
-  [CaseType.Administrative]: normalText,
-};
-
-export const agencyStageList = {
-  [CaseType.Criminal]: {
-    [agencyStageCivil.侦查阶段]:
-      agencyStageCivilText[agencyStageCivil.侦查阶段],
-    [agencyStageCivil.审查起诉阶段]:
-      agencyStageCivilText[agencyStageCivil.审查起诉阶段],
-    [agencyStageCivil.审判阶段]:
-      agencyStageCivilText[agencyStageCivil.审判阶段],
-  },
-  [CaseType.Civil]: {
-    [agencyStageCivil.一审]: agencyStageCivilText[agencyStageCivil.一审],
-    [agencyStageCivil.二审]: agencyStageCivilText[agencyStageCivil.二审],
-    [agencyStageCivil.再审]: agencyStageCivilText[agencyStageCivil.再审],
-    [agencyStageCivil.执行]: agencyStageCivilText[agencyStageCivil.执行],
-  },
-  [CaseType.Administrative]: {
-    [agencyStageCivil.一审]: agencyStageCivilText[agencyStageCivil.一审],
-    [agencyStageCivil.二审]: agencyStageCivilText[agencyStageCivil.二审],
-    [agencyStageCivil.再审]: agencyStageCivilText[agencyStageCivil.再审],
-    [agencyStageCivil.执行]: agencyStageCivilText[agencyStageCivil.执行],
-  },
-};
 
 export default function CreateCase() {
   interface optionType {
@@ -108,9 +65,9 @@ export default function CreateCase() {
         trigger={<Button type="primary">新建审批案件</Button>}
         onFinish={async (values) => {
           console.log(values);
-          // await createCase(values, userInfo?.unionId as string);
-          // formRef.current?.resetFields();
-          // return true;
+          await createCase(values, userInfo?.unionId as string);
+          formRef.current?.resetFields();
+          return true;
         }}
       >
         <ProFormRadio.Group
@@ -200,7 +157,7 @@ export default function CreateCase() {
                 <ProForm.Group>
                   <ProFormText
                     name="litigantPhone"
-                    label={`请输入${text[caseType]?.litigantPhone}`}
+                    label={`${text[caseType]?.litigantPhone}`}
                     placeholder={`请输入${text[caseType]?.litigantPhone}`}
                     rules={[
                       {

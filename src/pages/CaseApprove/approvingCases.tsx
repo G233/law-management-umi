@@ -11,14 +11,15 @@ import {
   fetchApprovingCases,
   oneClickApprove,
   CaseStatus,
+  agencyStageList,
+  CaseType,
 } from '@/services/cases';
 import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 
 export default function approvingCases() {
   const [isShowModal, setIsShowModal] = useSafeState(false);
-  const [selectedCasesId, setSelectedCasesId] = useSafeState<
-    (string | number)[]
-  >();
+  const [selectedCasesId, setSelectedCasesId] =
+    useSafeState<(string | number)[]>();
   const [argBtnLoding, setArgBtnLoding] = useSafeState(false);
 
   const { initialState } = useModel('@@initialState');
@@ -36,6 +37,25 @@ export default function approvingCases() {
     {
       title: '承办人基本意见',
       dataIndex: 'undertakerOpinion',
+      ellipsis: true,
+      width: 120,
+      align: 'center',
+      hideInSearch: true,
+    },
+    {
+      title: '代理阶段',
+      dataIndex: 'agencyStage',
+      valueType: 'select',
+      width: 120,
+      align: 'center',
+      valueEnum: {
+        ...agencyStageList[CaseType.Criminal],
+        ...agencyStageList[CaseType.Civil],
+      },
+    },
+    {
+      title: '拟收费金额及其说明',
+      dataIndex: 'toll',
       ellipsis: true,
       width: 120,
       align: 'center',
