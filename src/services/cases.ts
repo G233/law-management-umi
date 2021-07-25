@@ -51,6 +51,25 @@ export const caseIdText = {
   [CaseType.Administrative]: '行代',
 };
 
+export enum agencyStageCivil {
+  '一审',
+  '二审',
+  '再审',
+  '执行',
+  '侦查阶段',
+  '审查起诉阶段',
+  '审判阶段',
+}
+export const agencyStageCivilText = {
+  [agencyStageCivil.一审]: '一审',
+  [agencyStageCivil.二审]: '二审',
+  [agencyStageCivil.再审]: '再审',
+  [agencyStageCivil.执行]: '执行',
+  [agencyStageCivil.侦查阶段]: '侦查阶段',
+  [agencyStageCivil.审查起诉阶段]: '审查起诉阶段',
+  [agencyStageCivil.审判阶段]: '审判阶段',
+};
+
 // 案件属性
 export interface Case {
   // 案由：
@@ -90,6 +109,10 @@ export interface Case {
   // 案件类别
   CaseType: CaseType;
 
+  // 代理阶段
+  agencyStage: agencyStageCivil;
+  // 拟收费金额及其说明
+  toll: string;
   // 附件
   annex: string;
   // 向数据库插入数据的时候会自动添加
