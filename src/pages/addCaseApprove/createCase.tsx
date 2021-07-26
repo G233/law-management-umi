@@ -34,6 +34,7 @@ export default function CreateCase() {
   const numReg = /^[0-9]*$/;
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
+  console.log(userInfo?.unionId);
   const { admin } = useAccess();
   const [caseCauseList, setCaseCauseList] = useSafeState<optionType[]>();
 
@@ -119,18 +120,16 @@ export default function CreateCase() {
                       placeholder={`请输入${text[caseType]?.caseCause}`}
                     />
                   </Form.Item>
-                  {admin && (
-                    <ProFormSelect
-                      name="undertaker"
-                      initialValue={userInfo?.unionId}
-                      label="承办律师"
-                      request={fetchLawList}
-                      placeholder="选择承办律师"
-                      rules={[{ required: true, message: '请选择承办律师' }]}
-                      width="md"
-                      showSearch={true}
-                    />
-                  )}
+                  <ProFormSelect
+                    name="undertaker"
+                    initialValue={userInfo?.unionId}
+                    label="承办律师"
+                    request={fetchLawList}
+                    placeholder="选择承办律师"
+                    rules={[{ required: true, message: '请选择承办律师' }]}
+                    width="md"
+                    showSearch={true}
+                  />
                 </ProForm.Group>
                 <ProForm.Group>
                   <ProFormText
