@@ -187,18 +187,18 @@ export default function CreateCasePage() {
                         label="案件基本情况"
                         placeholder="请输入案件基本情况"
                       />
-                      {/* <ProFormTextArea
+                      <ProFormTextArea
                         readonly={readonly}
                         name="undertakerOpinion"
                         label="承办人基本意见"
                         placeholder="请输入承办律师意见"
-                      /> */}
-                      {/* <ProFormTextArea
+                      />
+                      <ProFormTextArea
                         name="toll"
                         readonly={readonly}
                         label="拟收取律师费金额及说明"
                         placeholder="请输入拟收取律师费金额及说明"
-                      /> */}
+                      />
                     </div>
                   );
                 }}
