@@ -5,6 +5,7 @@ import { oneClickApprove } from './one_click_approve';
 import { getCaseList } from './get_case_list';
 import { UpdateUserInfo } from './update_user_info';
 import { wxLogin } from './wx_login';
+import { changeCase } from './change_case';
 
 const fnList = {
   create_case: CreateCase,
@@ -14,6 +15,7 @@ const fnList = {
   get_case_list: getCaseList,
   update_user_info: UpdateUserInfo,
   wx_login: wxLogin,
+  change_case: changeCase,
 };
 
 export let isDev = false;

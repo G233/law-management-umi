@@ -60,6 +60,7 @@ export enum agencyStageType {
   '审查起诉阶段',
   '审判阶段',
 }
+
 export const agencyStageCivilText = {
   [agencyStageType.一审]: '一审',
   [agencyStageType.二审]: '二审',
@@ -250,8 +251,8 @@ export const fetchCaseList = async (data: requestProp) => {
 export const createCase = async (value: Case, unionId: string) => {
   value.unionId = unionId;
   await cloudFunction('create_case', await generatedCaseId(value));
-  message.success('新建成功，等待审批中');
 };
+
 // 新建一百个案件，测试用 mock 数据
 // export const createCase = async (value: Case, unionId: string) => {
 //   value.unionId = unionId;
@@ -379,4 +380,13 @@ export const generatedCaseId = async (Case: Case) => {
 export const findUserIdByName = async (name: string) => {
   const res = await cloudWhere('User', { name: name });
   return res[0].unionId;
+};
+
+/**
+ * 修改案件信息
+ */
+export const changeCase = async (value: Case, unionId: string, id: string) => {
+  value.unionId = unionId;
+  console.log({ case: value, id });
+  await cloudFunction('change_case', { case: value, id });
 };

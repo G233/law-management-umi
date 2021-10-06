@@ -1,6 +1,6 @@
 import { useModel } from 'umi';
 import { Tag } from 'antd';
-import type { ProColumns } from '@ant-design/pro-table';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 
@@ -10,13 +10,17 @@ import {
   requestProp,
   CaseStatusColor,
   CaseStatusText,
+  CaseStatus,
 } from '@/services/cases';
 import { commonColumns } from '@/pages/CaseApprove/tableColumns';
-import createCase from '@/pages/addCaseApprove/createCase';
+import { formType, caseForm } from '@/pages/addCaseApprove/createCase';
+import { useRef } from 'react';
 
 export default function myCases() {
   const { initialState } = useModel('@@initialState');
   const unionId = initialState?.currentUser?.unionId;
+  const tableRef = useRef<ActionType>();
+
   const myCasesColumns: ProColumns<Case>[] = [
     ...commonColumns(),
     {
@@ -50,11 +54,27 @@ export default function myCases() {
       width: 160,
       valueType: 'dateTime',
     },
+    {
+      title: '操作',
+      valueType: 'option',
+      align: 'center',
+      render: (text, record) => {
+        // 已经通过审批的不允许更改了
+        if (record.approveStatus !== CaseStatus.AGREE) {
+          return caseForm({
+            type: formType.change,
+            case: record,
+            tableRef,
+          });
+        }
+      },
+    },
   ];
 
   return (
     <PageContainer>
       <ProTable<Case>
+        actionRef={tableRef}
         columns={myCasesColumns}
         request={(data: requestProp) =>
           fetchMyCases({ ...data, unionId, tag: 'all' })
@@ -63,7 +83,7 @@ export default function myCases() {
         search={false}
         rowKey={(e) => e._id ?? 'key'}
         headerTitle="案件审批记录"
-        toolBarRender={() => [createCase()]}
+        toolBarRender={() => [caseForm({ type: formType.create, tableRef })]}
       />
     </PageContainer>
   );

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useModel, useAccess } from 'umi';
-import { Form, AutoComplete, Button } from 'antd';
+import { Form, AutoComplete, Button, message } from 'antd';
+import type { ActionType } from '@ant-design/pro-table';
 import type { FormInstance } from 'antd';
 import useSafeState from '@/hook/useSafeState/index';
 
@@ -13,8 +14,10 @@ import ProForm, {
   ModalForm,
   ProFormDependency,
 } from '@ant-design/pro-form';
+
 import {
   createCase,
+  changeCase,
   Case,
   CaseType,
   CaseTypeText,
@@ -26,7 +29,19 @@ import {
   agencyStageList,
 } from '@/services/cases';
 
-export default function CreateCase() {
+export enum formType {
+  create,
+  change,
+}
+
+interface CreateCaseProps {
+  type: formType;
+  case?: Case;
+  tableRef: React.MutableRefObject<ActionType | undefined>;
+}
+
+export const caseForm = (props: CreateCaseProps) => {
+  const { type } = props;
   interface optionType {
     value: string;
     label?: string;
@@ -34,7 +49,6 @@ export default function CreateCase() {
   const numReg = /^[0-9]*$/;
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
-  console.log(userInfo?.unionId);
   const { admin } = useAccess();
   const [caseCauseList, setCaseCauseList] = useSafeState<optionType[]>();
 
@@ -61,13 +75,30 @@ export default function CreateCase() {
   return (
     <div>
       <ModalForm<Case>
-        title="新建审批案件"
+        title={type === formType.create ? '新建审批案件' : '修改案件信息'}
         formRef={formRef}
-        trigger={<Button type="primary">新建审批案件</Button>}
+        trigger={
+          type === formType.create ? (
+            <Button type="primary">新建审批案件</Button>
+          ) : (
+            <Button type="link">更改信息</Button>
+          )
+        }
+        initialValues={props.case}
         onFinish={async (values) => {
-          console.log(values);
-          await createCase(values, userInfo?.unionId as string);
+          if (type === formType.create) {
+            await createCase(values, userInfo?.unionId as string);
+            message.success('新建成功，等待审批中');
+          } else {
+            await changeCase(
+              values,
+              userInfo?.unionId as string,
+              props.case!._id!,
+            );
+            message.success('案件信息修改成功，重新等待审批中');
+          }
           formRef.current?.resetFields();
+          props.tableRef.current?.reloadAndRest!();
           return true;
         }}
       >
@@ -257,4 +288,4 @@ export default function CreateCase() {
       </ModalForm>
     </div>
   );
-}
+};
