@@ -11,12 +11,12 @@ jobs:
 
     steps:
       - name: Checkout main
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: main
 
       - name: Setup node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
 
@@ -30,7 +30,7 @@ jobs:
         run: tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}
 
       - name: Build project
-        run: pnpm build
+        run: npm run build
 
       - name: Upload COS
         uses: zkqiang/tencent-cos-action@v0.1.0
