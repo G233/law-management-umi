@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "律所管理系统",
+  "name": "law-management-umi",
   "scripts": {
     "start": "w2 add .whistle.js --force && umi dev",
     "build": "yarn run fnBuild &&  yarn run fnDeployPrd  && umi build ",

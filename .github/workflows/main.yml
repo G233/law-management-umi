@@ -18,19 +18,19 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: '16.x'
 
       - name: Add tcb
         run: npm i -g @cloudbase/cli
 
       - name: node_moudles
-        run: yarn
+        run: npx pnpm@7 install
 
       - name: tcb login
         run: tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}
 
       - name: Build project
-        run: yarn build
+        run: pnpm build
 
       - name: Upload COS
         uses: zkqiang/tencent-cos-action@v0.1.0
