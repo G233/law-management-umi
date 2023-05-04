@@ -1,7 +1,8 @@
 {
   "private": true,
+  "name": "律所管理系统",
   "scripts": {
-    "start": "umi dev",
+    "start": "w2 add .whistle.js --force && umi dev",
     "build": "yarn run fnBuild &&  yarn run fnDeployPrd  && umi build ",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
@@ -10,6 +11,10 @@
     "fnDeployPrd": " yarn run fnBuild && tcb fn deploy fn_call --force --config-file cloudbaserc.prd.json",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
+  },
+  "engines": {
+    "node": "16",
+    "pnpm": ">=7.0.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
