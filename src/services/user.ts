@@ -110,7 +110,14 @@ export const reSetUserInfo = async (
 ) => {
   const User = await cloudWhere('User', { unionId: unionId });
   const docId: string = User[0]._id;
-  data.hasAddInfo = true;
+
+  // 在找到合适的限权手段之前，暂停新用户注册，提高系统安全性
+  // 需要的话我手动改代码
+  if(!data.hasAddInfo){
+    message.warning('本系统暂时停止注册，请联系刘固');
+    return;
+  }
+  // data.hasAddInfo = true;
   const res = await collection.doc(docId).update(data);
   // 重新获取用户信息
   if (res.updated == 1) {
