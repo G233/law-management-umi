@@ -14,9 +14,9 @@ export const initialStateConfig = {
 };
 
 export async function getInitialState() {
-  // TODO 暂时允许扫码之后直接注册，需要在后期取消
   await provider.getRedirectResult({
-    createUser: true,
+    // 不自动创建用户
+    createUser: false,
     syncUserInfo: true,
   });
 
