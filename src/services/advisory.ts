@@ -66,10 +66,12 @@ type rowType = AdvisoryType & {
 };
 
 // 修改自己的法律顾问单位信息
-export const updateAdvisory = async (_: any, row: rowType) => {
+export const updateAdvisory = async (_: any, newData: rowType, row:rowType) => {
   const res = await cloudUpdateById('Advisory', row._id, {
-    name: row.name,
-    timeRange: row.timeRange,
+    name: newData.name,
+    timeRange: newData.timeRange,
+  }).catch((e) => {
+    console.log(e)
   });
   if (res?.updated) {
     message.success('更新信息成功！');
@@ -80,7 +82,6 @@ export const updateAdvisory = async (_: any, row: rowType) => {
 // 删除法律顾问单位信息
 export const deleteAdvisory = async (_: any, row: rowType) => {
   const res = await cloudRemoveById('Advisory', row._id);
-  console.log(res);
   if (res?.deleted) {
     message.success('删除法律顾问单位信息成功');
     return true;

@@ -24,7 +24,7 @@ jobs:
         run: npm i -g @cloudbase/cli
 
       - name: node_moudles
-        run: npx pnpm@7 install
+        run: npx pnpm@8 install
 
       - name: tcb login
         run: tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}
