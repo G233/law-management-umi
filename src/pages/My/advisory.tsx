@@ -1,4 +1,4 @@
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import { useRef } from 'react';
 import { Button } from 'antd';
 import type { FormInstance } from 'antd';

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useModel, useLocation, useAccess } from 'umi';
+import { useModel, useLocation, useAccess } from '@umijs/max';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import { Form, Result, Button } from 'antd';

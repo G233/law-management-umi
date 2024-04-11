@@ -1,17 +1,11 @@
-import { PageLoading } from '@ant-design/pro-layout';
-import type { RunTimeLayoutConfig } from 'umi';
-import { history } from 'umi';
+import type { RunTimeLayoutConfig } from '@umijs/max';
+import { history } from '@umijs/max';
 import RightContent from '@/components/RightContent';
 import NoticeIconView from '@/components/NoticeIcon';
 import Footer from '@/components/Footer';
 import { fetchUserInfo, UserInfo } from '@/services/user';
 import { Space, Button, message } from 'antd';
 import { provider } from '@/cloud_function';
-
-/** 获取用户信息比较慢的时候会展示一个 loading */
-export const initialStateConfig = {
-  loading: <PageLoading />,
-};
 
 export async function getInitialState() {
   await provider.getRedirectResult({
@@ -36,7 +30,9 @@ export async function getInitialState() {
 
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
+    title: '湖南河清律师事务所',
     footerRender: () => <Footer />,
+    layout: 'mix',
     rightContentRender: () => (
       <div>
         <Space>
@@ -50,10 +46,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
           >
             问题反馈
           </Button>
-          <NoticeIconView /> <RightContent />
+          <NoticeIconView />
+          <RightContent />
         </Space>
       </div>
     ),
+    // headerRender: false,
 
     onPageChange: () => {
       if (!initialState?.hasLogin) {

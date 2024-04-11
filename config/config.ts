@@ -1,9 +1,15 @@
-export default {
-  nodeModulesTransform: {
-    type: 'none',
-  },
+import { defineConfig } from '@umijs/max';
+export default defineConfig({
   hash: true,
-  esbuild: {},
+  model: {},
+  antd: {},
+  layout: {
+    locale: false, // 默认开启，如无需菜单国际化可关闭
+  },
+  request: {},
+  access: {},
+  // access 插件依赖 initial State 所以需要同时开启
+  initialState: {},
   // 生产环境下生成静态化站点
   exportStatic: {},
   // 图标可以查阅：https://ant.design/components/icon-cn/
@@ -40,7 +46,6 @@ export default {
       name: '律师信息',
       icon: 'UserSwitchOutlined',
     },
-
     {
       path: '/My',
       component: '@/pages/My/index',
@@ -62,7 +67,6 @@ export default {
         },
       ],
     },
-
     {
       path: '/setting',
       component: '@/pages/User/index',
@@ -76,20 +80,9 @@ export default {
       hideInMenu: true,
       icon: 'SnippetsOutlined',
     },
-    // 暂时不需要登录页面
-    // {
-    //   path: '/login',
-    //   component: '@/pages/Login/index',
-    //   name: 'Welcome',
-    //   layout: false,
-    //   hideInMenu: true,
-    // },
-    { component: '@/pages/404' },
+    { path: '/*', component: '@/pages/404' },
   ],
-
-  layout: {
-    name: '湖南河清律师事务所',
-    layout: 'side',
-  },
-  fastRefresh: {},
-};
+  fastRefresh: true,
+  npmClient: 'pnpm',
+}
+)

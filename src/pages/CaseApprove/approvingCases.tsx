@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useModel, history } from 'umi';
+import { useModel, history } from '@umijs/max';
 import { Button, Space, Table, Row, Col } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
@@ -139,7 +139,7 @@ export default function approvingCases() {
         tableAlertRender={({ selectedRowKeys, onCleanSelected }) => (
           <Space size={24}>
             <span>
-              已选 {selectedRowKeys.length} 项
+              已选 {selectedRowKeys?.length} 项
               <a style={{ marginLeft: 8 }} onClick={onCleanSelected}>
                 取消选择
               </a>
