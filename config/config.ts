@@ -3,11 +3,13 @@ export default defineConfig({
   hash: true,
   model: {},
   antd: {},
+  deadCode:{},
   layout: {
     locale: false, // 默认开启，如无需菜单国际化可关闭
   },
   request: {},
   access: {},
+  mfsu: false,
   // access 插件依赖 initial State 所以需要同时开启
   initialState: {},
   // 生产环境下生成静态化站点

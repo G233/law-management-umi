@@ -48,9 +48,7 @@ export default function CaseList() {
               onClick={() => {
                 history.push({
                   pathname: '/CaseDetail',
-                  query: {
-                    id: record._id as string,
-                  },
+                  search: `${record._id}`,
                 });
               }}
             >

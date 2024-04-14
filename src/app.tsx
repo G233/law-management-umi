@@ -8,11 +8,11 @@ import { Space, Button, message } from 'antd';
 import { provider } from '@/cloud_function';
 
 export async function getInitialState() {
-  await provider.getRedirectResult({
-    // 不自动创建用户
-    createUser: false,
-    syncUserInfo: true,
-  });
+  // await provider.getRedirectResult({
+  //   // 不自动创建用户
+  //   createUser: false,
+  //   syncUserInfo: true,
+  // });
 
   let hasLogin = false;
   let currentUser: UserInfo | null;
@@ -31,7 +31,6 @@ export async function getInitialState() {
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     title: '湖南河清律师事务所',
-    footerRender: () => <Footer />,
     layout: 'mix',
     rightContentRender: () => (
       <div>

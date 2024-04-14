@@ -24,6 +24,7 @@ export const commonColumns = (): ProColumns<Case>[] => {
     {
       title: '案由 (涉案罪名)',
       width: 80,
+      ellipsis: true,
       dataIndex: 'caseCause', // 列数据在数据项中对应的路径，支持通过数组查询嵌套路径，设置了这个值就无需 key
       renderFormItem: () => (
         <Form.Item name="caseCause" label="">
@@ -38,18 +39,21 @@ export const commonColumns = (): ProColumns<Case>[] => {
     {
       title: '委托当事人 (嫌疑人)',
       width: 80,
+      ellipsis: true,
       dataIndex: 'litigant',
       align: 'center',
     },
     {
       title: '对方当事人姓名 (名称)',
       width: 80,
+      ellipsis: true,
       dataIndex: 'otherlitigant',
       align: 'center',
     },
     {
       title: '承办律师',
       width: 60,
+      ellipsis: true,
       align: 'center',
       dataIndex: 'undertakerName',
       renderFormItem: () => (
@@ -66,6 +70,7 @@ export const commonColumns = (): ProColumns<Case>[] => {
     {
       title: '立案时间',
       width: 100,
+      ellipsis: true,
       dataIndex: 'createTime',
       align: 'center',
       valueType: 'date',
