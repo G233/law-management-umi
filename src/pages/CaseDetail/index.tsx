@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useModel, useLocation, useAccess } from 'umi';
+import { useModel, useLocation, useAccess } from '@umijs/max';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import { Form, Result, Button } from 'antd';
@@ -29,26 +29,15 @@ import useSafeState from '@/hook/useSafeState/index';
 export default function CreateCasePage() {
   const location = useLocation();
   const { admin } = useAccess();
-  const numReg = /^[0-9]*$/;
-  //@ts-ignore
-  const caseId: string | undefined = location?.query?.id;
+  const caseId: string | undefined = location?.search.split('?')[1];
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
-  const [caseData, setCaseData] = useSafeState<Case>();
-  const [readonly, setReadonly] = useSafeState<boolean>(true);
-  let formI = Form.useForm();
+  const [readonly] = useSafeState<boolean>(true);
 
-  const initData = async (caseId: string | undefined) => {
-    if (!caseId) return;
+  const loadCaseInfo = async (caseId: string) => {
     const res = await cloudFIndById('Cases', caseId);
-    setCaseData(res);
-    formI[0].resetFields();
-  };
-
-  useEffect(() => {
-    // initAutoData();
-    initData(caseId);
-  }, []);
+    return res;
+  }
 
   const fieldProps = {
     customRequest: (data: any) => {
@@ -71,13 +60,9 @@ export default function CreateCasePage() {
           <ProCard>
             <ProForm
               submitter={{
-                render: () => null,
+                render: () => <div>1231231</div>,
               }}
-              form={formI[0]}
-              initialValues={caseData}
-              onFinish={async (values) => {
-                await createCase(values as Case, userInfo?.unionId as string);
-              }}
+              request={() => loadCaseInfo(caseId)}
             >
               <ProFormRadio.Group
                 readonly={readonly}

@@ -1,4 +1,4 @@
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import { useRef } from 'react';
 import { Button } from 'antd';
 import type { FormInstance } from 'antd';
@@ -21,6 +21,7 @@ import { requestProp } from '@/services/cases';
 import useSafeState from '@/hook/useSafeState/index';
 
 export default function advisoryList() {
+  debugger;
   const { initialState } = useModel('@@initialState');
   const unionId = initialState?.currentUser?.unionId;
   const [editableKeys, setEditableRowKeys] = useSafeState<React.Key[]>([]);

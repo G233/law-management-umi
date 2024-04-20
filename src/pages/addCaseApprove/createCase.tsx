@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useModel, useAccess } from 'umi';
+import { useModel, useAccess } from '@umijs/max';
 import { Form, AutoComplete, Button, message } from 'antd';
 import type { ActionType } from '@ant-design/pro-table';
 import type { FormInstance } from 'antd';
@@ -49,7 +49,6 @@ export const caseForm = (props: CreateCaseProps) => {
   const numReg = /^[0-9]*$/;
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
-  const { admin } = useAccess();
   const [caseCauseList, setCaseCauseList] = useSafeState<optionType[]>();
 
   // 获取案由自动完成的列表

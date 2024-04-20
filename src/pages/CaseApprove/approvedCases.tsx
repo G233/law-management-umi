@@ -34,12 +34,14 @@ export default function approvedCases() {
     {
       title: '审批人',
       dataIndex: 'approverName',
+      ellipsis: true,
       align: 'center',
       width: 160,
     },
     {
       title: '审批时间',
       dataIndex: 'approveTime',
+      ellipsis: true,
       align: 'center',
       width: 160,
       valueType: 'dateTime',

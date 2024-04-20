@@ -32,7 +32,7 @@ export const readNotice = async (item: Notice) => {
 
 // 将 api 返回的数据,格式化为 ui 需要的数据格式
 export const getNoticeData = (notices: Notice[]): Notice[] => {
-  if (!notices || notices.length === 0 || !Array.isArray(notices)) {
+  if (!notices || notices?.length === 0 || !Array.isArray(notices)) {
     return [];
   }
   const newNotices = notices.map((notice) => {

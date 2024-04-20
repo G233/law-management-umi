@@ -1,5 +1,5 @@
 import ProTable from '@ant-design/pro-table';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import type { ProColumns } from '@ant-design/pro-table';
 
 import { commonColumns } from '@/pages/CaseApprove/tableColumns';

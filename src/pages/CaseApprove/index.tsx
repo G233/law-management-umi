@@ -21,14 +21,21 @@ export default function CaseApprove() {
             onChange: (key) => {
               setTab(key as CaseListType);
             },
+            items: [
+              {
+                key: CaseListType.approving,
+                label: '待审批案件',
+                children: <ApprovingCases />,
+                
+              },
+              {
+                key: CaseListType.approved,
+                label: '案件审批记录',
+                children: <ApprovedCases />,
+              },
+            ],
           }}
         >
-          <ProCard.TabPane key={CaseListType.approving} tab="待审批案件">
-            <ApprovingCases />
-          </ProCard.TabPane>
-          <ProCard.TabPane key={CaseListType.approved} tab="案件审批记录">
-            <ApprovedCases />
-          </ProCard.TabPane>
         </ProCard>
       </PageContainer>
     </div>

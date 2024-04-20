@@ -1,4 +1,4 @@
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import { Tag } from 'antd';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -20,6 +20,8 @@ export default function myCases() {
   const { initialState } = useModel('@@initialState');
   const unionId = initialState?.currentUser?.unionId;
   const tableRef = useRef<ActionType>();
+  const changeCaseForm = caseForm({ type: formType.change, tableRef });
+  const createCaseForm = caseForm({ type: formType.create, tableRef });
 
   const myCasesColumns: ProColumns<Case>[] = [
     ...commonColumns(),
@@ -56,16 +58,12 @@ export default function myCases() {
     },
     {
       title: '操作',
-      valueType: 'option',
+      dataIndex: 'change',
       align: 'center',
-      render: (text, record) => {
+      render: (_, record) => {
         // 已经通过审批的不允许更改了
         if (record.approveStatus !== CaseStatus.AGREE) {
-          return caseForm({
-            type: formType.change,
-            case: record,
-            tableRef,
-          });
+          return changeCaseForm
         }
       },
     },
@@ -83,7 +81,8 @@ export default function myCases() {
         search={false}
         rowKey={(e) => e._id ?? 'key'}
         headerTitle="案件审批记录"
-        toolBarRender={() => [caseForm({ type: formType.create, tableRef })]}
+        ErrorBoundary={false}
+        toolBarRender={() => [createCaseForm]}
       />
     </PageContainer>
   );
