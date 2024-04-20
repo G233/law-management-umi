@@ -4,6 +4,7 @@ export default defineConfig({
   model: {},
   antd: {},
   deadCode:{},
+  clickToComponent:{},
   layout: {
     locale: false, // 默认开启，如无需菜单国际化可关闭
   },

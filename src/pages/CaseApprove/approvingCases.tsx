@@ -107,9 +107,7 @@ export default function approvingCases() {
                 onClick={() => {
                   history.push({
                     pathname: '/CaseDetail',
-                    query: {
-                      id: record._id as string,
-                    },
+                    search: `${record._id}`,
                   });
                 }}
               >

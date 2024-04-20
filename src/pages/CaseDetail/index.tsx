@@ -29,29 +29,15 @@ import useSafeState from '@/hook/useSafeState/index';
 export default function CreateCasePage() {
   const location = useLocation();
   const { admin } = useAccess();
-  const numReg = /^[0-9]*$/;
-  //@ts-ignore
-  const caseId: string | undefined = location?.search;
-  debugger;
+  const caseId: string | undefined = location?.search.split('?')[1];
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
-  const [caseData, setCaseData] = useSafeState<Case>();
-  const [readonly, setReadonly] = useSafeState<boolean>(true);
-  let formI = Form.useForm();
+  const [readonly] = useSafeState<boolean>(true);
 
-  const initData = async (caseId: string | undefined) => {
-    if (!caseId) return;
-    debugger;
+  const loadCaseInfo = async (caseId: string) => {
     const res = await cloudFIndById('Cases', caseId);
-    setCaseData(res);
-    formI[0].resetFields();
-  };
-
-  useEffect(() => {
-    // initAutoData();
-    debugger;
-    initData(caseId);
-  }, []);
+    return res;
+  }
 
   const fieldProps = {
     customRequest: (data: any) => {
@@ -74,13 +60,9 @@ export default function CreateCasePage() {
           <ProCard>
             <ProForm
               submitter={{
-                render: () => null,
+                render: () => <div>1231231</div>,
               }}
-              form={formI[0]}
-              initialValues={caseData}
-              onFinish={async (values) => {
-                await createCase(values as Case, userInfo?.unionId as string);
-              }}
+              request={()=>loadCaseInfo(caseId)}
             >
               <ProFormRadio.Group
                 readonly={readonly}
