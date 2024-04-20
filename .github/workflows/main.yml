@@ -1,42 +1,78 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
+  setup_and_build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout main
+      - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: main
 
-      - name: Setup node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
 
-      - name: Add tcb
-        run: npm i -g @cloudbase/cli
+      - name: Setup pnpm 
+        uses: pnpm/action-setup@v3
+        with:
+            version: 8
+            run_install: false
 
-      - name: node_moudles
-        run: npx pnpm@8 install
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - name: tcb login
-        run: tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: TCB login
+        run: pnpm tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}
 
       - name: Build project
-        run: npm run build
+        run: npm run build:ci
 
-      - name: Upload COS
+      - name: Upload to COS (Production)
+        if: github.event_name == 'push'
         uses: zkqiang/tencent-cos-action@v0.1.0
         with:
           args: delete -r -f / && upload -r ./dist/ /
           secret_id: ${{ secrets.SECRET_ID }}
           secret_key: ${{ secrets.SECRET_KEY }}
-          bucket: ${{ secrets.BUCKET }}
+          bucket: ${{ secrets.PROD_BUCKET }}
           region: ap-guangzhou
+
+      - name: Upload to COS (Beta Environment)
+        if: github.event_name == 'pull_request'
+        uses: zkqiang/tencent-cos-action@v0.1.0
+        with:
+          args: delete -r -f / && upload -r ./dist/ /
+          secret_id: ${{ secrets.SECRET_ID }}
+          secret_key: ${{ secrets.SECRET_KEY }}
+          bucket: ${{ secrets.BETA_BUCKET }}
+          region: ap-guangzhou
+  
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: thollander/actions-comment-pull-request@v1
+        with:
+          message: "🚀 Deployment successful! Your beta site is live at: https://beta-law.liuxiaogu.com"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  

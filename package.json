@@ -3,12 +3,13 @@
   "name": "law-management-umi",
   "scripts": {
     "start": "w2 add .whistle.js --force && max dev",
-    "build": "npm run fnBuild &&  npm run fnDeployPrd  && max build ",
+    "build": "max build",
+    "build:ci": "pnpm fnBuild && pnpm fnDeployDev && max build",
     "postinstall": "max setup",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
-    "fnBuild": "esbuild functions/src/index.ts --bundle --outdir=functions/fn_call  --platform=node --target=node10.4 --minify  ",
-    "fnDeployDev": " npm run fnBuild  && tcb fn deploy fn_call --force --config-file cloudbaserc.dev.json ",
-    "fnDeployPrd": " npm run fnBuild && tcb fn deploy fn_call --force --config-file cloudbaserc.prd.json"
+    "fnBuild": "esbuild functions/src/index.ts --bundle --outdir=functions/fn_call  --platform=node --target=node10.4 --minify",
+    "fnDeployDev": "pnpm fnBuild  && pnpm tcb fn deploy fn_call --force --config-file cloudbaserc.dev.json ",
+    "fnDeployPrd": "pnpm fnBuild && pnpm tcb fn deploy fn_call --force --config-file cloudbaserc.prd.json"
   },
   "engines": {
     "node": "16",
@@ -32,6 +33,7 @@
     "@ant-design/pro-layout": "^7.19.0",
     "@ant-design/pro-table": "^3.15.2",
     "@babel/runtime": "^7.14.0",
+    "@cloudbase/cli": "^2.3.11",
     "@cloudbase/js-sdk": "^1.5.0",
     "@cloudbase/node-sdk": "^2.5.2",
     "@umijs/max": "^4.1.8",
