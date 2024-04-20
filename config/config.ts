@@ -3,8 +3,8 @@ export default defineConfig({
   hash: true,
   model: {},
   antd: {},
-  deadCode:{},
-  clickToComponent:{},
+  deadCode: {},
+  clickToComponent: {},
   layout: {
     locale: false, // 默认开启，如无需菜单国际化可关闭
   },
@@ -51,10 +51,9 @@ export default defineConfig({
     },
     {
       path: '/My',
-      component: '@/pages/My/index',
       name: '我的',
       icon: 'UserOutlined',
-      defaultCollapsed: true,
+      defaultCollapsed: false,
       routes: [
         {
           path: '/My/caseList',

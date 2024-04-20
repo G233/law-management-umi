@@ -62,7 +62,7 @@ export default function CreateCasePage() {
               submitter={{
                 render: () => <div>1231231</div>,
               }}
-              request={()=>loadCaseInfo(caseId)}
+              request={() => loadCaseInfo(caseId)}
             >
               <ProFormRadio.Group
                 readonly={readonly}
