@@ -5,7 +5,7 @@ import { EditableProTable } from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
 import useSafeState from '@/hook/useSafeState/index';
 
-import { fetchAllUser, updateUserInfo, sexText } from '@/services/user';
+import { fetchAllUser, updateUserInfo, sexText, deleteUser } from '@/services/user';
 
 export default function advisoryList() {
   const roleText = {
@@ -86,7 +86,8 @@ export default function advisoryList() {
           editableKeys,
           onSave: updateUserInfo,
           onChange: setEditableRowKeys,
-          deletePopconfirmMessage: '这个删除按钮并不会实际删除，还未开发完成',
+          deletePopconfirmMessage: '删除律师账号会导致其无法登录本系统，但不会删除其相关信息（案卷等），是否确认删除？',
+          onDelete: deleteUser
         }}
         rowKey={(e) => e._id ?? 'key'}
         search={false}

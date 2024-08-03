@@ -10,6 +10,8 @@ const UpdateUserInfo = async (data: {
   startDate?: Date;
   // 性别
   sex?: string;
+  // 是否离职
+  isLeave?: boolean;
 }) => {
   return await db.collection('User').doc(data._id).update({
     name: data.name,
@@ -18,6 +20,7 @@ const UpdateUserInfo = async (data: {
     licenseNumber: data.licenseNumber,
     startDate: data.startDate,
     sex: data.sex,
+    isLeave: data.isLeave,
   });
 };
 export { UpdateUserInfo };

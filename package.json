@@ -7,7 +7,7 @@
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "fnBuild": "esbuild functions/src/index.ts --bundle --outdir=functions/fn_call  --platform=node --target=node10.4 --minify  ",
-    "fnDeployDev": " npm run fnBuild  && tcb fn deploy fn_call --force --config-file cloudbaserc.dev.json ",
+    "fnDeployDev": " npm run fnBuild  && pnpm tcb fn deploy fn_call --force --config-file cloudbaserc.dev.json ",
     "fnDeployPrd": " npm run fnBuild && tcb fn deploy fn_call --force --config-file cloudbaserc.prd.json",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
@@ -34,6 +34,7 @@
     "@ant-design/pro-layout": "^6.5.0",
     "@ant-design/pro-table": "^2.30.6",
     "@babel/runtime": "^7.14.0",
+    "@cloudbase/cli": "^2.5.0",
     "@cloudbase/js-sdk": "^1.4.0",
     "@cloudbase/node-sdk": "^2.5.0",
     "@umijs/preset-react": "1.x",

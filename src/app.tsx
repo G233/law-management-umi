@@ -69,6 +69,13 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         history.push('/setting');
         message.warning('请完整填写个人信息后再开始使用本系统');
       }
+
+      // 已经离职的律师不允许访问
+      if ( initialState?.currentUser?.isLeave ) {
+        message.warning('您已经离职，无法继续使用本系统');
+        provider.signInWithRedirect();
+        return;
+      }
     },
   };
 };

@@ -25,6 +25,7 @@ export interface UserCloudInfo {
   unionId: string;
   wxOpenId: string;
   wxPublicId: string;
+  isLeave?: boolean;
 }
 // 自定义的用户字段
 export interface UserAddInfo {
@@ -187,6 +188,20 @@ export const updateUserInfo = async (_: any, row: rowType) => {
     return true;
   }
 };
+
+export const deleteUser = async (_: any, row: rowType) => {
+  const date = {
+    ...row,
+    isLeave: true,
+  }
+
+  const res = await cloudFunction('update_user_info', date);
+  if (res?.updated) {
+    message.success('删除成功');
+    return true;
+  }
+
+}
 
 export const updateUserName = async (userName: string) => {
   if (!(await auth.isUsernameRegistered(userName)) && auth.currentUser) {
