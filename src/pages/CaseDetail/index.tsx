@@ -1,229 +1,85 @@
-import { useEffect } from 'react';
-import { useModel, useLocation, useAccess } from 'umi';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
-import { Form, Result, Button } from 'antd';
-import ProForm, {
-  ProFormText,
-  ProFormTextArea,
-  ProFormRadio,
-  ProFormUploadDragger,
-  ProFormSelect,
-  ProFormDependency,
-} from '@ant-design/pro-form';
-import {
-  createCase,
-  Case,
-  CaseType,
-  CaseTypeText,
-  fetchLawList,
-  uploadFile,
-  downloadFile,
-  text,
-  agencyStageList,
-} from '@/services/cases';
+import { Result, Button } from 'antd';
+import ProForm from '@ant-design/pro-form';
+import ProSkeleton from '@ant-design/pro-skeleton';
+import { Case } from '@/services/cases';
 import { cloudFIndById } from '@/services/until';
+import { CaseForm } from '@/components/CaseForm';
 import styles from './index.less';
-import useSafeState from '@/hook/useSafeState/index';
 
-export default function CreateCasePage() {
+export default function CaseDetailPage() {
   const location = useLocation();
-  const { admin } = useAccess();
-  const numReg = /^[0-9]*$/;
-  //@ts-ignore
+  // @ts-ignore
   const caseId: string | undefined = location?.query?.id;
-  const { initialState } = useModel('@@initialState');
-  const userInfo = initialState?.currentUser;
-  const [caseData, setCaseData] = useSafeState<Case>();
-  const [readonly, setReadonly] = useSafeState<boolean>(true);
-  let formI = Form.useForm();
-
-  const initData = async (caseId: string | undefined) => {
-    if (!caseId) return;
-    const res = await cloudFIndById('Cases', caseId);
-    setCaseData(res);
-    formI[0].resetFields();
-  };
+  const [caseData, setCaseData] = useState<Case | undefined>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // initAutoData();
-    initData(caseId);
-  }, []);
+    const initData = async (id: string | undefined) => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const res = await cloudFIndById('Cases', id);
+        setCaseData(res);
+      } catch (error) {
+        console.error("Failed to fetch case data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fieldProps = {
-    customRequest: (data: any) => {
-      uploadFile(data, userInfo?.unionId as string);
-    },
-    onDownload: downloadFile,
-    showUploadList: {
-      showDownloadIcon: true,
-      showRemoveIcon: false,
-    },
-  };
+    initData(caseId);
+  }, [caseId]);
+
   const headerprops = {
     onBack: () => history.back(),
   };
 
+  if (loading) {
+    return (
+      <PageContainer header={headerprops}>
+        <ProCard>
+          <ProSkeleton type="form" />
+        </ProCard>
+      </PageContainer>
+    );
+  }
+
+  if (!caseData) {
+    return (
+      <PageContainer header={headerprops}>
+        <Result
+          status="404"
+          title="未找到案件"
+          subTitle="请检查案件 ID 是否正确"
+          extra={
+            <Button type="primary" onClick={() => history.back()}>
+              返回
+            </Button>
+          }
+        />
+      </PageContainer>
+    );
+  }
+
   return (
     <div className={styles.main}>
       <PageContainer header={headerprops}>
-        {caseId ? (
-          <ProCard>
-            <ProForm
-              submitter={{
-                render: () => null,
-              }}
-              form={formI[0]}
-              initialValues={caseData}
-              onFinish={async (values) => {
-                await createCase(values as Case, userInfo?.unionId as string);
-              }}
-            >
-              <ProFormRadio.Group
-                readonly={readonly}
-                name="CaseType"
-                label="案件类别"
-                radioType="button"
-                options={[
-                  {
-                    label: CaseTypeText[CaseType.Civil],
-                    value: CaseType.Civil,
-                  },
-                  {
-                    label: CaseTypeText[CaseType.Administrative],
-                    value: CaseType.Administrative,
-                  },
-                  {
-                    label: CaseTypeText[CaseType.Criminal],
-                    value: CaseType.Criminal,
-                  },
-                ]}
-              />
-              <ProFormDependency name={['CaseType']}>
-                {(data) => {
-                  const caseType: CaseType = data.CaseType;
-                  return (
-                    <div>
-                      <ProForm.Group>
-                        <ProFormText
-                          name="caseCause"
-                          label={`${text[caseType]?.caseCause}`}
-                          width="lg"
-                          readonly={readonly}
-                        />
-                        {admin && (
-                          <ProFormSelect
-                            name="undertaker"
-                            readonly={readonly}
-                            label="承办律师"
-                            request={fetchLawList}
-                            placeholder="选择承办律师"
-                            width="md"
-                            showSearch={true}
-                          />
-                        )}
-                      </ProForm.Group>
-                      <ProForm.Group>
-                        <ProFormText
-                          readonly={readonly}
-                          name="litigant"
-                          label={`${text[caseType]?.litigant}`}
-                          width="md"
-                          placeholder={`${text[caseType]?.litigant}`}
-                        />
-                        {caseType !== CaseType.Criminal && (
-                          <ProFormText
-                            name="otherlitigant"
-                            readonly={readonly}
-                            label="对方当事人姓名(名称)"
-                            width="md"
-                            placeholder="请输入对方当事人姓名(名称)"
-                          />
-                        )}
-                      </ProForm.Group>
-                      <ProForm.Group>
-                        <ProFormText
-                          name="litigantPhone"
-                          readonly={readonly}
-                          label={`${text[caseType]?.litigantPhone}`}
-                          placeholder={`请输入${text[caseType]?.litigantPhone}`}
-                          width="md"
-                        />
-                        <ProFormSelect
-                          name="agencyStage"
-                          readonly={readonly}
-                          label={`${text[caseType]?.agencyStage}`}
-                          placeholder={`请选择${text[caseType]?.agencyStage}`}
-                          showSearch={true}
-                          valueEnum={agencyStageList[caseType]}
-                          width="md"
-                        />
-                      </ProForm.Group>
-                      <ProFormTextArea
-                        name="litigantSituation"
-                        readonly={readonly}
-                        label={`${text[caseType]?.litigantSituation}`}
-                        placeholder={`请输入${text[caseType]?.litigantSituation}`}
-                      />
-                      {caseType !== CaseType.Criminal && (
-                        <ProFormTextArea
-                          readonly={readonly}
-                          name="otherLitigantSituation"
-                          label="对方当事人基本情况"
-                          placeholder="请输入对方当事人基本情况"
-                        />
-                      )}
-                      {caseType !== CaseType.Criminal && (
-                        <ProFormTextArea
-                          name="clientSituation"
-                          label="委托人基本要求"
-                          readonly={readonly}
-                          placeholder="请输入委托人基本要求"
-                        />
-                      )}
-                      <ProFormTextArea
-                        name="caseSituation"
-                        readonly={readonly}
-                        label="案件基本情况"
-                        placeholder="请输入案件基本情况"
-                      />
-                      <ProFormTextArea
-                        readonly={readonly}
-                        name="undertakerOpinion"
-                        label="承办人基本意见"
-                        placeholder="请输入承办律师意见"
-                      />
-                      <ProFormTextArea
-                        name="toll"
-                        readonly={readonly}
-                        label="拟收取律师费金额及说明"
-                        placeholder="请输入拟收取律师费金额及说明"
-                      />
-                    </div>
-                  );
-                }}
-              </ProFormDependency>
-
-              {/* TODO:多文件上传 */}
-              <ProFormUploadDragger
-                readonly={readonly}
-                label="附件"
-                name="annex"
-                fieldProps={fieldProps}
-              />
-            </ProForm>
-          </ProCard>
-        ) : (
-          <Result
-            status="500"
-            title="请输入案件 id 进行查看"
-            extra={
-              <Button type="primary" onClick={() => history.back()}>
-                返回上个页面
-              </Button>
-            }
-          />
-        )}
+        <ProCard>
+          <ProForm
+            initialValues={caseData}
+            submitter={{
+              render: () => null,
+            }}
+          >
+            <CaseForm readonly />
+          </ProForm>
+        </ProCard>
       </PageContainer>
     </div>
   );
