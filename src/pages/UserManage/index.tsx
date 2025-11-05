@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAccess } from 'umi';
+import { useAccess } from '@umijs/max';
 import { PageContainer } from '@ant-design/pro-layout';
 import { EditableProTable } from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';

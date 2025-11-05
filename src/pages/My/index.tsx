@@ -1,10 +1,14 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
-export default function CasesPage(props: any) {
+import { Outlet } from '@umijs/max';
+
+export default function CasesPage() {
   return (
     <div>
       <PageContainer>
-        <ProCard>{props.children}</ProCard>
+        <ProCard>
+          <Outlet />
+        </ProCard>
       </PageContainer>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useModel, history } from 'umi';
+import { useModel, history } from '@umijs/max';
 import { Button, Space, Table, Row, Col } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';

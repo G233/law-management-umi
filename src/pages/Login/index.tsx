@@ -2,7 +2,7 @@ import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Alert, message, Button } from 'antd';
 import React from 'react';
 import ProForm, { ProFormText } from '@ant-design/pro-form';
-import { Link, history, useModel } from 'umi';
+import { Link, history, useModel } from '@umijs/max';
 import Footer from '@/components/Footer';
 
 import styles from './index.less';

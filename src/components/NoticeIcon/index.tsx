@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { message } from 'antd';
 
-import { useModel, history } from 'umi';
+import { useModel, history } from '@umijs/max';
 import {
   getNotices,
   Notice,

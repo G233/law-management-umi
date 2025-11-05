@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Button } from 'antd';
-import { history, useAccess } from 'umi';
+import { history, useAccess } from '@umijs/max';
 import type { ProColumns } from '@ant-design/pro-table';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';

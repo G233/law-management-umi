@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useModel, useAccess } from 'umi';
+import { useModel, useAccess } from '@umijs/max';
 import { Form, AutoComplete, Button, message } from 'antd';
 import type { ActionType } from '@ant-design/pro-table';
 import type { FormInstance } from 'antd';

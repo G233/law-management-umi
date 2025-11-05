@@ -1,6 +1,6 @@
 import { PageLoading } from '@ant-design/pro-layout';
-import type { RunTimeLayoutConfig } from 'umi';
-import { history } from 'umi';
+import type { RunTimeLayoutConfig } from '@umijs/max';
+import { history } from '@umijs/max';
 import RightContent from '@/components/RightContent';
 import NoticeIconView from '@/components/NoticeIcon';
 import Footer from '@/components/Footer';
