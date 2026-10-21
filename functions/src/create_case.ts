@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
+import { v4 as uuidv4 } from 'uuid';
 import { db, CaseStatus, noticeType, noticeState, _ } from './until';
 import { generateCaseId } from './generate_case_id';
 

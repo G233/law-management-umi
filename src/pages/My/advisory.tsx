@@ -58,8 +58,10 @@ export default function AdvisoryList() {
       formRef={formRef}
       onFinish={async (values) => {
         await newAdvisory(values as AdvisoryType, unionId as string);
-        // @ts-ignore
-        fn.reloadAndRest();
+        // Reload the table
+        if (fn) {
+          fn.reloadAndRest?.();
+        }
         formRef.current?.resetFields();
         return true;
       }}

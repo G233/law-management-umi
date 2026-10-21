@@ -13,7 +13,7 @@ interface MockCollection {
   data: MockDoc[];
 }
 
-class MockDatabase {
+export class MockDatabase {
   private collections: Map<string, MockCollection> = new Map();
 
   constructor() {
@@ -273,7 +273,7 @@ class MockDocReference {
 }
 
 class MockAuth {
-  private currentUser: any = null;
+  public currentUser: any = null;
 
   async signInAnonymously() {
     return { user: null };
@@ -335,8 +335,33 @@ class MockCloudApp {
     // Route to local function handlers
     console.log('[Mock] callFunction:', params.name, params.data);
     
-    // Simulate cloud function execution
-    // For now, return success responses
+    if (params.name === 'fn_call') {
+      const { fnName, data } = params.data;
+      
+      // Create a mock context similar to CloudBase
+      const context = {
+        TCB_UUID: this.auth.currentUser?.uid || 'mock-uuid',
+        TCB_UNIONID: this.auth.currentUser?.unionId || 'mock-unionid',
+        TCB_OPENID: this.auth.currentUser?.openid || 'mock-openid',
+      };
+      
+      try {
+        // Execute the mock function handler with mock DB
+        const { executeMockFunction } = await import('./function-adapter');
+        const result = await executeMockFunction(this.db, fnName, data, context);
+        return { result };
+      } catch (error: any) {
+        console.error('[Mock] Function execution error:', error);
+        return {
+          result: {
+            error: true,
+            message: error.message || '服务器错误',
+          },
+        };
+      }
+    }
+    
+    // Fallback for other functions
     return {
       result: {
         success: true,
