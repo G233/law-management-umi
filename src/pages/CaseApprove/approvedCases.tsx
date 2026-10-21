@@ -8,11 +8,13 @@ import {
   CaseStatusColor,
   CaseStatusText,
 } from '@/services/cases';
+import { useCommonColumns } from './useCommonColumns';
 import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 
 export default function approvedCases() {
+  const commonColumns = useCommonColumns();
   const approvedColumns: ProColumns<Case>[] = [
-    ...commonColumns(),
+    ...commonColumns,
     {
       title: '审批结果',
       dataIndex: 'approveStatus',

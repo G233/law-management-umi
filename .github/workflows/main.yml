@@ -1,14 +1,18 @@
 name: Production Deploy
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      confirm_deploy:
+        description: '输入 DEPLOY 确认部署到生产环境'
+        required: true
+        default: ''
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
+    if: github.event.inputs.confirm_deploy == 'DEPLOY'
 
     steps:
       - name: Checkout main
@@ -24,7 +28,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 10
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

@@ -12,7 +12,7 @@ import {
   CaseStatusText,
   CaseStatus,
 } from '@/services/cases';
-import { commonColumns } from '@/pages/CaseApprove/tableColumns';
+import { useCommonColumns } from '../CaseApprove/useCommonColumns';
 import { formType, caseForm } from '@/pages/addCaseApprove/createCase';
 import { useRef } from 'react';
 
@@ -20,9 +20,10 @@ export default function myCases() {
   const { initialState } = useModel('@@initialState');
   const unionId = initialState?.currentUser?.unionId;
   const tableRef = useRef<ActionType>();
+  const commonColumns = useCommonColumns();
 
   const myCasesColumns: ProColumns<Case>[] = [
-    ...commonColumns(),
+    ...commonColumns,
     {
       title: '审批状态',
       dataIndex: 'approveStatus',

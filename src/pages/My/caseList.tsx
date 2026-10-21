@@ -2,13 +2,14 @@ import ProTable from '@ant-design/pro-table';
 import { useModel } from 'umi';
 import type { ProColumns } from '@ant-design/pro-table';
 
-import { commonColumns } from '@/pages/CaseApprove/tableColumns';
+import { useCommonColumns } from '../CaseApprove/useCommonColumns';
 import { Case, fetchMyCases, requestProp } from '@/services/cases';
 
 export default function myCases() {
   const { initialState } = useModel('@@initialState');
   const unionId = initialState?.currentUser?.unionId;
-  const myCasesColumns: ProColumns<Case>[] = [...commonColumns()];
+  const commonColumns = useCommonColumns();
+  const myCasesColumns: ProColumns<Case>[] = [...commonColumns];
 
   return (
     <ProTable<Case>

@@ -4,14 +4,15 @@ import { history, useAccess } from 'umi';
 import type { ProColumns } from '@ant-design/pro-table';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { commonColumns } from '@/pages/CaseApprove/tableColumns';
+import { useCommonColumns } from '../CaseApprove/useCommonColumns';
 import { Case, fetchCaseList, CaseType, CaseTypeText } from '@/services/cases';
 import useSafeState from '@/hook/useSafeState/index';
 
 export default function CaseList() {
   const access = useAccess();
+  const commonColumns = useCommonColumns();
   const [myCasesColumns, setMyCasesColumns] = useSafeState<ProColumns<Case>[]>([
-    ...commonColumns(),
+    ...commonColumns,
     {
       title: '案件类别',
       dataIndex: 'CaseType',
