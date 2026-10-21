@@ -21,3 +21,6 @@ export const auth = app.auth({ persistence: 'local' });
 export const _ = isMockMode() 
   ? (await import('./mocks/cloudbase-mock')).mockCommand
   : db.command;
+
+// For compatibility
+export const provider = cloudApp;
