@@ -22,32 +22,35 @@ const addNotice = async (Case: any, id: string) => {
       role: 'admin',
     })
     .get();
-  res.data.forEach((user: any) => {
-    // 自己新建的不需要通知
-    if (user.unionId !== Case.undertaker) {
-      const notice = {
-        title: '审批通知',
-        unionId: user.unionId,
-        msg: '有案件报批信息更改了，请点击查看。',
-        caseId: id,
-        state: noticeState.unReade,
-        createTime: new Date(),
-        type: noticeType.approve,
-      };
-      db.collection('Notice').add(notice);
-    }
-  });
+  const notices = res.data
+    .filter((user: any) => user.unionId !== Case.undertaker)
+    .map((user: any) => ({
+      title: '审批通知',
+      unionId: user.unionId,
+      msg: '有案件报批信息更改了，请点击查看。',
+      caseId: id,
+      state: noticeState.unReade,
+      createTime: new Date(),
+      type: noticeType.approve,
+    }));
+  await Promise.all(notices.map((notice) => db.collection('Notice').add(notice)));
 };
 
 const changeCase = async (props: { case: any; id: any }) => {
   const Case = props.case;
   const id = props.id;
-  Case.createTime = new Date();
-  Case.approveStatus = CaseStatus.WAITING;
-  Case.approveMsg = null;
-  Case.approveTime = null;
-  Case.approverId = null;
-  const res = await db.collection('Cases').doc(id).update(Case);
+  // 不要覆盖原始的 createTime，只重置审批相关字段
+  const updateData = {
+    ...Case,
+    approveStatus: CaseStatus.WAITING,
+    approveMsg: null,
+    approveTime: null,
+    approverId: null,
+  };
+  // 从 updateData 中删除 createTime 以避免覆盖
+  delete updateData.createTime;
+  
+  const res = await db.collection('Cases').doc(id).update(updateData);
   await updateCaseCause(Case).catch((e) => {});
   // 重新通知管理律师进行审批
   await addNotice(Case, id).catch((e) => {});

@@ -247,10 +247,12 @@ export const fetchCaseList = async (data: requestProp) => {
 };
 /**
  *  新建审批
+ * 注意：案号现在在云函数中原子生成，不再需要前端生成
  */
 export const createCase = async (value: Case, unionId: string) => {
   value.unionId = unionId;
-  await cloudFunction('create_case', await generatedCaseId(value));
+  // 不再调用 generatedCaseId，案号在云函数中原子生成
+  await cloudFunction('create_case', value);
 };
 
 // 新建一百个案件，测试用 mock 数据
@@ -263,27 +265,28 @@ export const createCase = async (value: Case, unionId: string) => {
 // };
 /**
  *  一键审批
+ * 注意：approverId 现在在云函数中从调用者身份获取，不再由前端传递
  */
 export const oneClickApprove = async (
   idList: string[],
   fn: React.MutableRefObject<ActionType>,
-  approverId: string,
   approveState: CaseStatus,
   approveMsg?: string,
 ) => {
   // 因为云数据库没有批量更新的 api ，出于性能考虑，把批量操作给云函数处理。不过我本地测试使用 http2 更新 20 个案件速度也很快
   const res = await cloudFunction('one_click_approve', {
     idList,
-    approverId,
     approveState,
     approveMsg,
   });
 
-  if (res) {
+  if (res && !res.error) {
     // @ts-ignore
     // 重载表格
     fn.current.reloadAndRest();
     message.success('审批完成');
+  } else if (res?.error) {
+    message.error(res.message || '审批失败');
   }
 };
 

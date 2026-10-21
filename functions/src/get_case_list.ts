@@ -1,16 +1,21 @@
 import { db, CaseType, CaseStatus } from './until';
+import { escapeRegex } from './escape_regex';
 
-const now = new Date();
-const oldDate = new Date(now.setDate(now.getDate() - 30));
 const { gt, neq } = db.command.aggregate;
 
 // 一些特殊的查询条件
-const ConditionList = {
-  // 获取三个月内审批过的案件
-  approvedCases: {
-    approveStatus: neq(CaseStatus.WAITING),
-    approveTime: gt(oldDate),
-  },
+// 注意：时间窗口在每次请求时计算，而不是模块加载时
+const getConditionList = () => {
+  const now = new Date();
+  const oldDate = new Date(now.setDate(now.getDate() - 30));
+  
+  return {
+    // 获取30天内审批过的案件
+    approvedCases: {
+      approveStatus: neq(CaseStatus.WAITING),
+      approveTime: gt(oldDate),
+    },
+  };
 };
 
 interface requestProp {
@@ -36,6 +41,7 @@ const getCaseList = async ({
   caseId,
   CaseType,
 }: requestProp) => {
+  const ConditionList = getConditionList();
   const conditionI =
     typeof condition === 'string' && condition === 'approvedCases'
       ? ConditionList[condition]
@@ -43,12 +49,12 @@ const getCaseList = async ({
           //@ts-ignore
 
           caseCause: new db.RegExp({
-            regexp: `.*${caseCause || ''}.*`,
+            regexp: `.*${escapeRegex(caseCause || '')}.*`,
           }),
           //@ts-ignore
 
           litigant: new db.RegExp({
-            regexp: `.*${litigant || ''}.*`,
+            regexp: `.*${escapeRegex(litigant || '')}.*`,
           }),
           // undertakerName: new db.RegExp({
           //   regexp: `.*${undertakerName || ''}.*`,
@@ -56,17 +62,17 @@ const getCaseList = async ({
           //@ts-ignore
 
           caseSituation: new db.RegExp({
-            regexp: `.*${caseSituation || ''}.*`,
+            regexp: `.*${escapeRegex(caseSituation || '')}.*`,
           }),
           //@ts-ignore
 
           caseId: new db.RegExp({
-            regexp: `.*${caseId || ''}.*`,
+            regexp: `.*${escapeRegex(caseId || '')}.*`,
           }),
           //@ts-ignore
 
           undertaker: new db.RegExp({
-            regexp: `.*${undertaker || ''}.*`,
+            regexp: `.*${escapeRegex(undertaker || '')}.*`,
           }),
           ...(condition as Object),
         };

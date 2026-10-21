@@ -6,6 +6,7 @@ import { getCaseList } from './get_case_list';
 import { UpdateUserInfo } from './update_user_info';
 import { wxLogin } from './wx_login';
 import { changeCase } from './change_case';
+import { generateCaseId } from './generate_case_id';
 
 const fnList = {
   create_case: CreateCase,
@@ -16,11 +17,23 @@ const fnList = {
   update_user_info: UpdateUserInfo,
   wx_login: wxLogin,
   change_case: changeCase,
+  generate_case_id: generateCaseId,
 };
 
 export let isDev = false;
 
-exports.main = async function ({ fnName, data, isDev }: any) {
-  //@ts-ignore
-  return await fnList[fnName](data);
+exports.main = async function (
+  { fnName, data, isDev }: any,
+  context: any,
+) {
+  try {
+    //@ts-ignore
+    return await fnList[fnName](data, context);
+  } catch (error: any) {
+    console.error('云函数执行错误:', error);
+    return {
+      error: true,
+      message: error.message || '服务器错误',
+    };
+  }
 };

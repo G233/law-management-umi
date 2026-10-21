@@ -35,7 +35,7 @@ const addNotice = async (caseId: string, approveState: CaseStatus) => {
     createTime: new Date(),
     type: noticeType.approveResult,
   };
-  dbNotice.add(notice);
+  await dbNotice.add(notice);
 };
 
 // 清除关联同一个案件的审批通知
@@ -46,28 +46,34 @@ const cleanNotice = async (caseId: string) => {
       caseId: caseId,
     })
     .get();
-  res.data.forEach((item) => {
-    dbNotice.doc(item._id).update({
-      state: noticeState.read,
-    });
-  });
+  await Promise.all(
+    res.data.map((item) =>
+      dbNotice.doc(item._id).update({
+        state: noticeState.read,
+      }),
+    ),
+  );
 };
 
+import { requireAdmin } from './auth';
+
 interface requestProp {
-  approverId: string;
   idList: string[];
   approveState: CaseStatus;
   approveMsg: string;
 }
 
-const oneClickApprove = async ({
-  approverId,
-  idList,
-  approveState,
-  approveMsg,
-}: requestProp) =>
-  await Promise.all(
+const oneClickApprove = async (
+  { idList, approveState, approveMsg }: requestProp,
+  context: any,
+) => {
+  // 只有管理员可以审批，approverId 从服务端获取
+  const caller = await requireAdmin(context);
+  const approverId = caller.unionId;
+  
+  return await Promise.all(
     idList.map((id) => approveAgree(id, approverId, approveState, approveMsg)),
   );
+};
 
 export { oneClickApprove };

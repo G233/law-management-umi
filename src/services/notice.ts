@@ -1,6 +1,12 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/zh-cn';
 
 import { cloudUpdateById, cloudWhere } from '@/services/until';
+
+// 配置 dayjs
+dayjs.extend(relativeTime);
+dayjs.locale('zh-cn');
 
 export enum noticeState {
   unReade,
@@ -39,8 +45,7 @@ export const getNoticeData = (notices: Notice[]): Notice[] => {
     const newNotice = { ...notice };
     // 把时间格式化为相对时间
     if (newNotice.createTime) {
-      moment.locale('zh-cn');
-      newNotice.createTime = moment(notice.createTime).fromNow();
+      newNotice.createTime = dayjs(notice.createTime).fromNow();
     }
     return newNotice;
   });

@@ -1,21 +1,15 @@
 import { message } from 'antd';
-import { auth, db, cloudApp } from '@/cloud_function';
+import { auth, db } from '@/cloud_function';
 
 const collection = db.collection('User');
 
 import { cloudFunction, cloudWhere } from '@/services/until';
-
-export interface emailProp {
-  newEmail: string;
-  oldEmail: string;
-}
 
 // 云开发中的用户字段
 export interface UserCloudInfo {
   avatarUrl: string;
   customUserId: string;
   gender: string;
-  hasPassword: false;
   location: { country: string; province: string; city: string };
   loginType: string;
   nickName: string;
@@ -32,8 +26,6 @@ export interface UserAddInfo {
   name?: string;
   phone?: string;
   uid: string;
-  // 没有使用邮箱了，将废弃
-  email?: string;
   role: string;
   // 执业证号
   licenseNumber?: string;
@@ -53,11 +45,6 @@ export interface UserInfo extends UserAddInfo, UserCloudInfo {}
 // 退出登陆
 export const signOut = async () => {
   return auth.signOut();
-};
-
-// 登陆
-export const signIn = async (email: string, password: string) => {
-  return await auth.signInWithEmailAndPassword(email, password);
 };
 
 // 获取用户信息
@@ -97,6 +84,7 @@ const formatUserInfo = (currentUser: any, data: any): UserInfo => {
     startDate: data?.startDate,
     sex: data?.sex,
     hasAddInfo: data?.hasAddInfo,
+    isLeave: data?.isLeave,
     ...currentUser,
     // 在生产环境下，currentUser 里面会有空白 phone
     phone: data?.phone,
@@ -112,14 +100,13 @@ export const reSetUserInfo = async (
   const User = await cloudWhere('User', { unionId: unionId });
   const docId: string = User[0]._id;
 
-  // 在找到合适的限权手段之前，暂停新用户注册，提高系统安全性
-  // 需要的话我手动改代码
-  if(!data.hasAddInfo){
-    message.warning('本系统暂时停止注册，请联系刘固');
-    return;
-  }
-  // data.hasAddInfo = true;
-  const res = await collection.doc(docId).update(data);
+  // 标记用户已填写完整信息
+  const updateData = {
+    ...data,
+    hasAddInfo: true,
+  };
+  
+  const res = await collection.doc(docId).update(updateData);
   // 重新获取用户信息
   if (res.updated == 1) {
     message.success('您的个人信息已经更新好了！');
@@ -128,48 +115,11 @@ export const reSetUserInfo = async (
   }
 };
 
-// 重置邮箱
-export const resetEmail = async (newEmail: string, oldEmail: string) => {
-  if (newEmail === oldEmail) {
-    message.warning('请输入新邮箱进行修改');
-    return;
-  }
-  return auth.currentUser
-    ?.updateEmail(newEmail)
-    .then(() => {
-      message.success('确认邮件已发送到新邮箱，请注意查收');
-    })
-    .catch((err) => {
-      message.error('更改邮箱失败，请稍后再试');
-    });
-};
-
-// 更改密码
-export const resetPassword = async (email: string) => {
-  return auth.sendPasswordResetEmail(email).then(() => {
-    message.success('重置密码邮件已发送，请注意查收');
-  });
-};
-
 // 获取所有普通用户信息
 export const fetchAllUser = async () => {
   const res = await cloudFunction('fetch_all_user');
   return res;
 };
-
-// 添加用户
-export const addUser = (data: { email: string }) =>
-  cloudApp
-    .auth({
-      persistence: 'local',
-    })
-    .signUpWithEmailAndPassword(data.email, 'heqing123456')
-    .then((res) => {
-      message.success('注册成功,请前往邮箱确认');
-    })
-    .catch((err) => {
-      message.error('邮箱注册失败,请检查此邮箱是否已经注册');
-    });
 
 interface rowType {
   index: number;
@@ -200,36 +150,4 @@ export const deleteUser = async (_: any, row: rowType) => {
     message.success('删除成功');
     return true;
   }
-
 }
-
-export const updateUserName = async (userName: string) => {
-  if (!(await auth.isUsernameRegistered(userName)) && auth.currentUser) {
-    const res = await auth.currentUser.updateUsername(userName).catch((e) => {
-      message.error('设置用户名失败，请联系刘固');
-    });
-    //@ts-ignore
-    if (res) {
-      message.success('设置用户名成功');
-    }
-    return;
-  }
-  message.warning('此用户名已经被使用，请换一个吧');
-};
-
-export const updatePassword = async (
-  oldPssword: string,
-  newPassword: string,
-) => {
-  if (auth.currentUser) {
-    const res = await auth.currentUser
-      .updatePassword(newPassword, oldPssword)
-      .catch((e) => {
-        message.warning('密码设置失败，请检查密码是否过于简单');
-      });
-    //@ts-ignore
-    if (res) {
-      message.success('设置密码成功');
-    }
-  }
-};
