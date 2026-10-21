@@ -327,7 +327,8 @@ class MockCloudApp {
     return this.db;
   }
 
-  auth() {
+  auth(options?: any) {
+    // Mock auth accepts persistence options but ignores them
     return this.auth;
   }
 
