@@ -3,6 +3,7 @@
   "name": "law-management-umi",
   "scripts": {
     "start": "w2 add .whistle.js --force && max dev",
+    "dev:mock": "cross-env MOCK_MODE=true max dev",
     "build": "pnpm run fnBuild && max build",
     "build:function": "pnpm run fnBuild",
     "postinstall": "max setup",
@@ -12,6 +13,8 @@
     "fnDeployPrd": "pnpm run fnBuild && tcb fn deploy fn_call --force --config-file cloudbaserc.prd.json",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
+    "e2e": "playwright test",
+    "e2e:headed": "playwright test --headed",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src functions/src",
     "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx src functions/src --fix",
     "typecheck": "tsc --noEmit"
@@ -46,6 +49,7 @@
     "ahooks": "^3.8.1",
     "antd": "^5.22.3",
     "classnames": "^2.5.1",
+    "cross-env": "^10.1.0",
     "dayjs": "^1.11.13",
     "rc-util": "^5.43.0",
     "react": "^18.3.1",

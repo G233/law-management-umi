@@ -39,6 +39,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Umi types
+        run: pnpm run postinstall
+
       - name: Type check
         run: pnpm run typecheck
 

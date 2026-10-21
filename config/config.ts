@@ -4,6 +4,9 @@ export default defineConfig({
   hash: true,
   // 生产环境下生成静态化站点
   exportStatic: {},
+  define: {
+    'process.env.MOCK_MODE': process.env.MOCK_MODE || 'false',
+  },
   // Umi 4 插件配置
   antd: {},
   access: {},
