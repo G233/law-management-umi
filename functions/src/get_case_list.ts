@@ -21,7 +21,7 @@ const getConditionList = () => {
 interface requestProp {
   current: number;
   pageSize: number;
-  condition: 'approvedCases' | Object;
+  condition: 'approvedCases' | object;
   caseCause: string;
   litigant: string;
   undertaker: string;
@@ -74,7 +74,7 @@ const getCaseList = async ({
           undertaker: new db.RegExp({
             regexp: `.*${escapeRegex(undertaker || '')}.*`,
           }),
-          ...(condition as Object),
+          ...(condition as object),
         };
   if (CaseType) {
     // @ts-ignore

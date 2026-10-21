@@ -28,7 +28,7 @@ const mockCases: any[] = [];
 const mockNotices: any[] = [];
 
 export const createMockCloudBase = () => {
-  let currentUser: any = null;
+  const currentUser: any = null;
 
   const mockDB = {
     collection: (name: string) => ({

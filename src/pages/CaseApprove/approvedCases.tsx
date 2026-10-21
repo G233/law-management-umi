@@ -11,7 +11,7 @@ import {
 import { useCommonColumns } from './useCommonColumns';
 import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 
-export default function approvedCases() {
+export default function ApprovedCases() {
   const commonColumns = useCommonColumns();
   const approvedColumns: ProColumns<Case>[] = [
     ...commonColumns,

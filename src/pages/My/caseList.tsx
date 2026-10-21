@@ -5,7 +5,7 @@ import type { ProColumns } from '@ant-design/pro-table';
 import { useCommonColumns } from '../CaseApprove/useCommonColumns';
 import { Case, fetchMyCases, requestProp } from '@/services/cases';
 
-export default function myCases() {
+export default function MyCases() {
   const { initialState } = useModel('@@initialState');
   const unionId = initialState?.currentUser?.unionId;
   const commonColumns = useCommonColumns();

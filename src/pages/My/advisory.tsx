@@ -20,7 +20,7 @@ import {
 import { requestProp } from '@/services/cases';
 import useSafeState from '@/hook/useSafeState/index';
 
-export default function advisoryList() {
+export default function AdvisoryList() {
   const { initialState } = useModel('@@initialState');
   const unionId = initialState?.currentUser?.unionId;
   const [editableKeys, setEditableRowKeys] = useSafeState<React.Key[]>([]);

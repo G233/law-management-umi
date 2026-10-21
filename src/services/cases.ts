@@ -210,7 +210,7 @@ export const fetchApprovedCases = async (data: requestProp) => {
  */
 
 export const fetchMyCases = async (data: any) => {
-  let condition = {
+  const condition = {
     undertaker: data.unionId,
   };
   // 我的案件是查看所有通过审批了的案件,未通过审批的需要在 审批案件 中查看
@@ -304,7 +304,7 @@ export const fetchCaseCauseList = async () => {
  * 获取所有律师，用于承办律师的自动完成
  */
 export const fetchLawList = async () => {
-  const res = await dbUser.get();
+  const res = await dbUser.where({ isLeave: false }).get();
   // 存在不是微信登录的用户信息的时候，会出现因为 unionId 不存在而报没有唯一key的错的情况
   return res.data.map((e: any) => ({ value: e.unionId, label: e.name }));
 };
@@ -319,7 +319,7 @@ export const uploadFile = async (data: any, unionId: string) => {
       cloudPath: `${CasePath}/${unionId}/${file.name}`,
       filePath: file,
       onUploadProgress: (progressEvent: any) => {
-        var percentCompleted = Math.round(
+        const percentCompleted = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total,
         );
         onProgress({ percent: percentCompleted }, file);

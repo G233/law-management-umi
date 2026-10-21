@@ -20,7 +20,7 @@ const fnList = {
   generate_case_id: generateCaseId,
 };
 
-export let isDev = false;
+export const isDev = false;
 
 exports.main = async function (
   { fnName, data, isDev }: any,

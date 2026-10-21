@@ -13,7 +13,7 @@ const ENVTagColor = {
 };
 
 const GlobalHeaderRight: React.FC = () => {
-  let className = styles.right;
+  const className = styles.right;
   return (
     <Space className={className}>
       {/* 头像：退出登陆，修改姓名 */}

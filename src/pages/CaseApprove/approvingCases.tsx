@@ -6,9 +6,6 @@ import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import useSafeState from '@/hook/useSafeState/index';
 import { useCommonColumns } from './useCommonColumns';
-
-import { useCommonColumns } from './useCommonColumns';
-
 import {
   Case,
   fetchApprovingCases,
@@ -17,9 +14,8 @@ import {
   agencyStageList,
   CaseType,
 } from '@/services/cases';
-import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 
-export default function approvingCases() {
+export default function ApprovingCases() {
   const [isShowModal, setIsShowModal] = useSafeState(false);
   const [selectedCasesId, setSelectedCasesId] =
     useSafeState<(string | number)[]>();
