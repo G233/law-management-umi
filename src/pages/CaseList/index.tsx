@@ -47,12 +47,7 @@ export default function CaseList() {
               type="link"
               key="btn"
               onClick={() => {
-                history.push({
-                  pathname: '/CaseDetail',
-                  query: {
-                    id: record._id as string,
-                  },
-                });
+                history.push(`/CaseDetail?id=${record._id}`);
               }}
             >
               查看详情

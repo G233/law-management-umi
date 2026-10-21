@@ -1,4 +1,3 @@
-import { PageLoading } from '@ant-design/pro-layout';
 import type { RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
 import RightContent from '@/components/RightContent';
@@ -7,11 +6,6 @@ import Footer from '@/components/Footer';
 import { fetchUserInfo, UserInfo } from '@/services/user';
 import { Space, Button, message } from 'antd';
 import { provider } from '@/cloud_function';
-
-/** 获取用户信息比较慢的时候会展示一个 loading */
-export const initialStateConfig = {
-  loading: <PageLoading />,
-};
 
 export async function getInitialState() {
   await provider.getRedirectResult({
