@@ -1,14 +1,24 @@
-export default {
-  nodeModulesTransform: {
-    type: 'none',
-  },
+import { defineConfig } from '@umijs/max';
+
+export default defineConfig({
   hash: true,
-  esbuild: {},
   // 生产环境下生成静态化站点
   exportStatic: {},
+  define: {
+    'process.env.MOCK_MODE': process.env.MOCK_MODE || 'false',
+  },
+  // Umi 4 插件配置
+  antd: {},
+  access: {},
+  model: {},
+  initialState: {},
+  layout: {
+    title: '湖南河清律师事务所',
+    layout: 'side',
+  },
   // 图标可以查阅：https://ant.design/components/icon-cn/
   routes: [
-    { exact: true, path: '/', redirect: '/CaseList' },
+    { path: '/', redirect: '/CaseList' },
     {
       path: '/CaseList',
       component: '@/pages/CaseList/index',
@@ -84,12 +94,7 @@ export default {
     //   layout: false,
     //   hideInMenu: true,
     // },
-    { component: '@/pages/404' },
+    { path: '*', component: '@/pages/404' },
   ],
-
-  layout: {
-    name: '湖南河清律师事务所',
-    layout: 'side',
-  },
-  fastRefresh: {},
-};
+  fastRefresh: true,
+});

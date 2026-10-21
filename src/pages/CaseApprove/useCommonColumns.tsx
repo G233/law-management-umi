@@ -5,26 +5,26 @@ import { ProFormSelect } from '@ant-design/pro-form';
 import { Form, AutoComplete } from 'antd';
 import useSafeState from '@/hook/useSafeState/index';
 
-export const commonColumns = (): ProColumns<Case>[] => {
-  interface optionType {
-    value: string;
-    label?: string;
-  }
-  const [caseCauseList, setCaseCauseList] = useSafeState<optionType[]>();
+interface OptionType {
+  value: string;
+  label?: string;
+}
 
-  const initAutoData = async () => {
-    setCaseCauseList(await fetchCaseCauseList());
-  };
+export const useCommonColumns = (): ProColumns<Case>[] => {
+  const [caseCauseList, setCaseCauseList] = useSafeState<OptionType[]>();
 
   useEffect(() => {
+    const initAutoData = async () => {
+      setCaseCauseList(await fetchCaseCauseList());
+    };
     initAutoData();
-  }, []);
+  }, [setCaseCauseList]);
 
   return [
     {
       title: '案由 (涉案罪名)',
       width: 80,
-      dataIndex: 'caseCause', // 列数据在数据项中对应的路径，支持通过数组查询嵌套路径，设置了这个值就无需 key
+      dataIndex: 'caseCause',
       renderFormItem: () => (
         <Form.Item name="caseCause" label="">
           <AutoComplete

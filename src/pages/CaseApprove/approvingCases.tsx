@@ -5,7 +5,7 @@ import ProTable from '@ant-design/pro-table';
 import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import useSafeState from '@/hook/useSafeState/index';
-
+import { useCommonColumns } from './useCommonColumns';
 import {
   Case,
   fetchApprovingCases,
@@ -14,9 +14,8 @@ import {
   agencyStageList,
   CaseType,
 } from '@/services/cases';
-import { commonColumns } from '@/pages/CaseApprove/tableColumns';
 
-export default function approvingCases() {
+export default function ApprovingCases() {
   const [isShowModal, setIsShowModal] = useSafeState(false);
   const [selectedCasesId, setSelectedCasesId] =
     useSafeState<(string | number)[]>();
@@ -24,8 +23,9 @@ export default function approvingCases() {
 
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
+  const commonColumns = useCommonColumns();
   const approvingColumns: ProColumns<Case>[] = [
-    ...commonColumns(),
+    ...commonColumns,
     {
       title: '案件基本情况',
       dataIndex: 'caseSituation',

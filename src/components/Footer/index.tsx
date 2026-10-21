@@ -2,7 +2,7 @@ import React from 'react';
 import { GithubOutlined } from '@ant-design/icons';
 import { DefaultFooter } from '@ant-design/pro-layout';
 
-export default () => (
+const Footer: React.FC = () => (
   <DefaultFooter
     copyright="AtomLiu"
     links={[
@@ -21,3 +21,5 @@ export default () => (
     ]}
   />
 );
+
+export default Footer;

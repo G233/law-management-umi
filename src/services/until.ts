@@ -15,7 +15,7 @@ export const cloudFunction = async (name: string, data?: any) => {
       data: { fnName: name, data: data, isDev },
     })
     .catch(() => showError());
-  return res?.result;
+  return res && typeof res !== 'boolean' ? res.result : undefined;
 };
 
 /**
@@ -44,7 +44,7 @@ export const cloudWhere = async (
       .catch(() => showError());
   }
 
-  return res?.data;
+  return res && typeof res !== 'boolean' ? res.data : undefined;
 };
 
 /**
@@ -58,7 +58,7 @@ export const cloudFIndById = async (dbName: string, docId: string) => {
     .doc(docId)
     .get()
     .catch(() => showError());
-  return res?.data?.[0];
+  return res && typeof res !== 'boolean' ? res.data?.[0] : undefined;
 };
 
 /**
@@ -122,7 +122,7 @@ export const cloudAdd = async (dbName: string, data: any) => {
     .collection(dbName)
     .add(data)
     .catch(() => showError());
-  return res?.data?.[0];
+  return res && typeof res !== 'boolean' ? res.data?.[0] : undefined;
 };
 
 const showError = () => message.error('请求出错，请稍后重试或联系刘固');

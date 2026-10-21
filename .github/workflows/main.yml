@@ -1,38 +1,63 @@
-name: CI
+name: Production Deploy
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      confirm_deploy:
+        description: '输入 DEPLOY 确认部署到生产环境'
+        required: true
+        default: ''
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+    environment: production
+    if: github.event.inputs.confirm_deploy == 'DEPLOY'
 
     steps:
       - name: Checkout main
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: main
 
-      - name: Setup node
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '16.x'
+          node-version: '20.x'
 
-      - name: Add tcb
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm run typecheck
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Run tests
+        run: pnpm run test
+
+      - name: Build cloud function
+        run: pnpm run build:function
+
+      - name: Build frontend
+        run: pnpm run build
+
+      - name: Install Tencent CloudBase CLI
         run: npm i -g @cloudbase/cli
 
-      - name: node_moudles
-        run: npx pnpm@8 install
-
-      - name: tcb login
+      - name: Login to CloudBase
         run: tcb login --apiKeyId ${{ secrets.SECRET_ID }} --apiKey ${{ secrets.SECRET_KEY }}
 
-      - name: Build project
-        run: npm run build
+      - name: Deploy cloud function
+        run: pnpm run fnDeployPrd
 
-      - name: Upload COS
+      - name: Upload to COS
         uses: zkqiang/tencent-cos-action@v0.1.0
         with:
           args: delete -r -f / && upload -r ./dist/ /

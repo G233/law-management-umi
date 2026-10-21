@@ -12,17 +12,18 @@ import {
   CaseStatusText,
   CaseStatus,
 } from '@/services/cases';
-import { commonColumns } from '@/pages/CaseApprove/tableColumns';
-import { formType, caseForm } from '@/pages/addCaseApprove/createCase';
+import { useCommonColumns } from '../CaseApprove/useCommonColumns';
+import { FormType, CaseFormModal } from '@/pages/addCaseApprove/CaseFormModal';
 import { useRef } from 'react';
 
-export default function myCases() {
+export default function MyCases() {
   const { initialState } = useModel('@@initialState');
   const unionId = initialState?.currentUser?.unionId;
   const tableRef = useRef<ActionType>();
+  const commonColumns = useCommonColumns();
 
   const myCasesColumns: ProColumns<Case>[] = [
-    ...commonColumns(),
+    ...commonColumns,
     {
       title: '审批状态',
       dataIndex: 'approveStatus',
@@ -61,11 +62,13 @@ export default function myCases() {
       render: (text, record) => {
         // 已经通过审批的不允许更改了
         if (record.approveStatus !== CaseStatus.AGREE) {
-          return caseForm({
-            type: formType.change,
-            case: record,
-            tableRef,
-          });
+          return (
+            <CaseFormModal
+              type={FormType.change}
+              case={record}
+              tableRef={tableRef}
+            />
+          );
         }
       },
     },
@@ -83,7 +86,9 @@ export default function myCases() {
         search={false}
         rowKey={(e) => e._id ?? 'key'}
         headerTitle="案件审批记录"
-        toolBarRender={() => [caseForm({ type: formType.create, tableRef })]}
+        toolBarRender={() => [
+          <CaseFormModal key="create" type={FormType.create} tableRef={tableRef} />,
+        ]}
       />
     </PageContainer>
   );

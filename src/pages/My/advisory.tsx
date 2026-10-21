@@ -20,7 +20,7 @@ import {
 import { requestProp } from '@/services/cases';
 import useSafeState from '@/hook/useSafeState/index';
 
-export default function advisoryList() {
+export default function AdvisoryList() {
   const { initialState } = useModel('@@initialState');
   const unionId = initialState?.currentUser?.unionId;
   const [editableKeys, setEditableRowKeys] = useSafeState<React.Key[]>([]);
@@ -58,8 +58,10 @@ export default function advisoryList() {
       formRef={formRef}
       onFinish={async (values) => {
         await newAdvisory(values as AdvisoryType, unionId as string);
-        // @ts-ignore
-        fn.reloadAndRest();
+        // Reload the table
+        if (fn) {
+          fn.reloadAndRest?.();
+        }
         formRef.current?.resetFields();
         return true;
       }}

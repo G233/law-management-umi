@@ -210,7 +210,7 @@ export const fetchApprovedCases = async (data: requestProp) => {
  */
 
 export const fetchMyCases = async (data: any) => {
-  let condition = {
+  const condition = {
     undertaker: data.unionId,
   };
   // 我的案件是查看所有通过审批了的案件,未通过审批的需要在 审批案件 中查看
@@ -247,10 +247,12 @@ export const fetchCaseList = async (data: requestProp) => {
 };
 /**
  *  新建审批
+ * 注意：案号现在在云函数中原子生成，不再需要前端生成
  */
 export const createCase = async (value: Case, unionId: string) => {
   value.unionId = unionId;
-  await cloudFunction('create_case', await generatedCaseId(value));
+  // 不再调用 generatedCaseId，案号在云函数中原子生成
+  await cloudFunction('create_case', value);
 };
 
 // 新建一百个案件，测试用 mock 数据
@@ -263,27 +265,28 @@ export const createCase = async (value: Case, unionId: string) => {
 // };
 /**
  *  一键审批
+ * 注意：approverId 现在在云函数中从调用者身份获取，不再由前端传递
  */
 export const oneClickApprove = async (
   idList: string[],
   fn: React.MutableRefObject<ActionType>,
-  approverId: string,
   approveState: CaseStatus,
   approveMsg?: string,
 ) => {
   // 因为云数据库没有批量更新的 api ，出于性能考虑，把批量操作给云函数处理。不过我本地测试使用 http2 更新 20 个案件速度也很快
   const res = await cloudFunction('one_click_approve', {
     idList,
-    approverId,
     approveState,
     approveMsg,
   });
 
-  if (res) {
+  if (res && !res.error) {
     // @ts-ignore
     // 重载表格
     fn.current.reloadAndRest();
     message.success('审批完成');
+  } else if (res?.error) {
+    message.error(res.message || '审批失败');
   }
 };
 
@@ -301,7 +304,7 @@ export const fetchCaseCauseList = async () => {
  * 获取所有律师，用于承办律师的自动完成
  */
 export const fetchLawList = async () => {
-  const res = await dbUser.get();
+  const res = await dbUser.where({ isLeave: false }).get();
   // 存在不是微信登录的用户信息的时候，会出现因为 unionId 不存在而报没有唯一key的错的情况
   return res.data.map((e: any) => ({ value: e.unionId, label: e.name }));
 };
@@ -316,7 +319,7 @@ export const uploadFile = async (data: any, unionId: string) => {
       cloudPath: `${CasePath}/${unionId}/${file.name}`,
       filePath: file,
       onUploadProgress: (progressEvent: any) => {
-        var percentCompleted = Math.round(
+        const percentCompleted = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total,
         );
         onProgress({ percent: percentCompleted }, file);

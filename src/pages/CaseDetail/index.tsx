@@ -13,6 +13,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import {
   createCase,
+  changeCase,
   Case,
   CaseType,
   CaseTypeText,
@@ -36,7 +37,7 @@ export default function CreateCasePage() {
   const userInfo = initialState?.currentUser;
   const [caseData, setCaseData] = useSafeState<Case>();
   const [readonly, setReadonly] = useSafeState<boolean>(true);
-  let formI = Form.useForm();
+  const formI = Form.useForm();
 
   const initData = async (caseId: string | undefined) => {
     if (!caseId) return;
@@ -76,7 +77,11 @@ export default function CreateCasePage() {
               form={formI[0]}
               initialValues={caseData}
               onFinish={async (values) => {
-                await createCase(values as Case, userInfo?.unionId as string);
+                if (caseId) {
+                  await changeCase(values as Case, userInfo?.unionId as string, caseId);
+                } else {
+                  await createCase(values as Case, userInfo?.unionId as string);
+                }
               }}
             >
               <ProFormRadio.Group

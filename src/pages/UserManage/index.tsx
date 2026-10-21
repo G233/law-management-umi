@@ -7,7 +7,7 @@ import useSafeState from '@/hook/useSafeState/index';
 
 import { fetchAllUser, updateUserInfo, sexText, deleteUser } from '@/services/user';
 
-export default function advisoryList() {
+export default function UserManageList() {
   const roleText = {
     admin: '管理律师',
     user: '执业律师',
