@@ -2,7 +2,7 @@ import { Case, fetchLawList, fetchCaseCauseList } from '@/services/cases';
 import { useEffect } from 'react';
 import type { ProColumns } from '@ant-design/pro-table';
 import { ProFormSelect } from '@ant-design/pro-form';
-import { Form, AutoComplete } from 'antd';
+import { AutoComplete } from 'antd';
 import useSafeState from '@/hook/useSafeState/index';
 
 interface OptionType {
@@ -25,14 +25,13 @@ export const useCommonColumns = (): ProColumns<Case>[] => {
       title: '案由 (涉案罪名)',
       width: 80,
       dataIndex: 'caseCause',
-      renderFormItem: () => (
-        <Form.Item name="caseCause" label="">
-          <AutoComplete
-            options={caseCauseList}
-            style={{ width: 200 }}
-            filterOption
-          />
-        </Form.Item>
+      renderFormItem: (_, { fieldProps }) => (
+        <AutoComplete
+          {...fieldProps}
+          options={caseCauseList}
+          style={{ width: 200 }}
+          filterOption
+        />
       ),
     },
     {

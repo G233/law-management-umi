@@ -31,8 +31,7 @@ export default function CreateCasePage() {
   const location = useLocation();
   const { admin } = useAccess();
   const numReg = /^[0-9]*$/;
-  //@ts-ignore
-  const caseId: string | undefined = location?.query?.id;
+  const caseId = new URLSearchParams(location.search).get('id') ?? undefined;
   const { initialState } = useModel('@@initialState');
   const userInfo = initialState?.currentUser;
   const [caseData, setCaseData] = useSafeState<Case>();
@@ -43,7 +42,7 @@ export default function CreateCasePage() {
     if (!caseId) return;
     const res = await cloudFIndById('Cases', caseId);
     setCaseData(res);
-    formI[0].resetFields();
+    formI[0].setFieldsValue(res);
   };
 
   useEffect(() => {

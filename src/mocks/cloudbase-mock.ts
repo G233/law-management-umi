@@ -15,6 +15,13 @@ interface MockCollection {
 
 export class MockDatabase {
   private collections: Map<string, MockCollection> = new Map();
+  command = {
+    RegExp: ({ regexp }: { regexp: string }) => ({ regexp }),
+    neq: (value: unknown) => ({ neq: value }),
+    gt: (value: unknown) => ({ gt: value }),
+    in: (value: unknown) => ({ in: value }),
+    eq: (value: unknown) => ({ eq: value }),
+  };
 
   constructor() {
     this.seedData();
@@ -37,6 +44,7 @@ export class MockDatabase {
         phone: '13800138000',
         isLeave: false,
         hasAddInfo: true,
+        role: 'admin',
         admin: true,
       },
       {
@@ -291,6 +299,10 @@ class MockAuth {
     return !!this.currentUser;
   }
 
+  async signOut() {
+    this.currentUser = null;
+  }
+
   // Mock login for testing
   mockLogin(userType: 'admin' | 'normal' = 'admin') {
     if (userType === 'admin') {
@@ -312,24 +324,32 @@ class MockAuth {
 
 class MockCloudApp {
   private db: MockDatabase;
-  private auth: MockAuth;
+  private authInstance: MockAuth;
 
   constructor() {
     this.db = new MockDatabase();
-    this.auth = new MockAuth();
+    this.authInstance = new MockAuth();
     
     // Auto-login as admin in mock mode
     const userType = (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('mockUser')) || 'admin';
-    this.auth.mockLogin(userType as 'admin' | 'normal');
+    this.authInstance.mockLogin(userType as 'admin' | 'normal');
   }
 
   database() {
     return this.db;
   }
 
-  auth(options?: any) {
-    // Mock auth accepts persistence options but ignores them
-    return this.auth;
+  auth(_options?: any) {
+    // CloudBase clients call app.auth(); keep that distinct from the auth instance.
+    return this.authInstance;
+  }
+
+  async getRedirectResult() {
+    return null;
+  }
+
+  signInWithRedirect() {
+    return Promise.resolve();
   }
 
   async callFunction(params: { name: string; data: any }) {
@@ -341,9 +361,9 @@ class MockCloudApp {
       
       // Create a mock context similar to CloudBase
       const context = {
-        TCB_UUID: this.auth.currentUser?.uid || 'mock-uuid',
-        TCB_UNIONID: this.auth.currentUser?.unionId || 'mock-unionid',
-        TCB_OPENID: this.auth.currentUser?.openid || 'mock-openid',
+        TCB_UUID: this.authInstance.currentUser?.uid || 'mock-uuid',
+        TCB_UNIONID: this.authInstance.currentUser?.unionId || 'mock-unionid',
+        TCB_OPENID: this.authInstance.currentUser?.openid || 'mock-openid',
       };
       
       try {

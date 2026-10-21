@@ -191,31 +191,45 @@ async function changeCase(db: any, data: any, context: any) {
 /**
  * Get case list
  */
-async function getCaseList(db: any, data: any, context: any) {
-  const { current = 1, pageSize = 10, ...filters } = data;
-  
-  const casesCol = db.collection('Cases');
-  let query = casesCol;
+async function getCaseList(db: any, data: any, _context: any) {
+  const {
+    current = 1,
+    pageSize = 10,
+    condition,
+    caseCause,
+    litigant,
+    caseId,
+    CaseType,
+  } = data || {};
 
-  // Apply filters
-  if (filters.undertaker) {
-    query = query.where({ undertaker: filters.undertaker });
+  const result = await db.collection('Cases').get();
+  let rows = result.data || [];
+
+  if (condition && typeof condition === 'object') {
+    if (condition.approveStatus !== undefined) {
+      rows = rows.filter((item: any) => item.approveStatus === condition.approveStatus);
+    }
+    if (condition.unionId) {
+      rows = rows.filter((item: any) => item.unionId === condition.unionId);
+    }
   }
-  if (filters.caseStatus !== undefined) {
-    query = query.where({ caseStatus: filters.caseStatus });
+  if (caseCause) {
+    rows = rows.filter((item: any) => String(item.caseCause || '').includes(String(caseCause)));
+  }
+  if (litigant) {
+    rows = rows.filter((item: any) => String(item.litigant || '').includes(String(litigant)));
+  }
+  if (caseId) {
+    rows = rows.filter((item: any) => String(item.caseId || '').includes(String(caseId)));
+  }
+  if (CaseType !== undefined && CaseType !== null && CaseType !== '') {
+    rows = rows.filter((item: any) => Number(item.CaseType) === Number(CaseType));
   }
 
-  const result = await query.orderBy('createTime', 'desc').get();
-  const total = result.data.length;
-  const start = (current - 1) * pageSize;
-  const data_list = result.data.slice(start, start + pageSize);
-
+  const start = (Number(current) - 1) * Number(pageSize);
   return {
-    success: true,
-    data: data_list,
-    total,
-    current,
-    pageSize,
+    caseList: rows.slice(start, start + Number(pageSize)),
+    count: rows.length,
   };
 }
 

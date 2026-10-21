@@ -105,12 +105,7 @@ export default function ApprovingCases() {
                 type="link"
                 key="btn"
                 onClick={() => {
-                  history.push({
-                    pathname: '/CaseDetail',
-                    query: {
-                      id: record._id as string,
-                    },
-                  });
+                  history.push(`/CaseDetail?id=${record._id}`);
                 }}
               >
                 详情
