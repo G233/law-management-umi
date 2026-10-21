@@ -50,7 +50,7 @@ export const signOut = async () => {
 // 获取用户信息
 export const fetchUserInfo = async () => {
   if (auth.hasLoginState()) {
-    const currentUser = await auth.getCurrenUser();
+    const currentUser = await auth.getCurrentUser();
     let User = await cloudWhere('User', { unionId: currentUser?.unionId });
     // 如果是第一次登陆系统需要在自定义的用户表中新建
     if (!User?.[0]) {

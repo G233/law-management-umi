@@ -73,7 +73,7 @@ export const updateAdvisory = async (_: any, newData: rowType, row:rowType) => {
   }).catch((e) => {
     console.log(e)
   });
-  if (res?.updated) {
+  if (res && typeof res !== 'boolean' && res.updated) {
     message.success('更新信息成功！');
     return true;
   }
@@ -82,7 +82,7 @@ export const updateAdvisory = async (_: any, newData: rowType, row:rowType) => {
 // 删除法律顾问单位信息
 export const deleteAdvisory = async (_: any, row: rowType) => {
   const res = await cloudRemoveById('Advisory', row._id);
-  if (res?.deleted) {
+  if (res && typeof res !== 'boolean' && res.deleted) {
     message.success('删除法律顾问单位信息成功');
     return true;
   }

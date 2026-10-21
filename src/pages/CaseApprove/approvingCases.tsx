@@ -7,6 +7,8 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import useSafeState from '@/hook/useSafeState/index';
 import { useCommonColumns } from './useCommonColumns';
 
+import { useCommonColumns } from './useCommonColumns';
+
 import {
   Case,
   fetchApprovingCases,
